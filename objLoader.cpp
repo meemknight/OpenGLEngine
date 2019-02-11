@@ -1,3 +1,6 @@
+////////////////////////
+//i don't own this code
+////////////////////////
 #include "objLoader.h"
 
 namespace objl

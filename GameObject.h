@@ -3,7 +3,10 @@
 //////////////////////////////
 
 #pragma once
-#include "Game.h"
+#include "indexBuffer.h"
+#include "vertexBuffer.h"
+#include "vertexAttribute.h"
+#include "Texture.h"
 #include "Shader.h"
 #include "Camera.h"
 #include "objLoader.h"

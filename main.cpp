@@ -16,12 +16,12 @@
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 
 #include <SFML/Graphics.hpp>
-//#include <SFML/OpenGL.hpp>
 
 #include "Camera.h"
 #include "GameObject.h"
 #include "Light.h"
 #include "custumBulletdebuggClass.h"
+#include "shapesGenerator.h"
 
 #include "tools.h"
 

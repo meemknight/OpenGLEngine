@@ -1,3 +1,6 @@
+//////////////////////////////
+//Copyright(c) 2019 Luta Vlad
+//////////////////////////////
 #include "GameObject.h"
 #include <glm/glm.hpp>
 
