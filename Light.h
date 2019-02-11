@@ -25,7 +25,7 @@ public:
 	float strength; 
 
 	static Light SunLight() {return Light(glm::vec4{ 0, 0, 0, 1 }, glm::vec3{ 1, 1, 1 }, glm::vec3{ 1, 1, 1 }, glm::vec3{1, 1, 1}, 0.0);}
-	static Light roomLight() { {return Light(glm::vec4{ 0, 0, 0, 1 }, glm::vec3{ 0.1, 0.1, 0.1 }, glm::vec3{ 1, 1, 1 }, glm::vec3{ 1, 1, 1 }, 0.001); } }
+	static Light roomLight() { {return Light(glm::vec4{ 0, 0, 0, 1 }, glm::vec3{ 0.1f, 0.1f, 0.1f }, glm::vec3{ 1, 1, 1 }, glm::vec3{ 1, 1, 1 }, 0.001f); } }
 };
 
 class LightContext

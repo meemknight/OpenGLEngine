@@ -21,7 +21,9 @@
 struct LoadedIndexModel
 {
 	LoadedIndexModel() {}
-	LoadedIndexModel(const char* c) { m.LoadFile(c); }
+
+	///this object should not be deleted if used with a collision object
+	explicit LoadedIndexModel(const char* c) { m.LoadFile(c); }
 	LoadedIndexModel(objl::Loader m) :m(m) {}
 	objl::Loader m;
 };
@@ -104,20 +106,20 @@ public:
 	std::vector<ObjectPosition> instances;
 
 	GameObject() { initialize(); }
-	GameObject(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram sp, Camera *camera = nullptr) : vb(vb), va(va), ib(ib), sp(sp), camera(camera) { initialize(); };
+	GameObject(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram *sp, Camera *camera = nullptr) : vb(vb), va(va), ib(ib), sp(sp), camera(camera) { initialize(); };
 
 	///just a level of abstractization that allows the user to pass both a indexed model and a file name
 	
 
 	//GameObject(LoadedIndexModel &model, ShaderProgram sp, Camera *c = nullptr);
 
-	void loadPtn323(const LoadedIndexModel &model, ShaderProgram sp); //todo optimise refference
-	void loadPcn333(const LoadedIndexModel &model, ShaderProgram sp);
+	void loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp); //todo optimise refference
+	void loadPcn333(const LoadedIndexModel &model, ShaderProgram *sp);
 
 	vertexBuffer vb;
 	vertexAttribute va;
 	indexBuffer ib;
-	ShaderProgram sp;
+	ShaderProgram *sp = nullptr;
 	Camera *camera = nullptr;
 
 	Material getMaterial();

@@ -4,6 +4,8 @@
 #include "GameObject.h"
 #include <glm/glm.hpp>
 
+#define ALLOCA_OPTIMISATIONS
+
 void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData, const LoadedIndexModel & model, const glm::vec3 &padding, AssetManager &manager)
 {
 	std::vector<float> dataForModel;
@@ -12,7 +14,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 	int maxData = 0;
 	int maxIndices = 0;
 	std::cout << "num of objects:" << model.m.LoadedMeshes.size() << "\n";
-	for (int m = 0; m < model.m.LoadedMeshes.size(); m++)
+	for (unsigned int m = 0; m < model.m.LoadedMeshes.size(); m++)
 	{
 		int d = model.m.LoadedMeshes[m].Vertices.size();
 		int i = model.m.LoadedMeshes[m].Indices.size();
@@ -24,7 +26,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 	indicesForModel.reserve(maxIndices);
 
 
-	for (int m = 0; m < model.m.LoadedMeshes.size(); m++)
+	for (unsigned int m = 0; m < model.m.LoadedMeshes.size(); m++)
 	{
 		
 		std::cout << model.m.LoadedMeshes[m].MeshName << "\n";
@@ -40,7 +42,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 		ObjectData temp;
 
 		dataForModel.clear();
-		for (int i = 0; i < model.m.LoadedMeshes[m].Vertices.size(); i++)
+		for (unsigned int i = 0; i < model.m.LoadedMeshes[m].Vertices.size(); i++)
 		{
 			dataForModel.push_back(model.m.LoadedMeshes[m].Vertices[i].Position.X + padding.x);
 			dataForModel.push_back(model.m.LoadedMeshes[m].Vertices[i].Position.Y + padding.y);
@@ -57,7 +59,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 
 		indicesForModel.clear();
 
-		for (int i = 0; i < model.m.LoadedMeshes[m].Indices.size(); i++)
+		for (unsigned int i = 0; i < model.m.LoadedMeshes[m].Indices.size(); i++)
 		{
 			//indicesForModel = model.m.LoadedMeshes[m].Indices; //todo: check this
 			indicesForModel.push_back(model.m.LoadedMeshes[m].Indices[i]);
@@ -70,7 +72,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 		objectData.push_back(temp);
 	}
 
-	for (int m = 0; m < model.m.LoadedMaterials.size(); m++) 
+	for (unsigned int m = 0; m < model.m.LoadedMaterials.size(); m++) 
 	{
 		Material material;
 		material.ka = glm::vec3(model.m.LoadedMaterials[m].Ka.X, model.m.LoadedMaterials[m].Ka.Y, model.m.LoadedMaterials[m].Ka.Z);
@@ -106,7 +108,7 @@ void GameObject::initialize()
 }
 
 
-void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram sp)
+void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp)
 {
 	this->sp = sp;
 	initialize();
@@ -114,13 +116,13 @@ void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram sp)
 
 	std::vector<float> dataForModel;
 	dataForModel.reserve(model.m.LoadedVertices.size() * 8);
-	for (int i = 0; i < model.m.LoadedVertices.size(); i++)
+	for (unsigned int i = 0; i < model.m.LoadedVertices.size(); i++)
 	{
 		dataForModel.push_back(model.m.LoadedVertices[i].Position.X);
 		dataForModel.push_back(model.m.LoadedVertices[i].Position.Y);
 		dataForModel.push_back(model.m.LoadedVertices[i].Position.Z);
 
-		dataForModel.push_back(model.m.LoadedVertices[i].TextureCoordinate.X);//todo replace
+		dataForModel.push_back(model.m.LoadedVertices[i].TextureCoordinate.X);
 		dataForModel.push_back(model.m.LoadedVertices[i].TextureCoordinate.Y);
 
 		dataForModel.push_back(model.m.LoadedVertices[i].Normal.X);
@@ -129,13 +131,13 @@ void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram sp)
 	}
 	std::vector<unsigned int> indicesForModel;
 	indicesForModel.reserve(model.m.LoadedIndices.size());
-	for (int i = 0; i < model.m.LoadedIndices.size(); i++)
+	for (unsigned int i = 0; i < model.m.LoadedIndices.size(); i++)
 	{
 		indicesForModel.push_back(model.m.LoadedIndices[i]);
 	}
 	vb = vertexBuffer(dataForModel.data(), dataForModel.size() * sizeof(float));
 	ib = indexBuffer(indicesForModel.data(), indicesForModel.size() * sizeof(unsigned int));
-	va = std::move(vertexAttribute{ 3, 2, 3 }); //todo: optimize 
+	va = std::move(vertexAttribute{ 3, 2, 3 });
 
 	if(model.m.LoadedMaterials.size()>0)
 	{
@@ -151,11 +153,11 @@ void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram sp)
 }
 
 /// may be deprecated
-void GameObject::loadPcn333(const LoadedIndexModel &model, ShaderProgram sp)
+void GameObject::loadPcn333(const LoadedIndexModel &model, ShaderProgram *sp)
 {
 	std::vector<float> dataForModel;
 	dataForModel.reserve(model.m.LoadedVertices.size() * 9);
-	for (int i = 0; i < model.m.LoadedVertices.size(); i++)
+	for (unsigned int i = 0; i < model.m.LoadedVertices.size(); i++)
 	{
 		dataForModel.push_back(model.m.LoadedVertices[i].Position.X);
 		dataForModel.push_back(model.m.LoadedVertices[i].Position.Y);
@@ -171,7 +173,7 @@ void GameObject::loadPcn333(const LoadedIndexModel &model, ShaderProgram sp)
 	}
 	std::vector<unsigned int> indicesForModel;
 	indicesForModel.reserve(model.m.LoadedIndices.size());
-	for (int i = 0; i < model.m.LoadedIndices.size(); i++)
+	for (unsigned int i = 0; i < model.m.LoadedIndices.size(); i++)
 	{
 		indicesForModel.push_back(model.m.LoadedIndices[i]);
 	}
@@ -211,46 +213,49 @@ void GameObject::draw()
 			//i.worldToViexMatrix = camera->getProjectionViewMatrix();
 			
 		}
-		sp.uniform("u_eyePosition", camera->position.x, camera->position.y, camera->position.z);
+		sp->uniform("u_eyePosition", camera->position.x, camera->position.y, camera->position.z);
 	} //sets the world to view matrix;
 
 	
-		material.bind(sp);
+		material.bind(*sp);
 		
-	sp.bind();
+	sp->bind();
 	vb.bind();
 	ib.bind();
 
 	va.bind();
 
-	//glUniform1f(timeUniformLocation, time);
 
 	// todo: optimise 
-	//glm::mat4 *temp = new glm::mat4[instances.size() * 2];
+
+#ifndef ALLOCA_OPTIMISATIONS
 	int offset = 0;
 	glm::mat4 temp[2];
 	for (int i = 0; i < instances.size(); i++)
 	{
-		//temp[i * 2] = instances[i].fullTransformMatrix();
-		//temp[i * 2 + 1] = instances[i].objectToWorldMatrix();
 		temp[0] = camera->getProjectionViewMatrix() * instances[i].objectToWorldMatrix();
 		temp[1] = instances[i].objectToWorldMatrix();
-		//temp[0] = instances[i].fullTransformMatrix();
-		//temp[1] = instances[i].objectToWorldMatrix();
 		dataTodraw.subData(temp, offset, sizeof(temp));
-		//dataTodraw.subData(&instances[i].fullTransformMatrix(), offset, sizeof(glm::mat4));
-		//dataTodraw.subData(&instances[i].objectToWorldMatrix(), offset, sizeof(glm::mat4));
 		offset += sizeof(glm::mat4);
 		offset += sizeof(glm::mat4);
 	}
+#else // !ALLOCA_OPTIMISATIONS ^
 
+	int offset = 0;
+	size_t tempSize = 2 * sizeof(glm::mat4) * instances.size();
+	glm::mat4 *temp = (glm::mat4*)alloca(tempSize);
+	for (unsigned int i = 0; i < instances.size(); i++)
+	{
+		temp[offset + 0] = camera->getProjectionViewMatrix() * instances[i].objectToWorldMatrix();
+		temp[offset + 1] = instances[i].objectToWorldMatrix();
+		offset += 2;
+	}
+	dataTodraw.subData(temp, 0, tempSize);
 
-	//dataTodraw.subData(&(temp[0]), 0, sizeof(glm::mat4)*instances.size() * 2);
+#endif //ALLOCA_OPTIMISATIONS ^
 
-	//delete[] temp;
-
-	//dataTodraw.bind();
-
+	
+	
 	va.bindForInstances();
 
 	glDrawElementsInstanced(GL_TRIANGLES, ib.size / sizeof(int), GL_UNSIGNED_INT, 0, instances.size());
@@ -328,7 +333,7 @@ void ComplexObject::draw()
 
 	sp->uniformi("u_sampl", 0);
 
-	for(int m=0; m<objectData.size(); m++)
+	for(unsigned int m=0; m<objectData.size(); m++)
 	{
 		objectData[m].material.bind(*sp);
 
@@ -339,7 +344,7 @@ void ComplexObject::draw()
 
 		int offset = 0;
 		glm::mat4 temp[2];
-		for (int i = 0; i < instances.size(); i++)
+		for (unsigned int i = 0; i < instances.size(); i++)
 		{
 			//temp[i * 2] = instances[i].fullTransformMatrix();
 			//temp[i * 2 + 1] = instances[i].objectToWorldMatrix();
@@ -434,7 +439,7 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 
 		size_t size = model.m.LoadedMeshes.size();
 		size_t loadedCollisionBoxes = 0;
-		for (int m = 0; m < size; m++)
+		for (unsigned int m = 0; m < size; m++)
 		{
 			if (collisionIdentifierName == nullptr || (model.m.LoadedMeshes[m].MeshName != "" && model.m.LoadedMeshes[m].MeshName.find(collisionIdentifierName) != std::string::npos))
 			{
@@ -442,7 +447,7 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 				unsigned int size = model.m.LoadedMeshes[m].Indices.size();
 				btVector3 *temp = new btVector3[size];
 
-				for (int i = 0; i < size; i++)
+				for (unsigned int i = 0; i < size; i++)
 				{
 					auto v = model.m.LoadedMeshes[m].Vertices[model.m.LoadedIndices[i]].Position;
 					temp[i] = { v.X, v.Y, v.Z };
@@ -461,7 +466,7 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 
 		size_t size = model.m.LoadedMeshes.size();
 		size_t loadedCollisionBoxes = 0;
-		for (int m = 0; m < size; m++)
+		for (unsigned int m = 0; m < size; m++)
 		{
 			if (collisionIdentifierName == nullptr || (model.m.LoadedMeshes[m].MeshName != "" && model.m.LoadedMeshes[m].MeshName.find(collisionIdentifierName) != std::string::npos))
 			{
@@ -533,7 +538,7 @@ void PhisicalObject::draw()
 
 	sp->uniformi("u_sampl", 0);
 
-	for (int m = 0; m < objectData.size(); m++)
+	for (unsigned int m = 0; m < objectData.size(); m++)
 	{
 		objectData[m].material.bind(*sp);
 
@@ -544,7 +549,7 @@ void PhisicalObject::draw()
 
 		int offset = 0;
 		glm::mat4 temp[2];
-		for (int i = 0; i < rigidBodies.size(); i++)
+		for (unsigned int i = 0; i < rigidBodies.size(); i++)
 		{
 			//btCollisionObject *obj = world->getCollisionObjectArray()[i];
 			//btRigidBody * body = btRigidBody::upcast(obj);
@@ -608,7 +613,7 @@ void PhisicalObject::pushElement(glm::vec3 position)
 		size_t loadedCollisionBoxes = ((btCompoundShape*)collisionShape)->getNumChildShapes();
 
 		float *masses = new float[loadedCollisionBoxes];
-		for (int i = 0; i < loadedCollisionBoxes; i++)
+		for (unsigned int i = 0; i < loadedCollisionBoxes; i++)
 		{
 			masses[i] = mass / loadedCollisionBoxes; //todo ?
 		}
@@ -630,7 +635,6 @@ void PhisicalObject::pushElement(glm::vec3 position)
 
 		delete[] masses;
 		//
-
 		world->addRigidBody(body);
 
 		rigidBodies.push_back(body);

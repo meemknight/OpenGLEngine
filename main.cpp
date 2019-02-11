@@ -28,7 +28,7 @@
 extern "C"
 {
 	//Enable dedicated graphics
-	__declspec(dllexport) DWORD NvOptimusEnablement = true;
+	//__declspec(dllexport) DWORD NvOptimusEnablement = true;
 	//__declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = true;
 }
 
@@ -230,8 +230,9 @@ int main()
 	ComplexObject monkey(&camera, &textureProgram, &light);
 
 	PhisicalObject tree(&camera, &textureProgram, &light, world, nullptr, 10);
-	tree.loadPtn323("objects//tree2.obj", manager);
-	tree.loadCollisionBox("objects//tree2.obj");
+	LoadedIndexModel treeModel("objects//tree2.obj");
+	tree.loadPtn323(treeModel, manager);
+	tree.loadCollisionBox(treeModel);
 	tree.pushElement({20, 0, 0});
 	
 
@@ -249,7 +250,7 @@ int main()
 	//monkey.objectData[0].material = Material::greenPlastic();
 	//monkey.objectData[0].material.ka = { 0.1, 0.1, 0.1 };
 	//monkey.objectData[0].material.ks = { 0, 0, 0 };
-
+	monkey.objectData[0].texture = manager.getTexture("textures/porcelain.jpg");
 
 	for(int i=0; i<100; i++)
 	{
@@ -276,11 +277,11 @@ int main()
 	texture.bind(0);
 	//normalMap.bind(1);
 
-	GameObject lightObject(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), program, &camera);
+	GameObject lightObject(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
 	lightObject.pushElement(glm::mat4(0));
 	glm::vec3 lightPosition = { 1, 1, -5 };
 
-	GameObject plan(vertexBuffer(planVertexes, plansize * 4), indexBuffer(planIndices, planIndicessize * 4), vertexAttribute({ 3,3,3 }), normalProgram, &camera);
+	GameObject plan(vertexBuffer(planVertexes, plansize * 4), indexBuffer(planIndices, planIndicessize * 4), vertexAttribute({ 3,3,3 }), &normalProgram, &camera);
 	plan.pushElement(glm::mat4(0));
 	plan.getInstance(0).setPosition(0, -1, 0);
 	plan.getInstance(0).setRotation(0, 0, 0);
@@ -305,8 +306,10 @@ int main()
 	PhisicalObject sphereObject(&camera, &textureProgram, &light, world, nullptr/*new btSphereShape(1)*/,10);
 	//sphereObject.loadCollisionBox("objects//fireMonkey.obj", nullptr);
 	//sphereObject.loadPtn323("objects//fireMonkey.obj", manager);
-	sphereObject.loadCollisionBox("objects//fireMonkey.obj");
-	sphereObject.loadPtn323("objects//fireMonkey.obj", manager);
+	LoadedIndexModel fireMonkeyModel("objects//fireMonkey.obj");
+	sphereObject.loadCollisionBox(fireMonkeyModel);
+	sphereObject.loadPtn323(fireMonkeyModel, manager);
+	sphereObject.appendObject(treeModel, manager);
 
 	//sphereObject.objectData[0].material = Material::emerald();
 	//sphereObject.objectData[0].texture = manager.getTexture("textures//cobble.jpg");
@@ -325,9 +328,10 @@ int main()
 	
 	//sphereObject.getIndtance(0)->setFriction(0.5);
 
-	PhisicalObject house(&camera, &textureProgram, &light, world, nullptr, 1);
-	house.loadCollisionBox("objects//test.obj", 0);
-	house.loadPtn323("objects//test.obj", manager);
+	PhisicalObject house(&camera, &textureProgram, &light, world, nullptr, 0);
+	LoadedIndexModel houseModel("objects//test.obj");
+	house.loadCollisionBox(houseModel, 0);
+	house.loadPtn323(houseModel, manager);
 	
 	house.pushElement({ 0,0,0 });
 
@@ -583,7 +587,7 @@ int main()
 
 		//monkey.sp->uniformi("u_sampl", 0);
 		
-		monkey.objectData[0].texture = manager.getTexture("textures/porcelain.jpg");
+		
 		monkey.draw();
 
 		tree.draw();
@@ -595,12 +599,12 @@ int main()
 		
 
 		//plan.sp.uniform("u_ambience", 0.5, 0.5, 0.5);
-		plan.sp.uniform("u_lightPosition", light.getPosition(0).x, light.getPosition(0).y, light.getPosition(0).z, light.getPosition(0).w);
+		plan.sp->uniform("u_lightPosition", light.getPosition(0).x, light.getPosition(0).y, light.getPosition(0).z, light.getPosition(0).w);
 		//plan.sp.uniform("u_time", (float)GetTickCount() / 1000);
 		plan.draw();
 
 
-		lightObject.sp.uniform("u_ambience", 1, 1, 1);
+		lightObject.sp->uniform("u_ambience", 1, 1, 1);
 
 		lightObject.getInstance(0).setPosition(lightPosition.x, lightPosition.y, lightPosition.z);
 		lightObject.getInstance(0).setScale(0.1f);
