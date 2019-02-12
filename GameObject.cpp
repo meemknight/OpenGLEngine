@@ -2,14 +2,18 @@
 //Copyright(c) 2019 Luta Vlad
 //////////////////////////////
 #include "GameObject.h"
+#include "tools.h"
 #include <glm/glm.hpp>
 
 #define ALLOCA_OPTIMISATIONS
 
-void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData, const LoadedIndexModel & model, const glm::vec3 &padding, AssetManager &manager)
+//if the collisionidentifiername is nullptr then it would be just ignored
+void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData, const LoadedIndexModel & model, const glm::vec3 &padding, AssetManager &manager, const char* collisionIdentifierName = "COLLISION")
 {
 	std::vector<float> dataForModel;
 	std::vector<unsigned int> indicesForModel; //todo: optimise the reserve for both
+	
+	int materialStart = objectData.size();
 
 	int maxData = 0;
 	int maxIndices = 0;
@@ -32,7 +36,8 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 		std::cout << model.m.LoadedMeshes[m].MeshName << "\n";
 		
 		//todo replace collision here
-		if (model.m.LoadedMeshes[m].MeshName != "" && model.m.LoadedMeshes[m].MeshName.find("COLLISION") != std::string::npos)
+		
+		if (collisionIdentifierName != nullptr && model.m.LoadedMeshes[m].MeshName != "" && model.m.LoadedMeshes[m].MeshName.find(collisionIdentifierName) != std::string::npos)
 		{
 		
 			continue;
@@ -72,8 +77,35 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 		objectData.push_back(temp);
 	}
 
-	for (unsigned int m = 0; m < model.m.LoadedMaterials.size(); m++) 
+	for (unsigned int m = 0; m < model.m.LoadedMaterials.size(); m++)
 	{
+		auto mat = model.m.LoadedMeshes[m].MeshMaterial;
+		Material material;
+
+		material.ka = { mat.Ka.X, mat.Ka.Y, mat.Ka.Z };
+		material.kd = { mat.Kd.X, mat.Kd.Y, mat.Kd.Z };
+		material.ks = { mat.Ks.X, mat.Ks.Y, mat.Ks.Z };
+		material.shiny = mat.Ns;
+		if (material.shiny == 0) { material.shiny = 1; }
+		
+		if (mat.map_Kd != "")
+		{
+			std::cout << "found texture: " << mat.map_Kd << "\n";
+			//if(manager!=0)
+			//{
+			//	Texture t(model.m.LoadedMaterials[m].map_Kd.c_str());
+			//	manager->pushBack(t);
+			//	material.materialIndex = t.id;
+			//}
+		 //todo add a texture index
+			objectData[m + materialStart].texture = manager.getTexture(mat.map_Kd.c_str());
+
+		}
+		
+		objectData[m + materialStart].material = material;
+
+		//old implementation
+		/*
 		Material material;
 		material.ka = glm::vec3(model.m.LoadedMaterials[m].Ka.X, model.m.LoadedMaterials[m].Ka.Y, model.m.LoadedMaterials[m].Ka.Z);
 		material.kd = glm::vec3(model.m.LoadedMaterials[m].Kd.X, model.m.LoadedMaterials[m].Kd.Y, model.m.LoadedMaterials[m].Kd.Z);
@@ -90,13 +122,18 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 			//	material.materialIndex = t.id;
 			//}
 		 //todo add a texture index
-			objectData[m].texture = manager.getTexture(model.m.LoadedMaterials[m].map_Kd.c_str());
+			objectData[m + materialStart].texture = manager.getTexture(model.m.LoadedMaterials[m].map_Kd.c_str());
 		}
 		if(m<objectData.size())
 		{
-			objectData[m].material = material;
+			objectData[m + materialStart].material = material;
 		}
-	
+		else 
+		{
+			objectData[m + materialStart].material = Material::defaultMaterial();
+			wlog("missing a material...");
+		}
+		*/
 	}
 
 }
@@ -107,12 +144,11 @@ void GameObject::initialize()
 	//timeUniformLocation = glGetUniformLocation(sp.id, "u_time");
 }
 
-
+//todo: remake
 void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp)
 {
 	this->sp = sp;
 	initialize();
-	std::cout <<"\nloaded meshes: "<< model.m.LoadedMeshes.size() << "\n";
 
 	std::vector<float> dataForModel;
 	dataForModel.reserve(model.m.LoadedVertices.size() * 8);
@@ -302,12 +338,12 @@ void ComplexObject::initialize()
 	dataTodraw.createData(0, 0);
 }
 
-void ComplexObject::loadPtn323(const LoadedIndexModel & model, AssetManager &manager)
+void ComplexObject::loadPtn323(const LoadedIndexModel & model, AssetManager &manager, const char* collisionIdentifierName)
 {
 
 	initialize();
 
-	appendObject(model, manager);
+	appendObject(model, manager, {0,0,0}, collisionIdentifierName);
 
 }
 
@@ -391,9 +427,9 @@ void ComplexObject::deleteElement(int index)
 }
 
 
-void ComplexObject::appendObject(const LoadedIndexModel & model, AssetManager &manager, const glm::vec3 &padding)
+void ComplexObject::appendObject(const LoadedIndexModel & model, AssetManager &manager, const glm::vec3 &padding, const char* collisionIdentifierName)
 {
-	appendObject_(dataTodraw, objectData, model, padding, manager);
+	appendObject_(dataTodraw, objectData, model, padding, manager, collisionIdentifierName);
 }
 
 // ////////////////////////
@@ -681,9 +717,9 @@ void PhisicalObject::setElementPosition(int index, glm::vec3 position)
 	rigidBodies[index]->setWorldTransform(t);
 }
 
-void PhisicalObject::appendObject(const LoadedIndexModel & model, AssetManager &manager, const glm::vec3 &padding)
+void PhisicalObject::appendObject(const LoadedIndexModel & model, AssetManager &manager, const glm::vec3 &padding, const char* collisionIdentifierName)
 {
-	appendObject_(dataTodraw, objectData, model, padding, manager);
+	appendObject_(dataTodraw, objectData, model, padding, manager, collisionIdentifierName);
 }
 
 

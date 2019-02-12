@@ -159,13 +159,13 @@ public:
 	ShaderProgram *sp = nullptr; 
 	LightContext *lights = nullptr;
 
-	void loadPtn323(const LoadedIndexModel &model, AssetManager &manager);
+	void loadPtn323(const LoadedIndexModel &model, AssetManager &manager, const char* collisionIdentifierName = "COLLISION");
 
 	void draw();
 	void pushElement(glm::mat4 matrix = glm::mat4(0));
 	void deleteElement(int index); //todo test
 	ObjectPosition &getInstance(int index) { return instances[index]; }
-	void appendObject(const LoadedIndexModel &model, AssetManager &manager ,const glm::vec3 &padding = { 0, 0, 0 });
+	void appendObject(const LoadedIndexModel &model, AssetManager &manager ,const glm::vec3 &padding = { 0, 0, 0 }, const char* collisionIdentifierName = "COLLISION");
 };
 
 class PhisicalObject
@@ -211,7 +211,7 @@ public:
 
 	//todo make getters for positions
 
-	void appendObject(const LoadedIndexModel &model, AssetManager &manager, const glm::vec3 &padding = { 0, 0, 0 });
+	void appendObject(const LoadedIndexModel &model, AssetManager &manager, const glm::vec3 &padding = { 0, 0, 0 }, const char* collisionIdentifierName = "COLLISION");
 	
 	void cleanUp();
 	void deleteCollisionShape();

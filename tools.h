@@ -6,6 +6,9 @@
 //////////////////////////////////////////////
 #pragma once
 #include <iostream>
+#include <Windows.h>
+
+#define FORCE_LOG
 
 #ifdef _DEBUG
 #define FORCE_LOG
@@ -31,7 +34,51 @@ inline void llog(F f, T ...args)
 }
 #endif
 
+///warning log
+#ifdef FORCE_LOG
+inline void wlog()
+{
+	std::cout << "\n";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+}
 
+template<class F, class ...T>
+inline void wlog(F f, T ...args)
+{	
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
+	std::cout << f << " ";
+	wlog(args...);
+}
+#else
+template<class F, class ...T>
+inline void wlog(F f, T ...args)
+{
+
+}
+#endif
+
+///error log
+#ifdef FORCE_LOG
+inline void elog()
+{
+	std::cout << "\n";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+}
+
+template<class F, class ...T>
+inline void elog(F f, T ...args)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
+	std::cout << f << " ";
+	elog(args...);
+}
+#else
+template<class F, class ...T>
+inline void elog(F f, T ...args)
+{
+
+}
+#endif
 
 
 /*

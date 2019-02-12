@@ -95,7 +95,7 @@ int main()
 	sf::ContextSettings contextSettings;
 	contextSettings.depthBits = 24;
 	contextSettings.stencilBits = 8;
-	contextSettings.antialiasingLevel = 4;
+	contextSettings.antialiasingLevel = 2;
 	//contextSettings.majorVersion = 3;
 	//contextSettings.minorVersion = 3;
 
@@ -245,12 +245,12 @@ int main()
 	//monkey.setMaterial(Material::defaultMaterial());
 	monkey.instances.reserve(104);
 
-	monkey.objectData[0].material = Material::emerald();
+	//monkey.objectData[0].material = Material::emerald();
 	//monkey.objectData[1].material = Material::bronze();
 	//monkey.objectData[0].material = Material::greenPlastic();
 	//monkey.objectData[0].material.ka = { 0.1, 0.1, 0.1 };
 	//monkey.objectData[0].material.ks = { 0, 0, 0 };
-	monkey.objectData[0].texture = manager.getTexture("textures/porcelain.jpg");
+	//monkey.objectData[0].texture = manager.getTexture("textures//porcelain.jpg");
 
 	for(int i=0; i<100; i++)
 	{
@@ -262,7 +262,7 @@ int main()
 	{
 
 		monkey.getInstance(i).setPosition(i * 1.0f + 10, 0, 0);
-		monkey.getInstance(i).setRotation(i*2.f, 0, 0);
+		monkey.getInstance(i).setRotation(i * 2.f, 0, 0);
 	}
 
 
@@ -306,10 +306,10 @@ int main()
 	PhisicalObject sphereObject(&camera, &textureProgram, &light, world, nullptr/*new btSphereShape(1)*/,10);
 	//sphereObject.loadCollisionBox("objects//fireMonkey.obj", nullptr);
 	//sphereObject.loadPtn323("objects//fireMonkey.obj", manager);
-	LoadedIndexModel fireMonkeyModel("objects//fireMonkey.obj");
+	LoadedIndexModel fireMonkeyModel("objects//bloc.obj");
 	sphereObject.loadCollisionBox(fireMonkeyModel);
 	sphereObject.loadPtn323(fireMonkeyModel, manager);
-	sphereObject.appendObject(treeModel, manager);
+	//sphereObject.appendObject(lmodel, manager, {0, 0, 3});
 
 	//sphereObject.objectData[0].material = Material::emerald();
 	//sphereObject.objectData[0].texture = manager.getTexture("textures//cobble.jpg");
@@ -319,7 +319,7 @@ int main()
 	
 	sphereObject.pushElement({ 1, 30 ,1 });
 
-	for(int i =0; i< 10; i++)
+	for(int i =0; i< 200; i++)
 	{
 		sphereObject.pushElement({ 1, 100 + i * 3 ,1 });
 	
@@ -372,7 +372,7 @@ int main()
 			{
 				window.close();
 				//std::cin.get();
-				//exit(0);
+				exit(0);
 			}
 			else
 				if (event.type == sf::Event::Resized)
@@ -585,13 +585,10 @@ int main()
 		void* tempp = &(monkey.instances[0]._objectToWorldMatrix);
 		tr.getOpenGLMatrix((float*)tempp);
 
-		//monkey.sp->uniformi("u_sampl", 0);
-		
 		
 		monkey.draw();
 
 		tree.draw();
-		//sphereObject.sp->uniformi("u_sampl", 0);
 		sphereObject.draw();
 
 		house.draw();
