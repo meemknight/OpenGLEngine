@@ -39,3 +39,8 @@ void vertexBuffer::recreateData(float * data, size_t size)
 	glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
 }
 
+void vertexBuffer::cleanup()
+{
+	glDeleteBuffers(1, &id);
+}
+

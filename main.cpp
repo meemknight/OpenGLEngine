@@ -230,7 +230,7 @@ int main()
 	ComplexObject monkey(&camera, &textureProgram, &light);
 
 	PhisicalObject tree(&camera, &textureProgram, &light, world, nullptr, 10.f);
-	LoadedIndexModel treeModel("objects//teste.obj");
+	LoadedIndexModel treeModel("objects//tree2.obj");
 	tree.loadPtn323(treeModel, manager);
 	tree.loadCollisionBox(treeModel, nullptr);
 	tree.pushElement({20, 0, 0});
@@ -589,6 +589,13 @@ int main()
 		monkey.draw();
 
 		tree.draw();
+
+		for (int i = 0; i < 100; i++)
+		{
+			sphereObject.pushElement({ 0,10,0 });
+		}
+	
+
 		sphereObject.draw();
 
 		house.draw();
@@ -635,7 +642,10 @@ int main()
 		
 
 		//_Log() << "test ";
-
+		for (int i = 0; i < 100; i++)
+		{
+			sphereObject.deleteElement(0);
+		}
 	}
 
 	sphereObject.cleanUp();

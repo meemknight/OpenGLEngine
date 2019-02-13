@@ -202,7 +202,7 @@ public:
 
 	void draw();
 	void pushElement(glm::vec3 position = {0,0,0});
-	void deleteElement(int index); //todo test
+	void deleteElement(unsigned int index); //todo test
 	
 	void setElementPosition(int index, glm::vec3 position);
 	void aplyForce(int index);

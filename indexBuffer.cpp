@@ -29,3 +29,8 @@ void indexBuffer::unBind()
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
+
+void indexBuffer::cleanup()
+{
+	glDeleteBuffers(1, &id);
+}

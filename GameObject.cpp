@@ -655,7 +655,7 @@ void PhisicalObject::pushElement(glm::vec3 position)
 	{
 		size_t loadedCollisionBoxes = ((btCompoundShape*)collisionShape)->getNumChildShapes();
 
-		float *masses = new float[loadedCollisionBoxes];
+		float *masses = new float[loadedCollisionBoxes]; //todo remove temp heap alloc
 		for (unsigned int i = 0; i < loadedCollisionBoxes; i++)
 		{
 			masses[i] = mass / loadedCollisionBoxes; //todo ?
@@ -667,9 +667,15 @@ void PhisicalObject::pushElement(glm::vec3 position)
 		btVector3 inertia = { 0,0,0 };
 		((btCompoundShape*)collisionShape)->calculatePrincipalAxisTransform(masses, t, inertia);
 
-		t.setIdentity();
-		t.setOrigin({ position.x, position.y, position.z });
+		btVector3 middlemin;
+		btVector3 middlemax;
+		collisionShape->getAabb(btTransform::getIdentity(), middlemin, middlemax);
 
+		btVector3 middle = { (middlemin.x() + middlemax.x() / 2.f), (middlemin.y() + middlemax.y() / 2.f) ,(middlemin.z() + middlemax.z() / 2.f) };
+
+		t.setIdentity();
+		t.setOrigin({ position.x + middle.x(), position.y + middle.y(), position.z + middle.z() });
+		
 		btMotionState *motion = new btDefaultMotionState(t);
 		btRigidBody *body = new btRigidBody(mass, motion, collisionShape, inertia);
 
@@ -705,6 +711,21 @@ void PhisicalObject::pushElement(glm::vec3 position)
 	
 
 	dataTodraw.recreateData(0, sizeof(glm::mat4)*rigidBodies.size() * 2);
+}
+
+void PhisicalObject::deleteElement(unsigned int index)
+{
+	//todo: optimise
+
+	world->removeRigidBody(rigidBodies[index]);
+
+	delete rigidBodies[index]->getMotionState();
+	delete rigidBodies[index];
+
+
+	rigidBodies.erase(rigidBodies.begin() + index);
+	
+	
 }
 
 void PhisicalObject::setElementPosition(int index, glm::vec3 position)

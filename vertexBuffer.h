@@ -21,6 +21,7 @@ public:
 
 	/// used to expand the data, does not generate a buffer
 	void recreateData(float *data, size_t size); 
+	void cleanup();
 
 	unsigned int id;
 	size_t size;
