@@ -76,9 +76,16 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 		
 		objectData.push_back(temp);
 	}
-
-	for (unsigned int m = 0; m < model.m.LoadedMaterials.size(); m++)
+	int padd = 0;
+	for (unsigned int m = 0; m < model.m.LoadedMeshes.size(); m++)
 	{
+		if (collisionIdentifierName != nullptr && model.m.LoadedMeshes[m].MeshName != "" && model.m.LoadedMeshes[m].MeshName.find(collisionIdentifierName) != std::string::npos)
+		{
+			padd++;
+			continue;
+			//not loading the collision boxes into the gpu 
+		}
+
 		auto mat = model.m.LoadedMeshes[m].MeshMaterial;
 		Material material;
 
@@ -98,11 +105,11 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 			//	material.materialIndex = t.id;
 			//}
 		 //todo add a texture index
-			objectData[m + materialStart].texture = manager.getTexture(mat.map_Kd.c_str());
+			objectData[m + materialStart - padd].texture = manager.getTexture(mat.map_Kd.c_str());
 
 		}
 		
-		objectData[m + materialStart].material = material;
+		objectData[m + materialStart - padd].material = material;
 
 		//old implementation
 		/*

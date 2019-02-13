@@ -229,10 +229,10 @@ int main()
 
 	ComplexObject monkey(&camera, &textureProgram, &light);
 
-	PhisicalObject tree(&camera, &textureProgram, &light, world, nullptr, 10);
-	LoadedIndexModel treeModel("objects//tree2.obj");
+	PhisicalObject tree(&camera, &textureProgram, &light, world, nullptr, 10.f);
+	LoadedIndexModel treeModel("objects//teste.obj");
 	tree.loadPtn323(treeModel, manager);
-	tree.loadCollisionBox(treeModel);
+	tree.loadCollisionBox(treeModel, nullptr);
 	tree.pushElement({20, 0, 0});
 	
 
@@ -307,8 +307,8 @@ int main()
 	//sphereObject.loadCollisionBox("objects//fireMonkey.obj", nullptr);
 	//sphereObject.loadPtn323("objects//fireMonkey.obj", manager);
 	LoadedIndexModel fireMonkeyModel("objects//bloc.obj");
-	sphereObject.loadCollisionBox(fireMonkeyModel);
-	sphereObject.loadPtn323(fireMonkeyModel, manager);
+	sphereObject.loadCollisionBox(treeModel, nullptr);
+	sphereObject.loadPtn323(treeModel, manager);
 	//sphereObject.appendObject(lmodel, manager, {0, 0, 3});
 
 	//sphereObject.objectData[0].material = Material::emerald();
@@ -319,7 +319,7 @@ int main()
 	
 	sphereObject.pushElement({ 1, 30 ,1 });
 
-	for(int i =0; i< 200; i++)
+	for(int i =0; i< 10; i++)
 	{
 		sphereObject.pushElement({ 1, 100 + i * 3 ,1 });
 	
