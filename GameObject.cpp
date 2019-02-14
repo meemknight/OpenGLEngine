@@ -3,7 +3,9 @@
 //////////////////////////////
 #include "GameObject.h"
 #include "tools.h"
-#include <glm/glm.hpp>
+//#include <glm/glm.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
+//#include <glm/gtc/type_ptr.hpp>
 
 #define ALLOCA_OPTIMISATIONS
 
@@ -11,7 +13,7 @@
 void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData, const LoadedIndexModel & model, const glm::vec3 &padding, AssetManager &manager, const char* collisionIdentifierName = "COLLISION")
 {
 	std::vector<float> dataForModel;
-	std::vector<unsigned int> indicesForModel; //todo: optimise the reserve for both
+	std::vector<unsigned int> indicesForModel; 
 	
 	int materialStart = objectData.size();
 
@@ -35,7 +37,6 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 		
 		std::cout << model.m.LoadedMeshes[m].MeshName << "\n";
 		
-		//todo replace collision here
 		
 		if (collisionIdentifierName != nullptr && model.m.LoadedMeshes[m].MeshName != "" && model.m.LoadedMeshes[m].MeshName.find(collisionIdentifierName) != std::string::npos)
 		{
@@ -53,7 +54,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 			dataForModel.push_back(model.m.LoadedMeshes[m].Vertices[i].Position.Y + padding.y);
 			dataForModel.push_back(model.m.LoadedMeshes[m].Vertices[i].Position.Z + padding.z);
 
-			dataForModel.push_back(model.m.LoadedMeshes[m].Vertices[i].TextureCoordinate.X);//todo replace
+			dataForModel.push_back(model.m.LoadedMeshes[m].Vertices[i].TextureCoordinate.X);
 			dataForModel.push_back(model.m.LoadedMeshes[m].Vertices[i].TextureCoordinate.Y);
 
 			dataForModel.push_back(model.m.LoadedMeshes[m].Vertices[i].Normal.X);
@@ -66,13 +67,13 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 
 		for (unsigned int i = 0; i < model.m.LoadedMeshes[m].Indices.size(); i++)
 		{
-			//indicesForModel = model.m.LoadedMeshes[m].Indices; //todo: check this
+		
 			indicesForModel.push_back(model.m.LoadedMeshes[m].Indices[i]);
 		}
 		temp.ib = indexBuffer(indicesForModel.data(), indicesForModel.size() * sizeof(unsigned int));
-		temp.va = std::move(vertexAttribute{ 3, 2, 3 }); //todo: optimize 
+		temp.va = std::move(vertexAttribute{ 3, 2, 3 }); 
 
-		//if (model.m.LoadedMaterials.size() > 0) //todo
+		
 		
 		objectData.push_back(temp);
 	}
@@ -97,14 +98,9 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 		
 		if (mat.map_Kd != "")
 		{
-			std::cout << "found texture: " << mat.map_Kd << "\n";
-			//if(manager!=0)
-			//{
-			//	Texture t(model.m.LoadedMaterials[m].map_Kd.c_str());
-			//	manager->pushBack(t);
-			//	material.materialIndex = t.id;
-			//}
-		 //todo add a texture index
+			ilog("found texture: ", mat.map_Kd);
+		
+			
 			objectData[m + materialStart - padd].texture = manager.getTexture(mat.map_Kd.c_str());
 
 		}
@@ -128,7 +124,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 			//	manager->pushBack(t);
 			//	material.materialIndex = t.id;
 			//}
-		 //todo add a texture index
+		
 			objectData[m + materialStart].texture = manager.getTexture(model.m.LoadedMaterials[m].map_Kd.c_str());
 		}
 		if(m<objectData.size())
@@ -151,7 +147,6 @@ void GameObject::initialize()
 	//timeUniformLocation = glGetUniformLocation(sp.id, "u_time");
 }
 
-//todo: remake
 void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp)
 {
 	this->sp = sp;
@@ -196,6 +191,7 @@ void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp)
 }
 
 /// may be deprecated
+[[deprecated]]
 void GameObject::loadPcn333(const LoadedIndexModel &model, ShaderProgram *sp)
 {
 	std::vector<float> dataForModel;
@@ -207,7 +203,7 @@ void GameObject::loadPcn333(const LoadedIndexModel &model, ShaderProgram *sp)
 		dataForModel.push_back(model.m.LoadedVertices[i].Position.Z);
 
 		dataForModel.push_back(0.5);	//color
-		dataForModel.push_back(0.5);	//todo: make it load
+		dataForModel.push_back(0.5);	
 		dataForModel.push_back(0.5);
 
 		dataForModel.push_back(model.m.LoadedVertices[i].Normal.X);
@@ -268,9 +264,6 @@ void GameObject::draw()
 
 	va.bind();
 
-
-	// todo: optimise 
-
 #ifndef ALLOCA_OPTIMISATIONS
 	int offset = 0;
 	glm::mat4 temp[2];
@@ -311,7 +304,7 @@ void GameObject::pushElement(glm::mat4 matrix)
 	dataTodraw.recreateData(0, sizeof(glm::mat4)*instances.size() * 2);
 }
 
-glm::mat4 ObjectPosition::objectToWorldMatrix() //todo use better glm functions to optimise
+glm::mat4 ObjectPosition::objectToWorldMatrix()
 {
 	if (modified)
 	{
@@ -319,18 +312,17 @@ glm::mat4 ObjectPosition::objectToWorldMatrix() //todo use better glm functions 
 
 		if (scale == 1)
 		{
-			glm::mat4 transl = glm::translate(glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), glm::vec3(x, y, z));
+			glm::mat4 transl = glm::translate(glm::vec3(x, y, z));
 			_objectToWorldMatrix = glm::rotate(transl, glm::radians(rx), glm::vec3(1, 0, 0)) *
-				glm::rotate(glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), glm::radians(ry), glm::vec3(0, 1, 0)) *
-				glm::rotate(glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), glm::radians(rz), glm::vec3(0, 0, 1));
-
+				glm::rotate(glm::radians(ry), glm::vec3(0, 1, 0)) *
+				glm::rotate(glm::radians(rz), glm::vec3(0, 0, 1));
 		}
 		else
 		{
-			glm::mat4 transl = glm::translate(glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), glm::vec3(x, y, z));
+			glm::mat4 transl = glm::translate(glm::vec3(x, y, z));
 			glm::mat4 rotated = glm::rotate(transl, glm::radians(rx), glm::vec3(1, 0, 0)) *
-				glm::rotate(glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), glm::radians(ry), glm::vec3(0, 1, 0)) *
-				glm::rotate(glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), glm::radians(rz), glm::vec3(0, 0, 1));
+				glm::rotate(glm::radians(ry), glm::vec3(0, 1, 0)) *
+				glm::rotate(glm::radians(rz), glm::vec3(0, 0, 1));
 			_objectToWorldMatrix = glm::scale(rotated, glm::vec3(scale, scale, scale));
 		}
 
@@ -503,9 +495,9 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 	
 	}else
 	{
-	 	btTriangleMesh *temptriangle = new btTriangleMesh();
+	 	btTriangleMesh *triangle = new btTriangleMesh();
 		//bttrianglevert
-		//temptriangle->addIndexedMesh();
+		//triangle->addIndexedMesh();
 
 		size_t size = model.m.LoadedMeshes.size();
 		size_t loadedCollisionBoxes = 0;
@@ -525,13 +517,13 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 				mesh.m_vertexBase = (unsigned char*)&model.m.LoadedMeshes[m].Vertices[0];
 				mesh.m_vertexStride = sizeof(model.m.LoadedMeshes[m].Vertices[0]);
 
-				temptriangle->addIndexedMesh(mesh);
+				triangle->addIndexedMesh(mesh);
 			}
 		}
 
 
-		collisionShape = new btBvhTriangleMeshShape(temptriangle, 1);
-
+		collisionShape = new btBvhTriangleMeshShape(triangle, 1);
+		
 	
 	}
 
@@ -655,7 +647,8 @@ void PhisicalObject::pushElement(glm::vec3 position)
 	{
 		size_t loadedCollisionBoxes = ((btCompoundShape*)collisionShape)->getNumChildShapes();
 
-		float *masses = new float[loadedCollisionBoxes]; //todo remove temp heap alloc
+#ifdef ALLOCA_OPTIMISATIONS
+		float *masses = (float*)alloca(sizeof(float) * loadedCollisionBoxes);
 		for (unsigned int i = 0; i < loadedCollisionBoxes; i++)
 		{
 			masses[i] = mass / loadedCollisionBoxes; //todo ?
@@ -666,6 +659,24 @@ void PhisicalObject::pushElement(glm::vec3 position)
 		t.setOrigin({ position.x, position.y, position.z });
 		btVector3 inertia = { 0,0,0 };
 		((btCompoundShape*)collisionShape)->calculatePrincipalAxisTransform(masses, t, inertia);
+#else // ALLOCA_OPTIMISATIONS
+		float *masses = new float[loadedCollisionBoxes]; 
+		for (unsigned int i = 0; i < loadedCollisionBoxes; i++)
+		{
+			masses[i] = mass / loadedCollisionBoxes; //todo ?
+		}
+
+		btTransform t;
+		t.setIdentity();
+		t.setOrigin({ position.x, position.y, position.z });
+		btVector3 inertia = { 0,0,0 };
+		((btCompoundShape*)collisionShape)->calculatePrincipalAxisTransform(masses, t, inertia);
+		delete[] masses;
+#endif // ^ no optimisations
+
+		
+
+
 
 		btVector3 middlemin;
 		btVector3 middlemax;
@@ -682,7 +693,7 @@ void PhisicalObject::pushElement(glm::vec3 position)
 		body->setFriction(1);
 		body->setRestitution(0);
 
-		delete[] masses;
+	
 		//
 		world->addRigidBody(body);
 
@@ -715,12 +726,12 @@ void PhisicalObject::pushElement(glm::vec3 position)
 
 void PhisicalObject::deleteElement(unsigned int index)
 {
-	//todo: optimise
+	
+	auto body = rigidBodies.at(index);
+	world->removeRigidBody(body);
 
-	world->removeRigidBody(rigidBodies[index]);
-
-	delete rigidBodies[index]->getMotionState();
-	delete rigidBodies[index];
+	delete body->getMotionState();
+	delete body;
 
 
 	rigidBodies.erase(rigidBodies.begin() + index);

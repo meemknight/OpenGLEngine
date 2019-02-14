@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "tools.h"
 #include <iostream>
 #include <Windows.h>
 #include <string.h>
@@ -22,12 +23,12 @@ void Texture::create(const char * name)
 	sf::Image t;
 	if(!t.loadFromFile(name))
 	{
-		std::cout << "error loading " << name<<'\n';
+		wlog("error loading ", name);
 		id = 0;
 	}
 	else 
 	{
-		std::cout << "Loaded: " << name << '\n';
+		llog("Loaded: ", name);
 		t.flipVertically();
 
 		glGenTextures(1, &id);
@@ -54,7 +55,7 @@ void Texture::create(const char * name)
 				float amount;
 				amount = 4;
 				//	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
-				std::cout << "\nyass\n";
+			
 				break;
 			}
 		}

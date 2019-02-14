@@ -588,14 +588,10 @@ int main()
 		
 		monkey.draw();
 
+
 		tree.draw();
-
-		for (int i = 0; i < 100; i++)
-		{
-			sphereObject.pushElement({ 0,10,0 });
-		}
 	
-
+		
 		sphereObject.draw();
 
 		house.draw();
@@ -619,6 +615,8 @@ int main()
 		//world->debugDrawWorld();
 		window.display();
 		world->stepSimulation(deltatime);
+
+
 		//draw opengl here
 
 		//glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -642,10 +640,6 @@ int main()
 		
 
 		//_Log() << "test ";
-		for (int i = 0; i < 100; i++)
-		{
-			sphereObject.deleteElement(0);
-		}
 	}
 
 	sphereObject.cleanUp();

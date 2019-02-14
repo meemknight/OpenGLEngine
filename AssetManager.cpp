@@ -1,11 +1,6 @@
 #include "AssetManager.h"
 
 
-//void AssetManager::bind(const char* name, int bindPoint)
-//{
-//	loadedTextures[name].bind(bindPoint);
-//}
-
 Texture AssetManager::getTexture(const char * name)
 {
 	auto temp = loadedTextures.find(name);

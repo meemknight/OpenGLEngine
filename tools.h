@@ -45,13 +45,59 @@ inline void wlog()
 template<class F, class ...T>
 inline void wlog(F f, T ...args)
 {	
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
 	std::cout << f << " ";
 	wlog(args...);
 }
 #else
 template<class F, class ...T>
 inline void wlog(F f, T ...args)
+{
+
+}
+#endif
+
+///important log
+#ifdef FORCE_LOG
+inline void ilog()
+{
+	std::cout << "\n";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+}
+
+template<class F, class ...T>
+inline void ilog(F f, T ...args)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
+	std::cout << f << " ";
+	ilog(args...);
+}
+#else
+template<class F, class ...T>
+inline void ilog(F f, T ...args)
+{
+
+}
+#endif
+
+///good log
+#ifdef FORCE_LOG
+inline void glog()
+{
+	std::cout << "\n";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+}
+
+template<class F, class ...T>
+inline void glog(F f, T ...args)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+	std::cout << f << " ";
+	glog(args...);
+}
+#else
+template<class F, class ...T>
+inline void glog(F f, T ...args)
 {
 
 }
