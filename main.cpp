@@ -180,7 +180,7 @@ int main()
 
 
 	Camera camera(85.f, &width, &height, 0.01f, 1500.f);
-	camera.mSpeed = 6.0f;
+	camera.mSpeed = 16.0f;
 
 	camera.position = { 0, 3, -4 };
 	camera.viewDirection = { 0, 0, 1 };
@@ -217,8 +217,18 @@ int main()
 
 	indexBuffer ib(cubeIndices, sizeof(cubeIndices));
 
-	AssetManager manager;
+	AssetManager<Texture> manager;
 	LightContext light;
+
+	light.pushElement(Light::roomLight());
+	light.pushElement(Light::roomLight());
+	//light.pushElement(Light::SunLight());
+	//light.getAmbience(0)  = glm::vec3(0.5, 0.1, 0.1);
+	//light.getDiffuseness(0)  = glm::vec3(1.f, 0.4, 0.4);
+	//light.getSpecularity(0) = glm::vec3(1.0, 0.2, 0.2);
+	//light.getStrength(0) = 0.0003;
+	light.getPosition(1).y = 20;
+	light.getStrength(1) = 0.0003;
 
 	Texture texture("textures//porcelain.jpg");
 	//ComplexObject o2;
@@ -232,18 +242,16 @@ int main()
 	PhisicalObject tree(&camera, &textureProgram, &light, world, nullptr, 10.f);
 	LoadedIndexModel treeModel("objects//tree2.obj");
 	tree.loadPtn323(treeModel, manager);
-	tree.loadCollisionBox(treeModel, nullptr);
+	tree.loadCollisionBox(treeModel);
 	tree.pushElement({20, 0, 0});
 	
-
+	LoadedIndexModel wood("objects//wood.obj");
 
 	LoadedIndexModel lmodel("objects//sphere.obj");
 	monkey.loadPtn323(lmodel, manager);
-	int a_ = monkey.objectData[0].texture.id;
 
 	monkey.camera = &camera;
 	//monkey.setMaterial(Material::defaultMaterial());
-	monkey.instances.reserve(104);
 
 	//monkey.objectData[0].material = Material::emerald();
 	//monkey.objectData[1].material = Material::bronze();
@@ -252,18 +260,6 @@ int main()
 	//monkey.objectData[0].material.ks = { 0, 0, 0 };
 	//monkey.objectData[0].texture = manager.getTexture("textures//porcelain.jpg");
 
-	for(int i=0; i<100; i++)
-	{
-		//monkey.pushElement();
-	}
-
-
-	for (unsigned int i = 0; i < monkey.instances.size(); i++)
-	{
-
-		monkey.getInstance(i).setPosition(i * 1.0f + 10, 0, 0);
-		monkey.getInstance(i).setRotation(i * 2.f, 0, 0);
-	}
 
 
 	monkey.pushElement(glm::mat4(0));
@@ -277,7 +273,8 @@ int main()
 	texture.bind(0);
 	//normalMap.bind(1);
 
-	GameObject lightObject(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
+	GameObject lightObject;
+	lightObject.setData(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
 	lightObject.pushElement(glm::mat4(0));
 	glm::vec3 lightPosition = { 1, 1, -5 };
 
@@ -286,14 +283,9 @@ int main()
 	plan.getInstance(0).setPosition(0, -1, 0);
 	plan.getInstance(0).setRotation(0, 0, 0);
 	plan.setMaterial(Material::greyMaterial(1, 0.5f, 0.01f, 1));
-	
 
-	light.pushElement(Light::roomLight());
-	//light.pushElement(Light::SunLight());
-	//light.getAmbience(1)  = glm::vec3(0.5, 0.1, 0.1);
-	//light.getDiffuseness(1)  = glm::vec3(0.8, 0.4, 0.4);
-	//light.getSpecularity(1) = glm::vec3(1.0, 0.0, 0.0);
-	//light.getStrength(1) = 0.1;
+
+	
 	
 	
 
@@ -303,12 +295,12 @@ int main()
 	int frames = 0;
 	//window.setMouseCursorVisible(0);
 
-	PhisicalObject sphereObject(&camera, &textureProgram, &light, world, nullptr/*new btSphereShape(1)*/,10);
+	PhisicalObject sphereObject(&camera, &textureProgram, &light, world, nullptr/*new btSphereShape(1)*/, 10);
 	//sphereObject.loadCollisionBox("objects//fireMonkey.obj", nullptr);
 	//sphereObject.loadPtn323("objects//fireMonkey.obj", manager);
 	LoadedIndexModel fireMonkeyModel("objects//bloc.obj");
-	sphereObject.loadCollisionBox(treeModel, nullptr);
-	sphereObject.loadPtn323(treeModel, manager);
+	sphereObject.loadCollisionBox(wood, nullptr);
+	sphereObject.loadPtn323(wood, manager);
 	//sphereObject.appendObject(lmodel, manager, {0, 0, 3});
 
 	//sphereObject.objectData[0].material = Material::emerald();
@@ -319,7 +311,7 @@ int main()
 	
 	sphereObject.pushElement({ 1, 30 ,1 });
 
-	for(int i =0; i< 10; i++)
+	for(int i =0; i< 20; i++)
 	{
 		sphereObject.pushElement({ 1, 100 + i * 3 ,1 });
 	
@@ -329,7 +321,7 @@ int main()
 	//sphereObject.getIndtance(0)->setFriction(0.5);
 
 	PhisicalObject house(&camera, &textureProgram, &light, world, nullptr, 0);
-	LoadedIndexModel houseModel("objects//test.obj");
+	LoadedIndexModel houseModel("objects//level.obj");
 	house.loadCollisionBox(houseModel, 0);
 	house.loadPtn323(houseModel, manager);
 	
@@ -466,6 +458,11 @@ int main()
 			lightPosition.x -= lightSpeed * deltatime;
 		}
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+		{
+		
+		}
+
 		if (updatemouse)
 		{
 			camera.mouseUpdate({ (float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y });
@@ -564,7 +561,6 @@ int main()
 		if (v.getZ() < -maxVelocity) { v.setZ(-maxVelocity); }
 		if (v.getX() > maxVelocity) { v.setX(maxVelocity); }
 		if (v.getX() < -maxVelocity) { v.setX(-maxVelocity); }
-		//std::cout << "\n velocity: " << v.getZ();
 		sphereObject.getIndtance(0)->setLinearVelocity(v);
 #pragma endregion
 
@@ -590,17 +586,13 @@ int main()
 
 
 		tree.draw();
-	
+
 		
 		sphereObject.draw();
 
 		house.draw();
 
-		
-
-		//plan.sp.uniform("u_ambience", 0.5, 0.5, 0.5);
-		plan.sp->uniform("u_lightPosition", light.getPosition(0).x, light.getPosition(0).y, light.getPosition(0).z, light.getPosition(0).w);
-		//plan.sp.uniform("u_time", (float)GetTickCount() / 1000);
+		//plan.sp->uniform("u_lightPosition", light.getPosition(0).x, light.getPosition(0).y, light.getPosition(0).z, light.getPosition(0).w);
 		plan.draw();
 
 
@@ -609,9 +601,11 @@ int main()
 		lightObject.getInstance(0).setPosition(lightPosition.x, lightPosition.y, lightPosition.z);
 		lightObject.getInstance(0).setScale(0.1f);
 
-
 		lightObject.draw();
-		
+		lightObject.gpuCleanup();
+		lightObject.setData(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
+
+
 		//world->debugDrawWorld();
 		window.display();
 		world->stepSimulation(deltatime);
@@ -639,7 +633,6 @@ int main()
 		//window.display();
 		
 
-		//_Log() << "test ";
 	}
 
 	sphereObject.cleanUp();

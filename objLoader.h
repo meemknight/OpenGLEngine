@@ -1,5 +1,7 @@
-//i do not own this code
+//I do not own this code
+//I have edited it to accomodate it with my logging system
 //https://github.com/Bly7/OBJ-Loader
+#include "tools.h"
 
 // OBJ_Loader.h - A Single Header OBJ Model Loader
 
@@ -377,6 +379,7 @@ namespace objl
 		// or unable to be loaded return false
 		bool LoadFile(std::string Path)
 		{
+			ilog("Loaded: ", Path);
 			// If the file is not an .obj file return false
 			if (Path.substr(Path.size() - 4, 4) != ".obj")
 				return false;

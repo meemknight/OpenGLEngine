@@ -1,5 +1,5 @@
 #include "custumBulletdebuggClass.h"
-
+#include "tools.h"
 
 void custumBulletdebuggClass::init()
 {
@@ -75,6 +75,7 @@ void custumBulletdebuggClass::drawContactPoint(const btVector3 & PointOnB, const
 
 void custumBulletdebuggClass::reportErrorWarning(const char * warningString)
 {
+	elog(warningString);
 }
 
 void custumBulletdebuggClass::draw3dText(const btVector3 & location, const char * textString)

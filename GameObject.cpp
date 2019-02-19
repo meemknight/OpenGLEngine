@@ -1,4 +1,5 @@
 //////////////////////////////
+//GameObject.cpp
 //Copyright(c) 2019 Luta Vlad
 //////////////////////////////
 #include "GameObject.h"
@@ -10,7 +11,7 @@
 #define ALLOCA_OPTIMISATIONS
 
 //if the collisionidentifiername is nullptr then it would be just ignored
-void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData, const LoadedIndexModel & model, const glm::vec3 &padding, AssetManager &manager, const char* collisionIdentifierName = "COLLISION")
+void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData, const LoadedIndexModel & model, const glm::vec3 &padding, AssetManager<Texture> &manager, const char* collisionIdentifierName = "COLLISION")
 {
 	std::vector<float> dataForModel;
 	std::vector<unsigned int> indicesForModel; 
@@ -19,7 +20,6 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 
 	int maxData = 0;
 	int maxIndices = 0;
-	std::cout << "num of objects:" << model.m.LoadedMeshes.size() << "\n";
 	for (unsigned int m = 0; m < model.m.LoadedMeshes.size(); m++)
 	{
 		int d = model.m.LoadedMeshes[m].Vertices.size();
@@ -35,7 +35,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 	for (unsigned int m = 0; m < model.m.LoadedMeshes.size(); m++)
 	{
 		
-		std::cout << model.m.LoadedMeshes[m].MeshName << "\n";
+		
 		
 		
 		if (collisionIdentifierName != nullptr && model.m.LoadedMeshes[m].MeshName != "" && model.m.LoadedMeshes[m].MeshName.find(collisionIdentifierName) != std::string::npos)
@@ -98,8 +98,6 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 		
 		if (mat.map_Kd != "")
 		{
-			ilog("found texture: ", mat.map_Kd);
-		
 			
 			objectData[m + materialStart - padd].texture = manager.getTexture(mat.map_Kd.c_str());
 
@@ -143,6 +141,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 
 void GameObject::initialize()
 {
+	//warning, adding code here might break some code at the gpucleanup and cleanup
 	dataTodraw.createData(0, 0);
 	//timeUniformLocation = glGetUniformLocation(sp.id, "u_time");
 }
@@ -228,20 +227,33 @@ void GameObject::loadPcn333(const LoadedIndexModel &model, ShaderProgram *sp)
 	initialize();
 }
 
+void GameObject::setData(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram * sp, Camera * camera)
+{
+	this->vb = vb;
+	this->ib = ib;
+	this->va = std::move(va);
+	this->sp = sp;
+	this->camera = camera;
+}
+
+/*
 Material GameObject::getMaterial()
 {
 	return material;
 }
+*/
 
 Material & GameObject::getMaterialReffernce()
 {
 	return material;
 }
 
+
 void GameObject::setMaterial(const Material & m)
 {
 	material = m;
 }
+
 
 void GameObject::draw()
 {
@@ -304,6 +316,30 @@ void GameObject::pushElement(glm::mat4 matrix)
 	dataTodraw.recreateData(0, sizeof(glm::mat4)*instances.size() * 2);
 }
 
+void GameObject::deleteElement(int index)
+{
+#ifdef _DEBUG
+	assert(index < instances.size());
+#endif // _DEBUG
+	instances.erase(instances.begin() + index);
+}
+
+void GameObject::cleanup()
+{
+	instances.clear();
+	gpuCleanup();
+
+	dataTodraw.cleanup();
+	initialize();
+}
+
+void GameObject::gpuCleanup()
+{
+	vb.cleanup();
+	va.attributes.clear();
+	ib.cleanup();
+}
+
 glm::mat4 ObjectPosition::objectToWorldMatrix()
 {
 	if (modified)
@@ -337,10 +373,8 @@ void ComplexObject::initialize()
 	dataTodraw.createData(0, 0);
 }
 
-void ComplexObject::loadPtn323(const LoadedIndexModel & model, AssetManager &manager, const char* collisionIdentifierName)
+void ComplexObject::loadPtn323(const LoadedIndexModel & model, AssetManager<Texture> &manager, const char* collisionIdentifierName)
 {
-
-	initialize();
 
 	appendObject(model, manager, {0,0,0}, collisionIdentifierName);
 
@@ -426,9 +460,27 @@ void ComplexObject::deleteElement(int index)
 }
 
 
-void ComplexObject::appendObject(const LoadedIndexModel & model, AssetManager &manager, const glm::vec3 &padding, const char* collisionIdentifierName)
+void ComplexObject::appendObject(const LoadedIndexModel & model, AssetManager<Texture> &manager, const glm::vec3 &padding, const char* collisionIdentifierName)
 {
 	appendObject_(dataTodraw, objectData, model, padding, manager, collisionIdentifierName);
+}
+
+void ComplexObject::cleanup()
+{
+	instances.clear();
+
+	gpuCleanup();
+}
+
+void ComplexObject::gpuCleanup()
+{
+	for(auto &i: objectData)
+	{
+		i.ib.cleanup();
+		i.vb.cleanup();
+	}
+	objectData.clear();
+
 }
 
 // ////////////////////////
@@ -439,7 +491,7 @@ void PhisicalObject::initialize()
 	dataTodraw.createData(0, 0);
 }
 
-void PhisicalObject::loadPtn323(const LoadedIndexModel & model, AssetManager &manager)
+void PhisicalObject::loadPtn323(const LoadedIndexModel & model, AssetManager<Texture> &manager)
 {
 
 	initialize();
@@ -466,7 +518,7 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 	collisionShape = a; 
 	*/
 	
-	deleteCollisionShape();
+	//deleteCollisionShape();
 
 	if(mass != 0)
 	{
@@ -480,7 +532,14 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 			{
 				loadedCollisionBoxes++;
 				unsigned int size = model.m.LoadedMeshes[m].Indices.size();
+
+#ifdef ALLOCA_OPTIMISATIONS
+				btVector3 *temp = (btVector3*)alloca(sizeof(btVector3) * size);
+#elif
 				btVector3 *temp = new btVector3[size];
+#endif // ALLOCA_OPTIMISATIONS
+
+			
 
 				for (unsigned int i = 0; i < size; i++)
 				{
@@ -489,7 +548,11 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 				}
 
 				((btCompoundShape*)collisionShape)->addChildShape(btTransform::getIdentity(), new btConvexHullShape(*temp, size));
+				
+#ifndef ALLOCA_OPTIMISATIONS
 				delete temp;
+#endif // !ALLOCA_OPTIMISATIONS
+			
 			}
 		}
 	
@@ -539,10 +602,7 @@ void PhisicalObject::draw()
 	}
 	else
 	{
-#ifdef  _DEBUG
-		std::cout << "missing shader program!\n";
-#endif //  _DEBUG
-
+		elog("missing shader program!");
 	}
 
 	if (camera != 0)
@@ -553,9 +613,7 @@ void PhisicalObject::draw()
 	} //sets the world to view matrix;
 	else
 	{
-#ifdef  _DEBUG
-		std::cout << "missing camera!\n";
-#endif //  _DEBUG
+		elog("missing camera!");
 	}
 
 	if(lights!=0)
@@ -564,11 +622,8 @@ void PhisicalObject::draw()
 	}
 	else
 	{
-#ifdef  _DEBUG
-		std::cout << "missing light!\n";
-#endif //  _DEBUG
+		elog("missing light!\n");
 	}
-
 	
 
 	sp->uniformi("u_sampl", 0);
@@ -675,21 +730,16 @@ void PhisicalObject::pushElement(glm::vec3 position)
 #endif // ^ no optimisations
 
 		
+	
 
-
-
-		btVector3 middlemin;
-		btVector3 middlemax;
-		collisionShape->getAabb(btTransform::getIdentity(), middlemin, middlemax);
-
-		btVector3 middle = { (middlemin.x() + middlemax.x() / 2.f), (middlemin.y() + middlemax.y() / 2.f) ,(middlemin.z() + middlemax.z() / 2.f) };
 
 		t.setIdentity();
-		t.setOrigin({ position.x + middle.x(), position.y + middle.y(), position.z + middle.z() });
+		t.setOrigin({ position.x, position.y, position.z});
 		
+
 		btMotionState *motion = new btDefaultMotionState(t);
 		btRigidBody *body = new btRigidBody(mass, motion, collisionShape, inertia);
-
+		//body->setCenterOfMassTransform(t);
 		body->setFriction(1);
 		body->setRestitution(0);
 
@@ -733,7 +783,6 @@ void PhisicalObject::deleteElement(unsigned int index)
 	delete body->getMotionState();
 	delete body;
 
-
 	rigidBodies.erase(rigidBodies.begin() + index);
 	
 	
@@ -756,7 +805,7 @@ void PhisicalObject::setElementPosition(int index, glm::vec3 position)
 	rigidBodies[index]->setWorldTransform(t);
 }
 
-void PhisicalObject::appendObject(const LoadedIndexModel & model, AssetManager &manager, const glm::vec3 &padding, const char* collisionIdentifierName)
+void PhisicalObject::appendObject(const LoadedIndexModel & model, AssetManager<Texture> &manager, const glm::vec3 &padding, const char* collisionIdentifierName)
 {
 	appendObject_(dataTodraw, objectData, model, padding, manager, collisionIdentifierName);
 }
@@ -765,6 +814,7 @@ void PhisicalObject::appendObject(const LoadedIndexModel & model, AssetManager &
 void PhisicalObject::cleanUp()
 {
 	// remove the rigidbodies from the dynamics world and delete them
+	/*
 	for (int i = world->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
 		btCollisionObject * obj = world->getCollisionObjectArray()[i];
@@ -776,18 +826,49 @@ void PhisicalObject::cleanUp()
 		world->removeCollisionObject(obj);
 		delete obj;
 	}
-	
+	*/
+
+	for (int i = 0; i < rigidBodies.size();/*no increment*/)
+	{
+		deleteElement(i);
+	}
+
 	if(collisionShape)
 	{
 		deleteCollisionShape();
 		//todo implement
 	}
 
+	gpuCleanup();
+	dataTodraw.cleanup();
+	initialize();
+}
+
+void PhisicalObject::gpuCleanup()
+{
+	for (auto &i : objectData)
+	{
+		i.ib.cleanup();
+		i.vb.cleanup();
+	}
+	objectData.clear();
 }
 
 void PhisicalObject::deleteCollisionShape()
 {
+	if(collisionShape->isCompound())
+	{
+		size_t loadedCollisionBoxes = ((btCompoundShape*)collisionShape)->getNumChildShapes();
+		for(int i=0; i<loadedCollisionBoxes; i++)
+		{
+			delete ((btCompoundShape*)collisionShape)->getChildShape(i);
+		}
+	}else
+	{
+		delete ((btBvhTriangleMeshShape*)collisionShape)->getTriangleInfoMap();
+	}
 
+	delete collisionShape;
 	//todo: implement
 }
 

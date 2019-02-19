@@ -1,9 +1,12 @@
 //////////////////////////////////////////////
-/// define FORCE_LOG
+//tools.h
+//Copyright (c) 2019 Luta Vlad
+//////////////////////////////////////////////
+
+///define FORCE_LOG
 ///to controll the behavour of the log or just 
 ///change from debug to releasee
-///Copyright (c) 2019 Luta Vlad
-//////////////////////////////////////////////
+
 #pragma once
 #include <iostream>
 #include <Windows.h>

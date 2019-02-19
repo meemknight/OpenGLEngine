@@ -97,75 +97,78 @@ class GameObject
 	void initialize();
 	Material material;
 protected:
-	///used to specify coordonates of each object
+	///used to specify coordonates of each object, used for instance rendering
 	vertexBuffer dataTodraw;
 
 public:
 
-
 	std::vector<ObjectPosition> instances;
-
-	GameObject() { initialize(); }
-	GameObject(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram *sp, Camera *camera = nullptr) : vb(vb), va(va), ib(ib), sp(sp), camera(camera) { initialize(); };
-
-	///just a level of abstractization that allows the user to pass both a indexed model and a file name
-	
-
-	//GameObject(LoadedIndexModel &model, ShaderProgram sp, Camera *c = nullptr);
-
-	void loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp); //todo optimise refference
-	void loadPcn333(const LoadedIndexModel &model, ShaderProgram *sp);
-
 	vertexBuffer vb;
 	vertexAttribute va;
 	indexBuffer ib;
 	ShaderProgram *sp = nullptr;
 	Camera *camera = nullptr;
 
-	Material getMaterial();
+
+
+	GameObject() { initialize(); }
+	GameObject(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram *sp, Camera *camera = nullptr) : vb(vb), va(va), ib(ib), sp(sp), camera(camera) { initialize(); };
+
+	///just a level of abstractization that allows the user to pass both a indexed model and a file name
+	//GameObject(LoadedIndexModel &model, ShaderProgram sp, Camera *c = nullptr);
+
+	void loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp);
+	void loadPcn333(const LoadedIndexModel &model, ShaderProgram *sp);
+	void setData(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram *sp, Camera *camera = nullptr);
+
+	//Material getMaterial();
 	Material &getMaterialReffernce();
 	void setMaterial(const Material &m);
 	
-
 	//int timeUniformLocation;
 
 	ObjectPosition &getInstance(int index) { return instances[index]; }
 
 	void draw();
 	void pushElement(glm::mat4 matrix = glm::mat4(0));
+	void deleteElement(int index);
+	
 
+	//this function will also delete the data from the gpu, it won't set the sp and camera to null ptr !!
+	void cleanup();
+	void gpuCleanup();
 };
 
 class ComplexObject
 {
 	///used to specify coordonates of each object
 	vertexBuffer dataTodraw;
-	glm::mat4 worldToViexMatrix = glm::mat4(0);
-
 
 	void initialize();
 
 public:
-	ComplexObject() = default;
+	ComplexObject() { initialize(); };
 	 ComplexObject(Camera *c, ShaderProgram *sp, LightContext *lights) :
-	 camera(c), sp(sp), lights(lights){}
+		 camera(c), sp(sp), lights(lights) {initialize();}
 
 
 
 	std::vector<ObjectData> objectData;
-
 	std::vector<ObjectPosition> instances;
 	Camera *camera = nullptr;
 	ShaderProgram *sp = nullptr; 
 	LightContext *lights = nullptr;
 
-	void loadPtn323(const LoadedIndexModel &model, AssetManager &manager, const char* collisionIdentifierName = "COLLISION");
+	void loadPtn323(const LoadedIndexModel &model, AssetManager<Texture> &manager, const char* collisionIdentifierName = "COLLISION");
 
 	void draw();
 	void pushElement(glm::mat4 matrix = glm::mat4(0));
 	void deleteElement(int index); //todo test
 	ObjectPosition &getInstance(int index) { return instances[index]; }
-	void appendObject(const LoadedIndexModel &model, AssetManager &manager ,const glm::vec3 &padding = { 0, 0, 0 }, const char* collisionIdentifierName = "COLLISION");
+	void appendObject(const LoadedIndexModel &model, AssetManager<Texture> &manager ,const glm::vec3 &padding = { 0, 0, 0 }, const char* collisionIdentifierName = "COLLISION");
+
+	void cleanup();
+	void gpuCleanup();
 };
 
 class PhisicalObject
@@ -197,7 +200,7 @@ public:
 	btDynamicsWorld *world = nullptr;
 	
 
-	void loadPtn323(const LoadedIndexModel &model, AssetManager &manager);
+	void loadPtn323(const LoadedIndexModel &model, AssetManager<Texture> &manager);
 	void loadCollisionBox(const LoadedIndexModel &model, const char* collisionIdentifierName = "COLLISION");
 
 	void draw();
@@ -211,8 +214,9 @@ public:
 
 	//todo make getters for positions
 
-	void appendObject(const LoadedIndexModel &model, AssetManager &manager, const glm::vec3 &padding = { 0, 0, 0 }, const char* collisionIdentifierName = "COLLISION");
+	void appendObject(const LoadedIndexModel &model, AssetManager<Texture> &manager, const glm::vec3 &padding = { 0, 0, 0 }, const char* collisionIdentifierName = "COLLISION");
 	
 	void cleanUp();
+	void gpuCleanup();
 	void deleteCollisionShape();
 };
