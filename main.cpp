@@ -635,7 +635,7 @@ int main()
 
 	}
 
-	sphereObject.cleanUp();
+	sphereObject.cleanup();
 
 	world->removeCollisionObject(&body);
 	delete body.getMotionState();

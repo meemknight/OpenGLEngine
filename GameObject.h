@@ -137,6 +137,11 @@ public:
 	//this function will also delete the data from the gpu, it won't set the sp and camera to null ptr !!
 	void cleanup();
 	void gpuCleanup();
+	void fullCleanup()
+	{
+		cleanup();
+		gpuCleanup();
+	}
 };
 
 class ComplexObject
@@ -169,6 +174,11 @@ public:
 
 	void cleanup();
 	void gpuCleanup();
+	void fullCleanup()
+	{
+		cleanup();
+		gpuCleanup();
+	}
 };
 
 class PhisicalObject
@@ -181,9 +191,9 @@ class PhisicalObject
 	void initialize();
 
 public:
-	PhisicalObject() = default;
+	PhisicalObject() { initialize(); };
 	PhisicalObject(Camera *c, ShaderProgram *sp, LightContext *lights, btDynamicsWorld *world, collisionShapeType* collisionShape, float mass):
-		collisionShape(collisionShape), mass(mass), camera(c), sp(sp), lights(lights), world(world){}
+		collisionShape(collisionShape), mass(mass), camera(c), sp(sp), lights(lights), world(world) {initialize();}
 
 	std::vector<ObjectData> objectData;
 	
@@ -216,7 +226,13 @@ public:
 
 	void appendObject(const LoadedIndexModel &model, AssetManager<Texture> &manager, const glm::vec3 &padding = { 0, 0, 0 }, const char* collisionIdentifierName = "COLLISION");
 	
-	void cleanUp();
+	void cleanup();
 	void gpuCleanup();
 	void deleteCollisionShape();
+	void fullCleanup()
+	{
+		cleanup();
+		deleteCollisionShape();
+		gpuCleanup();
+	}
 };

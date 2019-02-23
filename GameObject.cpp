@@ -149,7 +149,7 @@ void GameObject::initialize()
 void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp)
 {
 	this->sp = sp;
-	initialize();
+	//initialize();
 
 	std::vector<float> dataForModel;
 	dataForModel.reserve(model.m.LoadedVertices.size() * 8);
@@ -224,7 +224,7 @@ void GameObject::loadPcn333(const LoadedIndexModel &model, ShaderProgram *sp)
 	va = std::move(v);
 	this->sp = sp;
 
-	initialize();
+	//initialize();
 }
 
 void GameObject::setData(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram * sp, Camera * camera)
@@ -494,7 +494,7 @@ void PhisicalObject::initialize()
 void PhisicalObject::loadPtn323(const LoadedIndexModel & model, AssetManager<Texture> &manager)
 {
 
-	initialize();
+	//initialize();
 
 	appendObject(model, manager);
 	
@@ -811,7 +811,7 @@ void PhisicalObject::appendObject(const LoadedIndexModel & model, AssetManager<T
 }
 
 
-void PhisicalObject::cleanUp()
+void PhisicalObject::cleanup()
 {
 	// remove the rigidbodies from the dynamics world and delete them
 	/*

@@ -50,6 +50,6 @@ void AssetManager<T>::cleanUp()
 	{
 		delete[] i.first;
 	}
-
+	loadedTextures.clear();
 }
 
