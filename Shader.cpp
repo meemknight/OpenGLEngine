@@ -1,7 +1,10 @@
+/////////////////////////
+// (c) Luta Vlad - 2019
+/////////////////////////
 #include "Shader.h"
+#include "tools.h"
 #include <cstdio>
 #include <iostream>
-
 
 ShaderProgram::ShaderProgram()
 {
@@ -66,10 +69,11 @@ int ShaderProgram::getUniformLocation(const char* name)
 	#ifdef DEBUG
 		if(a==-1)
 		{
-			std::cerr << "Uniform error: "<< name << std::endl;
+			elog("Uniform error: ", name);
 		}
 	#endif // DEBUG
-		
+				
+		//llog("Loaded Uniform: ", name);
 		locations[name] = a;
 		return a;
 	}else
@@ -83,12 +87,12 @@ unsigned int ShaderProgram::getSoubRutineLocation(const char * name)
 {
 	if (subRoutines.find(name) == subRoutines.end())
 	{
-		int a = glGetSubroutineIndex(id, GL_FRAGMENT_SHADER, name);
+		unsigned int a = glGetSubroutineIndex(id, GL_FRAGMENT_SHADER, name);
 
 #ifdef DEBUG
-		if (a == -1)
+		if (a == GL_INVALID_INDEX)
 		{
-			std::cerr << "Uniform subroutine error: " << name << std::endl;
+			llog("Uniform subroutine error: ", name);
 		}
 #endif // DEBUG
 

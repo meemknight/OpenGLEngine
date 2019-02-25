@@ -22,13 +22,14 @@
 #include "Light.h"
 #include "custumBulletdebuggClass.h"
 #include "shapesGenerator.h"
+#include "GameObjectPool.h"
 
 #include "tools.h"
 
 extern "C"
 {
 	//Enable dedicated graphics
-	//__declspec(dllexport) DWORD NvOptimusEnablement = true;
+	__declspec(dllexport) DWORD NvOptimusEnablement = true;
 	//__declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = true;
 }
 
@@ -177,7 +178,9 @@ int main()
 	20, 22, 21, 20, 23, 22, // Bottom
 	};
 
-
+	AssetManager<Texture> textureManager;
+	AssetManager<LoadedIndexModel> modelManager;
+	LightContext light;
 
 	Camera camera(85.f, &width, &height, 0.01f, 1500.f);
 	camera.mSpeed = 16.0f;
@@ -185,12 +188,21 @@ int main()
 	camera.position = { 0, 3, -4 };
 	camera.viewDirection = { 0, 0, 1 };
 
+	ShaderProgram program(VertexShader("vertex.vert"), FragmentShader("fragment.frag"));
+	ShaderProgram normalProgram(VertexShader("vertn.vert"), FragmentShader("fragn.frag"));
+	ShaderProgram textureProgram(VertexShader("vertt.vert"), FragmentShader("fragt.frag"));
 	ShaderProgram debugShader(VertexShader("debugShader.vert"), FragmentShader("debugShader.frag"));
+	
 	custumBulletdebuggClass debugDrawer(&debugShader ,&camera);
-
 	world->setDebugDrawer(&debugDrawer);
 	world->getDebugDrawer()->setDebugMode(btIDebugDraw::DebugDrawModes::DBG_DrawWireframe);
 
+	GameObjectPool gameObjectPool;
+	gameObjectPool.initialize(&textureProgram, &camera, &light, world, &textureManager, &modelManager);
+	gameObjectPool.load("maps//map1.txt");
+
+	//GameObject tempObject(&textureProgram, &camera, &light);
+	//tempObject.loadPtn323()
 
 	float *planVertexes = 0;
 	float *planVertexes2 = 0;
@@ -208,17 +220,12 @@ int main()
 	shapeGenerator::generatePlane(&planVertexes, &planIndices, 512, plansize, planIndicessize);
 	std::cout << glGetString(GL_VERSION);
 
-	ShaderProgram program(VertexShader("vertex.vert"), FragmentShader("fragment.frag"));
-	//program.bind();
-
-	ShaderProgram normalProgram(VertexShader("vertn.vert"), FragmentShader("fragn.frag"));
-	ShaderProgram textureProgram(VertexShader("vertt.vert"), FragmentShader("fragt.frag"));
+	
 
 
 	indexBuffer ib(cubeIndices, sizeof(cubeIndices));
 
-	AssetManager<Texture> manager;
-	LightContext light;
+	
 
 	light.pushElement(Light::roomLight());
 	light.pushElement(Light::roomLight());
@@ -230,7 +237,6 @@ int main()
 	light.getPosition(1).y = 20;
 	light.getStrength(1) = 0.0003;
 
-	Texture texture("textures//porcelain.jpg");
 	//ComplexObject o2;
 	//o2.camera = &camera;
 	//o2.loadPtn323("objects//fireMonkey.obj", textureProgram, &manager);
@@ -240,15 +246,15 @@ int main()
 	ComplexObject monkey(&camera, &textureProgram, &light);
 
 	PhisicalObject tree(&camera, &textureProgram, &light, world, nullptr, 10.f);
-	LoadedIndexModel treeModel("objects//tree2.obj");
-	tree.loadPtn323(treeModel, manager);
-	tree.loadCollisionBox(treeModel);
+
+	tree.loadPtn323(modelManager.getData("objects//tree2.obj"), textureManager);
+	tree.loadCollisionBox(modelManager.getData("objects//tree2.obj"));
 	tree.pushElement({20, 0, 0});
 	
 	LoadedIndexModel wood("objects//wood.obj");
 
-	LoadedIndexModel lmodel("objects//sphere.obj");
-	monkey.loadPtn323(lmodel, manager);
+	
+	monkey.loadPtn323(modelManager.getData("objects//sphere.obj"), textureManager);
 
 	monkey.camera = &camera;
 	//monkey.setMaterial(Material::defaultMaterial());
@@ -267,11 +273,11 @@ int main()
 	//monkey.getInstance(0).setScale(12);
 	monkey.getInstance(0).setRotation(0, 0, 0);
 
-	//Texture normalMap("textures//normal.png");
 
-	
-	texture.bind(0);
-	//normalMap.bind(1);
+	GameObject testObject(&textureProgram, &camera, &light);
+	testObject.loadPtn323(modelManager.getData("objects//simple.obj"), &textureManager);
+	testObject.pushElement(glm::mat4(0));
+	testObject.getInstance(0).setPosition(-10, 3, 0);
 
 	GameObject lightObject;
 	lightObject.setData(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
@@ -299,8 +305,8 @@ int main()
 	//sphereObject.loadCollisionBox("objects//fireMonkey.obj", nullptr);
 	//sphereObject.loadPtn323("objects//fireMonkey.obj", manager);
 	LoadedIndexModel fireMonkeyModel("objects//bloc.obj");
-	sphereObject.loadCollisionBox(wood, nullptr);
-	sphereObject.loadPtn323(wood, manager);
+	sphereObject.loadCollisionBox(modelManager.getData("objects//sphere.obj"), nullptr);
+	sphereObject.loadPtn323(modelManager.getData("objects//sphere.obj"), textureManager);
 	//sphereObject.appendObject(lmodel, manager, {0, 0, 3});
 
 	//sphereObject.objectData[0].material = Material::emerald();
@@ -313,7 +319,7 @@ int main()
 
 	for(int i =0; i< 20; i++)
 	{
-		sphereObject.pushElement({ 1, 100 + i * 3 ,1 });
+		//sphereObject.pushElement({ 1, 100 + i * 3 ,1 });
 	
 	}
 
@@ -323,7 +329,7 @@ int main()
 	PhisicalObject house(&camera, &textureProgram, &light, world, nullptr, 0);
 	LoadedIndexModel houseModel("objects//level.obj");
 	house.loadCollisionBox(houseModel, 0);
-	house.loadPtn323(houseModel, manager);
+	house.loadPtn323(houseModel, textureManager);
 	
 	house.pushElement({ 0,0,0 });
 
@@ -587,6 +593,13 @@ int main()
 
 		tree.draw();
 
+		//tree.deleteCollisionShape();
+		//tree.gpuCleanup();
+		//tree.cleanup();
+		//tree.loadPtn323(modelManager.getData("objects//tree2.obj"), textureManager);
+		//tree.loadCollisionBox(modelManager.getData("objects//tree2.obj"));
+		//tree.pushElement({ 20, 0, 0 });
+
 		
 		sphereObject.draw();
 
@@ -595,6 +608,10 @@ int main()
 		//plan.sp->uniform("u_lightPosition", light.getPosition(0).x, light.getPosition(0).y, light.getPosition(0).z, light.getPosition(0).w);
 		plan.draw();
 
+		gameObjectPool.drawAll();
+
+		//gameObjectPool.clearAll();
+		//gameObjectPool.load("maps//map1.txt");
 
 		lightObject.sp->uniform("u_ambience", 1, 1, 1);
 
@@ -602,8 +619,18 @@ int main()
 		lightObject.getInstance(0).setScale(0.1f);
 
 		lightObject.draw();
-		lightObject.gpuCleanup();
-		lightObject.setData(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
+		//lightObject.gpuCleanup();
+		//.cleanup();
+		//.setData(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
+		//.pushElement(glm::mat4(0));
+
+		//testObject.draw();
+
+		//testObject.cleanup();
+		//testObject.gpuCleanup();
+		//testObject.loadPtn323(modelManager.getData("objects//simple.obj"), &textureManager);
+		//testObject.pushElement(glm::mat4(0));
+		//testObject.getInstance(0).setPosition(-10, 3, 0);
 
 
 		//world->debugDrawWorld();
@@ -651,7 +678,8 @@ int main()
 	delete broadPhase;
 	delete world;
 
-	manager.cleanUp();
+	textureManager.cleanUp();
+	modelManager.cleanUp();
 
 	return 0;
 }

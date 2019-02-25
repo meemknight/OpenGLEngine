@@ -71,6 +71,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 			indicesForModel.push_back(model.m.LoadedMeshes[m].Indices[i]);
 		}
 		temp.ib = indexBuffer(indicesForModel.data(), indicesForModel.size() * sizeof(unsigned int));
+		temp.va.attributes.clear();
 		temp.va = std::move(vertexAttribute{ 3, 2, 3 }); 
 
 		
@@ -99,7 +100,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 		if (mat.map_Kd != "")
 		{
 			
-			objectData[m + materialStart - padd].texture = manager.getTexture(mat.map_Kd.c_str());
+			objectData[m + materialStart - padd].texture = manager.getData(mat.map_Kd.c_str());
 
 		}
 		
@@ -146,9 +147,11 @@ void GameObject::initialize()
 	//timeUniformLocation = glGetUniformLocation(sp.id, "u_time");
 }
 
-void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp)
+
+
+void GameObject::loadPtn323(const LoadedIndexModel &model, AssetManager<Texture> *manager)
 {
-	this->sp = sp;
+	
 	//initialize();
 
 	std::vector<float> dataForModel;
@@ -176,6 +179,7 @@ void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp)
 	ib = indexBuffer(indicesForModel.data(), indicesForModel.size() * sizeof(unsigned int));
 	va = std::move(vertexAttribute{ 3, 2, 3 });
 
+
 	if(model.m.LoadedMaterials.size()>0)
 	{
 	
@@ -184,9 +188,16 @@ void GameObject::loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp)
 		material.ks = glm::vec3(model.m.LoadedMaterials[0].Ks.X, model.m.LoadedMaterials[0].Ks.Y, model.m.LoadedMaterials[0].Ks.Z);
 		material.shiny = model.m.LoadedMaterials[0].Ns;
 		if (material.shiny == 0) { material.shiny = 1; }
+
+		if (model.m.LoadedMaterials[0].map_Kd != "")
+		{
+
+			texture = manager->getData(model.m.LoadedMaterials[0].map_Kd.c_str());
+
+		}
 	}
-	
-	std::cout << "\n material file name: " <<model.m.LoadedMaterials[0].name <<" "<<model.m.LoadedMaterials.size();
+
+	//std::cout << "\n material file name: " <<model.m.LoadedMaterials[0].name <<" "<<model.m.LoadedMaterials.size();
 }
 
 /// may be deprecated
@@ -268,8 +279,27 @@ void GameObject::draw()
 	} //sets the world to view matrix;
 
 	
-		material.bind(*sp);
-		
+	material.bind(*sp);
+	
+	if (texture.id)
+	{
+		texture.bind();
+		sp->uniformi("u_sampl", 0);
+		GLuint temp = sp->getSoubRutineLocation("p_withT");
+		if (temp != GL_INVALID_INDEX)
+		{
+			glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &temp);
+		}
+	}
+	else
+	{
+		GLuint temp = sp->getSoubRutineLocation("p_withoutT");
+		if (temp != GL_INVALID_INDEX)
+		{
+			glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &temp);
+		}
+	}
+
 	sp->bind();
 	vb.bind();
 	ib.bind();
@@ -302,9 +332,15 @@ void GameObject::draw()
 
 #endif //ALLOCA_OPTIMISATIONS ^
 
-	
+	if(lights != nullptr)
+	{
+		lights->bind(*sp);
+	}
 	
 	va.bindForInstances();
+
+	
+	
 
 	glDrawElementsInstanced(GL_TRIANGLES, ib.size / sizeof(int), GL_UNSIGNED_INT, 0, instances.size());
 
@@ -314,6 +350,30 @@ void GameObject::pushElement(glm::mat4 matrix)
 {
 	instances.push_back(ObjectPosition(matrix));
 	dataTodraw.recreateData(0, sizeof(glm::mat4)*instances.size() * 2);
+}
+
+void GameObject::pushElement(glm::vec3 position)
+{
+	pushElement(glm::translate(position));
+}
+
+void GameObject::pushElement(glm::vec3 position, glm::vec3 rotation)
+{
+	
+	auto objectToWorldMatrix = glm::rotate(glm::translate(position), glm::radians(rotation.x), glm::vec3(1, 0, 0)) *
+		glm::rotate(glm::radians(rotation.y), glm::vec3(0, 1, 0)) *
+		glm::rotate(glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	pushElement(objectToWorldMatrix);
+	
+		
+}
+
+void GameObject::pushElement(glm::vec3 position, glm::vec3 rotation, float scale)
+{
+	auto objectToWorldMatrix = glm::scale(glm::rotate(glm::translate(position), glm::radians(rotation.x), glm::vec3(1, 0, 0)) *
+		glm::rotate(glm::radians(rotation.y), glm::vec3(0, 1, 0)) *
+		glm::rotate(glm::radians(rotation.z), glm::vec3(0, 0, 1)), {scale, scale, scale});
+	pushElement(objectToWorldMatrix);
 }
 
 void GameObject::deleteElement(int index)
@@ -327,7 +387,7 @@ void GameObject::deleteElement(int index)
 void GameObject::cleanup()
 {
 	instances.clear();
-	gpuCleanup();
+	//gpuCleanup();
 
 	dataTodraw.cleanup();
 	initialize();
@@ -399,7 +459,7 @@ void ComplexObject::draw()
 	} //sets the world to view matrix;
 	
 	
-
+	//todo ? only in textures ??
 	sp->uniformi("u_sampl", 0);
 
 	for(unsigned int m=0; m<objectData.size(); m++)
@@ -453,6 +513,29 @@ void ComplexObject::pushElement(glm::mat4 matrix)
 	dataTodraw.recreateData(0, sizeof(glm::mat4)*instances.size() * 2);
 }
 
+void ComplexObject::pushElement(glm::vec3 position)
+{
+	pushElement(glm::translate(position));
+}
+
+void ComplexObject::pushElement(glm::vec3 position, glm::vec3 rotation)
+{
+
+	auto objectToWorldMatrix = glm::rotate(glm::translate(position), glm::radians(rotation.x), glm::vec3(1, 0, 0)) *
+		glm::rotate(glm::radians(rotation.y), glm::vec3(0, 1, 0)) *
+		glm::rotate(glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	pushElement(objectToWorldMatrix);
+
+}
+
+void ComplexObject::pushElement(glm::vec3 position, glm::vec3 rotation, float scale)
+{
+	auto objectToWorldMatrix = glm::scale(glm::rotate(glm::translate(position), glm::radians(rotation.x), glm::vec3(1, 0, 0)) *
+		glm::rotate(glm::radians(rotation.y), glm::vec3(0, 1, 0)) *
+		glm::rotate(glm::radians(rotation.z), glm::vec3(0, 0, 1)), { scale, scale, scale });
+	pushElement(objectToWorldMatrix);
+}
+
 void ComplexObject::deleteElement(int index)
 {
 	instances.erase(instances.begin() + index);
@@ -469,7 +552,7 @@ void ComplexObject::cleanup()
 {
 	instances.clear();
 
-	gpuCleanup();
+	//gpuCleanup();
 }
 
 void ComplexObject::gpuCleanup()
@@ -535,7 +618,7 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 
 #ifdef ALLOCA_OPTIMISATIONS
 				btVector3 *temp = (btVector3*)alloca(sizeof(btVector3) * size);
-#elif
+#else
 				btVector3 *temp = new btVector3[size];
 #endif // ALLOCA_OPTIMISATIONS
 
@@ -680,8 +763,10 @@ void PhisicalObject::draw()
 
 }
 
-void PhisicalObject::pushElement(glm::vec3 position)
+void PhisicalObject::pushElement(glm::vec3 position, glm::vec3 rotation)
 {
+	rotation = glm::radians(rotation);
+
 	/*
 	btTransform t;
 	t.setIdentity();
@@ -712,6 +797,7 @@ void PhisicalObject::pushElement(glm::vec3 position)
 		btTransform t;
 		t.setIdentity();
 		t.setOrigin({ position.x, position.y, position.z });
+		t.setRotation({ rotation.x, rotation.y, rotation.z });
 		btVector3 inertia = { 0,0,0 };
 		((btCompoundShape*)collisionShape)->calculatePrincipalAxisTransform(masses, t, inertia);
 #else // ALLOCA_OPTIMISATIONS
@@ -724,6 +810,7 @@ void PhisicalObject::pushElement(glm::vec3 position)
 		btTransform t;
 		t.setIdentity();
 		t.setOrigin({ position.x, position.y, position.z });
+		t.setRotation({ rotation.x, rotation.y, rotation.z });
 		btVector3 inertia = { 0,0,0 };
 		((btCompoundShape*)collisionShape)->calculatePrincipalAxisTransform(masses, t, inertia);
 		delete[] masses;
@@ -735,7 +822,8 @@ void PhisicalObject::pushElement(glm::vec3 position)
 
 		t.setIdentity();
 		t.setOrigin({ position.x, position.y, position.z});
-		
+		t.setRotation({ rotation.x, rotation.y, rotation.z });
+
 
 		btMotionState *motion = new btDefaultMotionState(t);
 		btRigidBody *body = new btRigidBody(mass, motion, collisionShape, inertia);
@@ -754,6 +842,7 @@ void PhisicalObject::pushElement(glm::vec3 position)
 		btTransform t;
 		t.setIdentity();
 		t.setOrigin({ position.x, position.y, position.z });
+		t.setRotation({ rotation.x, rotation.y, rotation.z });
 
 		btVector3 inertia = { 0, 0, 0 };
 	
@@ -833,13 +922,12 @@ void PhisicalObject::cleanup()
 		deleteElement(i);
 	}
 
-	if(collisionShape)
-	{
-		deleteCollisionShape();
+	//if(collisionShape)
+	//{
+	//	deleteCollisionShape();
 		//todo implement
-	}
+	//}
 
-	gpuCleanup();
 	dataTodraw.cleanup();
 	initialize();
 }
@@ -850,7 +938,9 @@ void PhisicalObject::gpuCleanup()
 	{
 		i.ib.cleanup();
 		i.vb.cleanup();
+		i.va.attributes.clear();
 	}
+
 	objectData.clear();
 }
 

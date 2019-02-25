@@ -21,20 +21,24 @@ enum Commands
 	ambience,
 	diffuse,
 	specular,
-	id
+	id,
+	scale,
+	mass,
 };
 
 struct generalObjectData
 {
 	std::string name = "";
 	int type = 0;
-	glm::vec3 position;
-	glm::vec3 rotation;
-	glm::vec3 ka;
-	glm::vec3 kd;
-	glm::vec3 ks;
+	glm::vec3 position = { 0.f ,0.f ,0.f };
+	glm::vec3 rotation = { 0.f ,0.f ,0.f };
+	glm::vec3 ka = { 0.f ,0.f ,0.f };
+	glm::vec3 kd = { 0.f ,0.f ,0.f };
+	glm::vec3 ks = { 0.f ,0.f ,0.f };
 	float strength = 0;
 	float ambienceExponent = 1;
+	float scale = 1.f;
+	float mass = 0;
 	int id = 0;
 };
 
@@ -86,10 +90,15 @@ struct KeyPair
 		}		
 	}
 
+	T &getElementById(int id)
+	{
+		return elements[getPositionById(id)];
+	}
+
 	void eraseVectors()
 	{
-		elements.erase();
-		key.erase();
+		elements.clear();
+		key.clear();
 	}
 };
 
@@ -109,6 +118,14 @@ public:
 
 	ShaderProgram *sp = nullptr;
 	Camera *camera = nullptr;
+	LightContext *lights = nullptr;
+	btDynamicsWorld *world = nullptr;
+
+	void initialize(ShaderProgram *sp, Camera *camera, LightContext * lights, btDynamicsWorld *world, AssetManager<Texture> *textureManager, AssetManager<LoadedIndexModel> *modelManager)
+	{
+		this->sp = sp; this->camera = camera;	this->lights = lights; this->world = world;
+		this->textureManager = textureManager; this->modelManager = modelManager;
+	}
 
 	void load(const char *file);
 	void drawAll();

@@ -108,16 +108,18 @@ public:
 	indexBuffer ib;
 	ShaderProgram *sp = nullptr;
 	Camera *camera = nullptr;
-
-
+	LightContext *lights = nullptr;
+	Texture texture = 0;
 
 	GameObject() { initialize(); }
 	GameObject(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram *sp, Camera *camera = nullptr) : vb(vb), va(va), ib(ib), sp(sp), camera(camera) { initialize(); };
+	GameObject(ShaderProgram *sp, Camera *camera, LightContext *lights):sp(sp), camera(camera), lights(lights) { initialize(); }
+	
 
 	///just a level of abstractization that allows the user to pass both a indexed model and a file name
 	//GameObject(LoadedIndexModel &model, ShaderProgram sp, Camera *c = nullptr);
 
-	void loadPtn323(const LoadedIndexModel &model, ShaderProgram *sp);
+	void loadPtn323(const LoadedIndexModel &model, AssetManager<Texture> *manager);
 	void loadPcn333(const LoadedIndexModel &model, ShaderProgram *sp);
 	void setData(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram *sp, Camera *camera = nullptr);
 
@@ -131,6 +133,9 @@ public:
 
 	void draw();
 	void pushElement(glm::mat4 matrix = glm::mat4(0));
+	void pushElement(glm::vec3 position);
+	void pushElement(glm::vec3 position, glm::vec3 rotation);
+	void pushElement(glm::vec3 position, glm::vec3 rotation, float scale);
 	void deleteElement(int index);
 	
 
@@ -141,6 +146,7 @@ public:
 	{
 		cleanup();
 		gpuCleanup();
+		dataTodraw.cleanup();
 	}
 };
 
@@ -168,6 +174,9 @@ public:
 
 	void draw();
 	void pushElement(glm::mat4 matrix = glm::mat4(0));
+	void pushElement(glm::vec3 position);
+	void pushElement(glm::vec3 position, glm::vec3 rotation);
+	void pushElement(glm::vec3 position, glm::vec3 rotation, float scale);
 	void deleteElement(int index); //todo test
 	ObjectPosition &getInstance(int index) { return instances[index]; }
 	void appendObject(const LoadedIndexModel &model, AssetManager<Texture> &manager ,const glm::vec3 &padding = { 0, 0, 0 }, const char* collisionIdentifierName = "COLLISION");
@@ -178,6 +187,7 @@ public:
 	{
 		cleanup();
 		gpuCleanup();
+		dataTodraw.cleanup();
 	}
 };
 
@@ -214,7 +224,7 @@ public:
 	void loadCollisionBox(const LoadedIndexModel &model, const char* collisionIdentifierName = "COLLISION");
 
 	void draw();
-	void pushElement(glm::vec3 position = {0,0,0});
+	void pushElement(glm::vec3 position = { 0,0,0 }, glm::vec3 rotation = {0,0,0});
 	void deleteElement(unsigned int index); //todo test
 	
 	void setElementPosition(int index, glm::vec3 position);
@@ -234,5 +244,6 @@ public:
 		cleanup();
 		deleteCollisionShape();
 		gpuCleanup();
+		dataTodraw.cleanup();
 	}
 };

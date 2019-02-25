@@ -23,7 +23,7 @@ void Texture::create(const char * name)
 	sf::Image t;
 	if(!t.loadFromFile(name))
 	{
-		wlog("error loading ", name);
+		elog("error loading ", name);
 		id = 0;
 	}
 	else 

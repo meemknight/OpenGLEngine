@@ -48,50 +48,60 @@ int parseCommand(char *line, char *& endPos)
 		return simple;
 	}
 	else
-		if (strcmp(line, "@complex") == 0)
-		{
-			return complex;
-		}
-		else
-			if (strcmp(line, "@phisical") == 0)
-			{
-				return phisical;
-			}
-			else
-				if (strcmp(line, "@light") == 0)
-				{
-					return light;
-				}
-				else
-					if (strcmp(line, "@position") == 0)
-					{
-						return position;
-					}
-					else
-						if (strcmp(line, "@rotation") == 0)
-						{
-							return rotation;
-						}
-						else
-							if (strcmp(line, "@strength") == 0)
-							{
-								return strength;
-							}
-							else
-								if (strcmp(line, "@exponent") == 0)
-								{
-									return exponent;
-								}
-								else
-									if (strcmp(line, "@id") == 0)
-									{
-										return id;
-									}
-								else
-								{
-									//elog("Parsing Error: ", line);
-									return none;
-								}
+	if (strcmp(line, "@complex") == 0)
+	{
+		return complex;
+	}
+	else
+	if (strcmp(line, "@phisical") == 0)
+	{
+		return phisical;
+	}
+	else
+	if (strcmp(line, "@light") == 0)
+	{
+		return light;
+	}
+	else
+	if (strcmp(line, "@position") == 0)
+	{
+		return position;
+	}
+	else
+	if (strcmp(line, "@rotation") == 0)
+	{
+		return rotation;
+	}
+	else
+	if (strcmp(line, "@strength") == 0)
+	{
+		return strength;
+	}
+	else
+	if (strcmp(line, "@exponent") == 0)
+	{
+		return exponent;
+	}
+	else
+	if (strcmp(line, "@scale") == 0)
+	{
+		return scale;
+	}
+	else
+	if (strcmp(line, "@mass") == 0)
+	{
+		return mass;
+	}
+	else
+	if (strcmp(line, "@id") == 0)
+	{
+		return id;
+	}
+	else
+	{
+		//not log here
+		return none;
+	}
 }
 
 std::vector<generalObjectData> loadMapData(const char *f)
@@ -100,6 +110,12 @@ std::vector<generalObjectData> loadMapData(const char *f)
 	data.reserve(50);
 
 	std::ifstream file(f);
+	if (!file.is_open())
+	{
+		elog("Error loading a map file: ", f, " , the name might be incorect");
+		return data;
+	}
+
 	char line[256];
 	char parsed[200];
 	while (file.getline(line, 256))
@@ -144,7 +160,6 @@ std::vector<generalObjectData> loadMapData(const char *f)
 				current = p;
 				break;
 			case position:
-
 				parseFloats(current, p, x, y, z);
 				current = p;
 				object.position = { x,y,z };
@@ -183,6 +198,16 @@ std::vector<generalObjectData> loadMapData(const char *f)
 				current = p;
 				object.id = i;
 				break;
+			case scale:
+				parseFloat(current, p, x);
+				current = p;
+				object.scale = x;
+				break;
+			case mass:
+				parseFloat(current, p, x);
+				current = p;
+				object.mass= x;
+				break;
 			default:
 				nextLine = 1;
 				break;
@@ -192,6 +217,8 @@ std::vector<generalObjectData> loadMapData(const char *f)
 	}
 
 	file.close();
+
+	//ilog("Loaded the ", f, "map");
 
 	return std::move(data);
 }

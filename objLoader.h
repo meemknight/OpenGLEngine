@@ -379,16 +379,23 @@ namespace objl
 		// or unable to be loaded return false
 		bool LoadFile(std::string Path)
 		{
-			ilog("Loaded: ", Path);
+			
 			// If the file is not an .obj file return false
 			if (Path.substr(Path.size() - 4, 4) != ".obj")
-				return false;
-
+			{
+				elog("Failed to load: ", Path, " the file must be a .obj file");
+				return 0;
+			}
 
 			std::ifstream file(Path);
 
 			if (!file.is_open())
-				return false;
+			{
+				elog("Failed to load: ", Path, " the name might be incorrect");
+				return 0;
+			}
+
+			ilog("Loaded: ", Path);
 
 			LoadedMeshes.clear();
 			LoadedVertices.clear();

@@ -15,26 +15,26 @@ class AssetManager
 {
 public:
 
-	std::map<const char*, T, CompareCStrings> loadedTextures;
+	std::map<const char*, T, CompareCStrings> loadedData;
 
 	///the load method can both be used as a way of getting loaded Textures and load textures
-	T getTexture(const char* name);
+	T getData(const char* name);
 
 	void cleanUp();
 };
 
 template <class T>
-T AssetManager<T>::getTexture(const char * name)
+T AssetManager<T>::getData(const char * name)
 {
-	auto temp = loadedTextures.find(name);
-	if (temp == loadedTextures.end())
+	auto temp = loadedData.find(name);
+	if (temp == loadedData.end())
 	{
 		//not found
 		T t(name);
 		size_t size = strlen(name) + 1;
 		char *c = new char[size];
 		memcpy(c, name, size);
-		loadedTextures[c] = t;
+		loadedData[c] = t;
 		return t;
 	}
 	else
@@ -46,10 +46,10 @@ T AssetManager<T>::getTexture(const char * name)
 template <class T>
 void AssetManager<T>::cleanUp()
 {
-	for (auto &i : loadedTextures)
+	for (auto &i : loadedData)
 	{
 		delete[] i.first;
 	}
-	loadedTextures.clear();
+	loadedData.clear();
 }
 
