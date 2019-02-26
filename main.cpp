@@ -29,7 +29,7 @@
 extern "C"
 {
 	//Enable dedicated graphics
-	__declspec(dllexport) DWORD NvOptimusEnablement = true;
+	//__declspec(dllexport) DWORD NvOptimusEnablement = true;
 	//__declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = true;
 }
 
@@ -251,7 +251,6 @@ int main()
 	tree.loadCollisionBox(modelManager.getData("objects//tree2.obj"));
 	tree.pushElement({20, 0, 0});
 	
-	LoadedIndexModel wood("objects//wood.obj");
 
 	
 	monkey.loadPtn323(modelManager.getData("objects//sphere.obj"), textureManager);
@@ -291,10 +290,6 @@ int main()
 	plan.setMaterial(Material::greyMaterial(1, 0.5f, 0.01f, 1));
 
 
-	
-	
-	
-
 	sf::Clock c;
 	sf::Clock fpsClock;
 	bool updatemouse = 0;
@@ -304,7 +299,6 @@ int main()
 	PhisicalObject sphereObject(&camera, &textureProgram, &light, world, nullptr/*new btSphereShape(1)*/, 10);
 	//sphereObject.loadCollisionBox("objects//fireMonkey.obj", nullptr);
 	//sphereObject.loadPtn323("objects//fireMonkey.obj", manager);
-	LoadedIndexModel fireMonkeyModel("objects//bloc.obj");
 	sphereObject.loadCollisionBox(modelManager.getData("objects//sphere.obj"), nullptr);
 	sphereObject.loadPtn323(modelManager.getData("objects//sphere.obj"), textureManager);
 	//sphereObject.appendObject(lmodel, manager, {0, 0, 3});
@@ -327,12 +321,13 @@ int main()
 	//sphereObject.getIndtance(0)->setFriction(0.5);
 
 	PhisicalObject house(&camera, &textureProgram, &light, world, nullptr, 0);
-	LoadedIndexModel houseModel("objects//level.obj");
-	house.loadCollisionBox(houseModel, 0);
-	house.loadPtn323(houseModel, textureManager);
 	
-	house.pushElement({ 0,0,0 });
+		LoadedIndexModel houseModel("objects//level.obj");
+		house.loadCollisionBox(houseModel, 0);
+		house.loadPtn323(houseModel, textureManager);
 
+		house.pushElement({ 0,0,0 });
+	
 
 	//sphereObject.getIndtance(0)->setCollisionFlags(sphereObject.getIndtance(0)->getCollisionFlags() |
 	//btCollisionObject::CF_KINEMATIC_OBJECT);
@@ -485,7 +480,7 @@ int main()
 		{
 			//window.setMouseCursorVisible(1);
 		}
-		 float maxSpeed = 22000 * deltatime;
+		 float maxSpeed = 30000 * deltatime;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 		{
 			//auto v = sphereObject.getIndtance(0)->getLinearVelocity();

@@ -24,11 +24,13 @@ enum Commands
 	id,
 	scale,
 	mass,
+	collision,
 };
 
 struct generalObjectData
 {
 	std::string name = "";
+	std::string collisionName = "COLLISION";
 	int type = 0;
 	glm::vec3 position = { 0.f ,0.f ,0.f };
 	glm::vec3 rotation = { 0.f ,0.f ,0.f };
@@ -53,9 +55,17 @@ struct KeyPair
 	int currentKeyCount = 0;
 
 	///this function returns the id
-	int PushElement(T e)
+	int PushElement(T &e)
 	{
-		elements.emplace_back(e);
+		elements.push_back(e);
+		currentKeyCount++;
+		key.push_back(currentKeyCount);
+		return currentKeyCount;
+	}
+
+	int PushElement(T &&e)
+	{
+		elements.push_back(e);
 		currentKeyCount++;
 		key.push_back(currentKeyCount);
 		return currentKeyCount;
@@ -63,7 +73,7 @@ struct KeyPair
 
 	int PushElementWithId(T e, int id)
 	{
-		elements.emplace_back(e);
+		elements.push_back(e);
 		key.push_back(id);
 		return currentKeyCount;
 	}

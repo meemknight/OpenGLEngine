@@ -34,11 +34,12 @@ T AssetManager<T>::getData(const char * name)
 		size_t size = strlen(name) + 1;
 		char *c = new char[size];
 		memcpy(c, name, size);
-		loadedData[c] = t;
-		return t;
+		loadedData[c] = std::move(t);
+		return loadedData[c];
 	}
 	else
 	{
+		//return loadedData[name];
 		return temp->second;
 	}
 }

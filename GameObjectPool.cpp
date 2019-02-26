@@ -12,7 +12,6 @@ void GameObjectPool::load(const char * file)
 	std::map <std::string, int> objectsNames;
 	std::map <std::string, int> complexObjectsNames;
 	std::map <std::string, int> phsicalObjectsNames;
-	std::map <std::string, int> lightsNames;
 
 
 	for(auto i: data)
@@ -39,7 +38,13 @@ void GameObjectPool::load(const char * file)
 				if (complexObjectsNames.find(i.name) == complexObjectsNames.end())
 				{
 					ComplexObject temp(camera, sp, lights);
-					temp.loadPtn323(modelManager->getData(i.name.c_str()), *textureManager);
+					if(i.collisionName == "")
+					{
+						temp.loadPtn323(modelManager->getData(i.name.c_str()), *textureManager, nullptr);
+					}else
+					{
+						temp.loadPtn323(modelManager->getData(i.name.c_str()), *textureManager, i.collisionName.c_str());
+					}
 					complexObjectsNames[i.name] = complexObjectVector.PushElement(temp);
 
 				}
@@ -50,24 +55,35 @@ void GameObjectPool::load(const char * file)
 			break;
 		case phisical:
 			{
+			
 				if (phsicalObjectsNames.find(i.name) == phsicalObjectsNames.end())
 				{
 					PhisicalObject temp(camera, sp, lights, world, nullptr, i.mass);
-					temp.loadPtn323(modelManager->getData(i.name.c_str()), *textureManager);
-					temp.loadCollisionBox(modelManager->getData(i.name.c_str()));
+					if(i.collisionName == "")
+					{
+						temp.loadPtn323(modelManager->getData(i.name.c_str()), *textureManager, nullptr);
+						temp.loadCollisionBox(modelManager->getData(i.name.c_str()), nullptr);
+
+					}else
+					{
+						temp.loadCollisionBox(modelManager->getData(i.name.c_str()), i.collisionName.c_str());
+						temp.loadPtn323(modelManager->getData(i.name.c_str()), *textureManager, i.collisionName.c_str());
+					}
 					phsicalObjectsNames[i.name] = phisicalObjectVector.PushElement(temp);
 	
 				}
-	
+			
 				phisicalObjectVector.getElementById(phsicalObjectsNames[i.name]).pushElement(i.position, i.rotation);
-	
+		
+
+
 		
 			}
 			break;
 		case light:
-			{
-		
-			}
+		{
+			lights->pushElement(Light({ i.position.x, i.position.y, i.position.z, 1 }, i.ka, i.kd, i.ks, i.strength));
+		}
 			break;
 		default:
 			elog("error in the map file: ", file, " unrecognised object type: ", i.type);

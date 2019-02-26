@@ -111,6 +111,7 @@ public:
 	LightContext *lights = nullptr;
 	Texture texture = 0;
 
+
 	GameObject() { initialize(); }
 	GameObject(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram *sp, Camera *camera = nullptr) : vb(vb), va(va), ib(ib), sp(sp), camera(camera) { initialize(); };
 	GameObject(ShaderProgram *sp, Camera *camera, LightContext *lights):sp(sp), camera(camera), lights(lights) { initialize(); }
@@ -219,8 +220,10 @@ public:
 	LightContext *lights = nullptr;
 	btDynamicsWorld *world = nullptr;
 	
+	unsigned char* triangeIndexBase = nullptr;
+	unsigned char* vertexBase = nullptr;
 
-	void loadPtn323(const LoadedIndexModel &model, AssetManager<Texture> &manager);
+	void loadPtn323(const LoadedIndexModel &model, AssetManager<Texture> &manager, const char* collisionIdentifierName = "COLLISION");
 	void loadCollisionBox(const LoadedIndexModel &model, const char* collisionIdentifierName = "COLLISION");
 
 	void draw();

@@ -366,10 +366,12 @@ namespace objl
 		{
 
 		}
+		/*
 		~Loader()
 		{
 			LoadedMeshes.clear();
 		}
+		*/
 
 		// Load a file into the loader
 		//

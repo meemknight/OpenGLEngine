@@ -1,3 +1,7 @@
+//////////////////////////////
+//Light.cpp
+//Copyright(c) 2019 Luta Vlad
+//////////////////////////////
 #include "Light.h"
 
 Light::Light()

@@ -574,13 +574,10 @@ void PhisicalObject::initialize()
 	dataTodraw.createData(0, 0);
 }
 
-void PhisicalObject::loadPtn323(const LoadedIndexModel & model, AssetManager<Texture> &manager)
+void PhisicalObject::loadPtn323(const LoadedIndexModel & model, AssetManager<Texture> &manager, const char* collisionIdentifierName)
 {
-
 	//initialize();
-
-	appendObject(model, manager);
-	
+	appendObject(model, manager, {0,0,0}, collisionIdentifierName);
 }
 
 ///collisionIdentifier can be a nullptr
@@ -657,10 +654,15 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 				mesh.m_numTriangles = model.m.LoadedMeshes[m].Indices.size() / 3;
 				mesh.m_numVertices = model.m.LoadedMeshes[m].Vertices.size();
 				
-				mesh.m_triangleIndexBase = (unsigned char*)&model.m.LoadedMeshes[m].Indices[0];
+				triangeIndexBase = new unsigned char[model.m.LoadedMeshes[m].Indices.size() * sizeof(model.m.LoadedMeshes[m].Indices[0])];
+				memcpy(triangeIndexBase, (void*)&model.m.LoadedMeshes[m].Indices[0], model.m.LoadedMeshes[m].Indices.size() * sizeof(model.m.LoadedMeshes[m].Indices[0]));
+				mesh.m_triangleIndexBase = triangeIndexBase;
 				mesh.m_triangleIndexStride = sizeof(model.m.LoadedMeshes[m].Indices[0]) * 3;
-				
-				mesh.m_vertexBase = (unsigned char*)&model.m.LoadedMeshes[m].Vertices[0];
+
+
+				vertexBase = new unsigned char[model.m.LoadedMeshes[m].Vertices.size() * sizeof(model.m.LoadedMeshes[m].Vertices[0])];
+				memcpy(vertexBase, (unsigned char*)&model.m.LoadedMeshes[m].Vertices[0], model.m.LoadedMeshes[m].Vertices.size() * sizeof(model.m.LoadedMeshes[m].Vertices[0]));
+				mesh.m_vertexBase = vertexBase;
 				mesh.m_vertexStride = sizeof(model.m.LoadedMeshes[m].Vertices[0]);
 
 				triangle->addIndexedMesh(mesh);
@@ -946,6 +948,18 @@ void PhisicalObject::gpuCleanup()
 
 void PhisicalObject::deleteCollisionShape()
 {
+	if(triangeIndexBase)
+	{
+		delete[] triangeIndexBase;
+		triangeIndexBase = nullptr;
+	}
+
+	if(vertexBase)
+	{
+		delete[] vertexBase;
+		vertexBase = nullptr;
+	}
+
 	if(collisionShape->isCompound())
 	{
 		size_t loadedCollisionBoxes = ((btCompoundShape*)collisionShape)->getNumChildShapes();

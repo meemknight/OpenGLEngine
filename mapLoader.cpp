@@ -7,6 +7,13 @@
 char* parseName(char *line, char *& endPos)
 {
 	line += 1;
+
+	if(line[0] == '\"')
+	{
+		endPos = line + 1;
+		return 0;
+	}
+
 	auto c = strtok(line, "\"");
 	endPos = line + strlen(line) + 1;
 	return c;
@@ -98,6 +105,11 @@ int parseCommand(char *line, char *& endPos)
 		return id;
 	}
 	else
+	if (strcmp(line, "@collision") == 0)
+	{
+		return collision;
+	}
+	else
 	{
 		//not log here
 		return none;
@@ -130,6 +142,11 @@ std::vector<generalObjectData> loadMapData(const char *f)
 		bool nextLine = 0;
 		while (!nextLine)
 		{
+			if(current[0] == '\0')
+			{
+				break;
+			}
+
 			float x = 0, y = 0, z = 0;
 			char *p;
 			int n = parseCommand(current, p);
@@ -208,6 +225,20 @@ std::vector<generalObjectData> loadMapData(const char *f)
 				current = p;
 				object.mass= x;
 				break;
+			case collision:
+				{
+					auto x = parseName(current, p);
+					if (x == 0)
+					{
+						object.collisionName = "";
+					}
+					else
+					{
+						object.collisionName = x;
+					}
+					current = p;
+					break;
+				}
 			default:
 				nextLine = 1;
 				break;

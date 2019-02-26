@@ -1,3 +1,7 @@
+//////////////////////////////
+//Light.h
+//Copyright(c) 2019 Luta Vlad
+//////////////////////////////
 #pragma once
 #include <glm/glm.hpp>
 #include <vector>
@@ -22,6 +26,7 @@ public:
 	glm::vec3 specular;
 
 	///used to determine the distance to shine,   0 means infinite distance
+	/// a big number = a small light
 	float strength; 
 
 	static Light SunLight() {return Light(glm::vec4{ 0, 0, 0, 1 }, glm::vec3{ 1, 1, 1 }, glm::vec3{ 1, 1, 1 }, glm::vec3{1, 1, 1}, 0.0);}
