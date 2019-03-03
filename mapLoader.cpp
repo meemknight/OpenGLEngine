@@ -108,6 +108,10 @@ int parseCommand(char *line, char *& endPos)
 	if (strcmp(line, "@collision") == 0)
 	{
 		return collision;
+	}else
+	if (strcmp(line, "@unique") == 0)
+	{
+		return unique;
 	}
 	else
 	{
@@ -149,6 +153,7 @@ std::vector<generalObjectData> loadMapData(const char *f)
 
 			float x = 0, y = 0, z = 0;
 			char *p;
+			int i = 0;
 			int n = parseCommand(current, p);
 			current = p;
 			switch (n)
@@ -210,7 +215,6 @@ std::vector<generalObjectData> loadMapData(const char *f)
 				object.ks = { x,y,z };
 				break;
 			case id:
-				int i;
 				parseint(current, p, i);
 				current = p;
 				object.id = i;
@@ -239,17 +243,21 @@ std::vector<generalObjectData> loadMapData(const char *f)
 					current = p;
 					break;
 				}
+			case unique:			
+				object.unique = 1;
+				break;
 			default:
 				nextLine = 1;
 				break;
 			}
 		}
+		ZeroMemory(line, sizeof(line));
 		data.emplace_back(object);
 	}
 
 	file.close();
 
-	//ilog("Loaded the ", f, "map");
+	//glog("Loaded the ", f, "map");
 
 	return std::move(data);
 }

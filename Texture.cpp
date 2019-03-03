@@ -28,7 +28,7 @@ void Texture::create(const char * name)
 	}
 	else 
 	{
-		ilog("Loaded: ", name);
+		glog("Loaded: ", name);
 		t.flipVertically();
 
 		glGenTextures(1, &id);

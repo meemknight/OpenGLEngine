@@ -201,6 +201,8 @@ int main()
 	gameObjectPool.initialize(&textureProgram, &camera, &light, world, &textureManager, &modelManager);
 	gameObjectPool.load("maps//map1.txt");
 
+	gameObjectPool.phisicalObjectVector.getElementById(250).objectData[0].material = Material::ruby();
+
 	//GameObject tempObject(&textureProgram, &camera, &light);
 	//tempObject.loadPtn323()
 

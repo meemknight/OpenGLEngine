@@ -25,6 +25,7 @@ enum Commands
 	scale,
 	mass,
 	collision,
+	unique,
 };
 
 struct generalObjectData
@@ -42,6 +43,7 @@ struct generalObjectData
 	float scale = 1.f;
 	float mass = 0;
 	int id = 0;
+	bool unique = 0;
 };
 
 std::vector<generalObjectData> loadMapData(const char *f);
@@ -75,7 +77,7 @@ struct KeyPair
 	{
 		elements.push_back(e);
 		key.push_back(id);
-		return currentKeyCount;
+		return id;
 	}
 
 	T RemoveElement(int index)

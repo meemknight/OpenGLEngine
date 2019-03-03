@@ -397,7 +397,7 @@ namespace objl
 				return 0;
 			}
 
-			ilog("Loaded: ", Path);
+			glog("Loaded: ", Path);
 
 			LoadedMeshes.clear();
 			LoadedVertices.clear();
