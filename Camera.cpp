@@ -43,7 +43,18 @@ void Camera::move(glm::vec3 m)
 
 glm::mat4 Camera::getObjectToWorld()
 {
-	return glm::lookAt(position, position + viewDirection, upPositipon);
+	if (!firstPersonCamera)
+	{
+		return glm::lookAt(position, position + viewDirection, upPositipon);
+	}else
+	{
+		glm::vec3 pos = playerPosition;
+		pos.y += distanceFromPlayer * sin(cameraAngle);
+		float distanceProjection = distanceFromPlayer * cos(cameraAngle);
+		pos.x += sin(topDownAngle) * distanceProjection;
+		pos.z += cos(topDownAngle) * distanceProjection;
+		return glm::lookAt(pos, playerPosition, upPositipon);
+	}
 }
 
 glm::mat4 Camera::getProjectionViewMatrix()
@@ -88,10 +99,12 @@ void Camera::mouseUpdate(const glm::vec2 & pos)
 	//printf("%+f6 %+f6 %+f6 ", position.x, position.y, position.z);
 }
 
+/*
 void Camera::move(const glm::vec3 & move)
 {
 #pragma error theFunctionIsNotImplemented //todo implement this
 }
+*/
 
 void Camera::moveUp(float speed)
 {

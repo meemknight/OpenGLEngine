@@ -114,7 +114,8 @@ int main()
 #ifdef _DEBUG
 	glEnable(GL_DEBUG_OUTPUT);
 #endif
-	//glEnable(GL_CULL_FACE);
+	
+	glEnable(GL_CULL_FACE);
 
 
 
@@ -187,6 +188,12 @@ int main()
 
 	camera.position = { 0, 3, -4 };
 	camera.viewDirection = { 0, 0, 1 };
+	///
+	camera.firstPersonCamera = 1;
+	camera.distanceFromPlayer = 7;
+	camera.cameraAngle = glm::radians(45.f);
+	camera.topDownAngle = 3.141;
+
 
 	ShaderProgram program(VertexShader("vertex.vert"), FragmentShader("fragment.frag"));
 	ShaderProgram normalProgram(VertexShader("vertn.vert"), FragmentShader("fragn.frag"));
@@ -230,7 +237,7 @@ int main()
 	
 
 	light.pushElement(Light::roomLight());
-	light.pushElement(Light::roomLight());
+	light.pushElement(Light::roomLight(0.3));
 	//light.pushElement(Light::SunLight());
 	//light.getAmbience(0)  = glm::vec3(0.5, 0.1, 0.1);
 	//light.getDiffuseness(0)  = glm::vec3(1.f, 0.4, 0.4);
@@ -238,6 +245,7 @@ int main()
 	//light.getStrength(0) = 0.0003;
 	light.getPosition(1).y = 20;
 	light.getStrength(1) = 0.0003;
+
 
 	//ComplexObject o2;
 	//o2.camera = &camera;
@@ -266,7 +274,7 @@ int main()
 	//monkey.objectData[0].material.ka = { 0.1, 0.1, 0.1 };
 	//monkey.objectData[0].material.ks = { 0, 0, 0 };
 	//monkey.objectData[0].texture = manager.getTexture("textures//porcelain.jpg");
-
+	
 
 
 	monkey.pushElement(glm::mat4(0));
@@ -274,11 +282,6 @@ int main()
 	//monkey.getInstance(0).setScale(12);
 	monkey.getInstance(0).setRotation(0, 0, 0);
 
-
-	GameObject testObject(&textureProgram, &camera, &light);
-	testObject.loadPtn323(modelManager.getData("objects//simple.obj"), &textureManager);
-	testObject.pushElement(glm::mat4(0));
-	testObject.getInstance(0).setPosition(-10, 3, 0);
 
 	GameObject lightObject;
 	lightObject.setData(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
@@ -322,13 +325,7 @@ int main()
 	
 	//sphereObject.getIndtance(0)->setFriction(0.5);
 
-	PhisicalObject house(&camera, &textureProgram, &light, world, nullptr, 0);
 	
-		LoadedIndexModel houseModel("objects//level.obj");
-		house.loadCollisionBox(houseModel, 0);
-		house.loadPtn323(houseModel, textureManager);
-
-		house.pushElement({ 0,0,0 });
 	
 
 	//sphereObject.getIndtance(0)->setCollisionFlags(sphereObject.getIndtance(0)->getCollisionFlags() |
@@ -461,9 +458,24 @@ int main()
 			lightPosition.x -= lightSpeed * deltatime;
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
 		{
-		
+			camera.cameraAngle += glm::radians(25.f) * deltatime;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
+		{
+			camera.cameraAngle -= glm::radians(25.f) * deltatime;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6))
+		{
+			camera.topDownAngle += glm::radians(45.f) * deltatime;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
+		{
+			camera.topDownAngle -= glm::radians(45.f) * deltatime;
 		}
 
 		if (updatemouse)
@@ -584,7 +596,20 @@ int main()
 		void* tempp = &(monkey.instances[0]._objectToWorldMatrix);
 		tr.getOpenGLMatrix((float*)tempp);
 
+		glm::vec3 playerPos;
+		//btTransform playerTransform;
+		//playerTransform = sphereObject.getIndtance(0)->getWorldTransform();
+		//sphereObject.getIndtance(0)->setWorldTransform(playerTransform);
+		//playerPos = { playerTransform.getOrigin().x(), playerTransform.getOrigin().y(), playerTransform.getOrigin().z() };
 		
+		auto pos = sphereObject.getIndtance(0)->getCenterOfMassPosition();
+		playerPos = { pos.getX(), pos.getY(), pos.getZ() };
+
+		camera.playerPosition = playerPos;
+		sphereObject.draw();
+
+		
+
 		monkey.draw();
 
 
@@ -598,10 +623,6 @@ int main()
 		//tree.pushElement({ 20, 0, 0 });
 
 		
-		sphereObject.draw();
-
-		house.draw();
-
 		//plan.sp->uniform("u_lightPosition", light.getPosition(0).x, light.getPosition(0).y, light.getPosition(0).z, light.getPosition(0).w);
 		plan.draw();
 
@@ -616,24 +637,39 @@ int main()
 		lightObject.getInstance(0).setScale(0.1f);
 
 		lightObject.draw();
+
+		world->stepSimulation(deltatime);
+		window.display();
+		
+
 		//lightObject.gpuCleanup();
 		//.cleanup();
 		//.setData(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
 		//.pushElement(glm::mat4(0));
 
-		//testObject.draw();
-
-		//testObject.cleanup();
-		//testObject.gpuCleanup();
-		//testObject.loadPtn323(modelManager.getData("objects//simple.obj"), &textureManager);
-		//testObject.pushElement(glm::mat4(0));
-		//testObject.getInstance(0).setPosition(-10, 3, 0);
-
 
 		//world->debugDrawWorld();
-		window.display();
-		world->stepSimulation(deltatime);
+		/*
+		window.pushGLStates();
+		//glDisable(GL_DEPTH_TEST);
+		//window.resetGLStates();
+		//glViewport(0, 0, width, height);
+		sf::RectangleShape s({ 100,100 });
+		
+		s.setFillColor(sf::Color::Green);
+		window.draw(s);
 
+		window.popGLStates();
+		//glEnable(GL_DEPTH_TEST);
+		*/
+		/*window.pushGLStates();
+		sf::Text text;
+		text.setString("lol");
+		text.setFillColor(sf::Color(255, 255, 255, 170));
+		text.setPosition(250.f, 450.f);
+		window.draw(text);
+		window.popGLStates();
+		*/
 
 		//draw opengl here
 
@@ -646,19 +682,13 @@ int main()
 		
 		//glDisable(GL_DEPTH_TEST);
 		
-		//window.pushGLStates();
-		////window.resetGLStates();
-		//sf::RectangleShape s({ 100,100 });
-		//s.setFillColor(sf::Color::Green);
-		//window.draw(s);
-		
-		//window.popGLStates();
-		//glEnable(GL_DEPTH_TEST);
+	
 		//window.display();
 		
 
 	}
 
+	/*
 	sphereObject.cleanup();
 
 	world->removeCollisionObject(&body);
@@ -677,38 +707,8 @@ int main()
 
 	textureManager.cleanUp();
 	modelManager.cleanUp();
-
+	*/
 	return 0;
 }
-
-
-
-
-/*		vb.bind();
-		ib.bind();
-		va.bind();
-		glBindBuffer(GL_ARRAY_BUFFER, varyId);
-		glVertexAttribPointer(2, 4, GL_FLOAT, 0, sizeof(mat4), (void*)(sizeof(float) * 0));
-		glVertexAttribPointer(3, 4, GL_FLOAT, 0, sizeof(mat4), (void*)(sizeof(float) * 4));
-		glVertexAttribPointer(4, 4, GL_FLOAT, 0, sizeof(mat4), (void*)(sizeof(float) * 8));
-		glVertexAttribPointer(5, 4, GL_FLOAT, 0, sizeof(mat4), (void*)(sizeof(float) * 12));
-		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
-		glEnableVertexAttribArray(4);
-		glEnableVertexAttribArray(5);
-		glVertexAttribDivisor(2, 1);
-		glVertexAttribDivisor(3, 1);
-		glVertexAttribDivisor(4, 1);(5, 1);*/
-
-
-		//mat4 modelTransform2 = glm::translate(mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), glm::vec3(-3.0f, 0.0f, -3.0f));
-			//mat4 rotationMatrix2 = glm::rotate(modelTransform2, glm::radians(75.f), glm::vec3(1.0f, 1.0f, 1));
-
-			//mat4 modelTransform = glm::translate(glm::vec3(0.0f, 0.0f, -3.0f));
-			//mat4 rotationMatrix = glm::rotate(modelTransform, glm::radians(30.f) , glm::vec3(0.0f, 1.0f, 0));
-
-			//mat4 modelTransform3 = glm::translate(mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), glm::vec3(-3.0f, 0.0f, 0.0f));
-			//mat4 rotationMatrix3 = glm::rotate(modelTransform3, glm::radians(20.f), glm::vec3(1.0f, 1.0f, 1));
-
 
 

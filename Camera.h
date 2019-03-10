@@ -10,12 +10,20 @@ public:
 	glm::vec3 viewDirection = { 0.f, 0.f, -1.f };
 	glm::vec3 upPositipon = { 0, 1, 0 };
 
+	glm::vec3 playerPosition = { 0,0,0 };
+	///this distance is only on the x and z axes
+	float distanceFromPlayer = 0;
+	float cameraAngle = 0;
+	float topDownAngle = 0;
+
 public:
 	glm::vec2 oldMousePosition;
 	float rSpeed = 0.5f;
 	float mSpeed = 0.05f;
 	
 	bool flyCamera = 1;
+	bool firstPersonCamera = 0;
+
 
 	struct
 	{
@@ -33,8 +41,11 @@ public:
 	glm::mat4 getObjectToWorld(); ///gets the object to world for the camera
 	glm::mat4 getProjectionViewMatrix(); /// gets the full view transform
 
+	
+
+	///uded for mouse moving
 	void mouseUpdate(const glm::vec2 &pos);
-	void move(const glm::vec3 &move);
+	//void move(const glm::vec3 &move);
 	void moveUp(float speed);
 	void moveDown(float speed);
 	void moveLeft(float speed);
@@ -44,4 +55,3 @@ public:
 
 
 };
-
