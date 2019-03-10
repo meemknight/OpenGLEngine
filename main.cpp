@@ -184,14 +184,14 @@ int main()
 	LightContext light;
 
 	Camera camera(85.f, &width, &height, 0.01f, 1500.f);
-	camera.mSpeed = 16.0f;
+	//camera.mSpeed = 16.0f;
 
-	camera.position = { 0, 3, -4 };
-	camera.viewDirection = { 0, 0, 1 };
+	//camera.position = { 0, 3, -4 };
+	//camera.viewDirection = { 0, 0, 1 };
 	///
 	camera.firstPersonCamera = 1;
-	camera.distanceFromPlayer = 7;
-	camera.cameraAngle = glm::radians(45.f);
+	camera.distanceFromPlayer = 8;
+	camera.cameraAngle = glm::radians(25.f);
 	camera.topDownAngle = 3.141;
 
 
@@ -301,36 +301,39 @@ int main()
 	int frames = 0;
 	//window.setMouseCursorVisible(0);
 
-	PhisicalObject sphereObject(&camera, &textureProgram, &light, world, nullptr/*new btSphereShape(1)*/, 10);
-	//sphereObject.loadCollisionBox("objects//fireMonkey.obj", nullptr);
-	//sphereObject.loadPtn323("objects//fireMonkey.obj", manager);
-	sphereObject.loadCollisionBox(modelManager.getData("objects//sphere.obj"), nullptr);
-	sphereObject.loadPtn323(modelManager.getData("objects//sphere.obj"), textureManager);
-	//sphereObject.appendObject(lmodel, manager, {0, 0, 3});
+	PhisicalObject playerObject(&camera, &textureProgram, &light, world, nullptr/*new btSphereShape(1)*/, 10);
+	//playerObject.loadCollisionBox("objects//fireMonkey.obj", nullptr);
+	//playerObject.loadPtn323("objects//fireMonkey.obj", manager);
+	playerObject.loadCollisionBox(modelManager.getData("objects//sphere.obj"), nullptr);
+	playerObject.loadPtn323(modelManager.getData("objects//sphere.obj"), textureManager);
+	//playerObject.appendObject(lmodel, manager, {0, 0, 3});
 
-	//sphereObject.objectData[0].material = Material::emerald();
-	//sphereObject.objectData[0].texture = manager.getTexture("textures//cobble.jpg");
+	float playerAngle = 0;
+	float playerRotationSpeed = glm::radians(120.f);
 
-	sphereObject.rigidBodies.reserve(2);
+	//playerObject.objectData[0].material = Material::emerald();
+	//playerObject.objectData[0].texture = manager.getTexture("textures//cobble.jpg");
+
+	playerObject.rigidBodies.reserve(2);
 
 	
-	sphereObject.pushElement({ 1, 30 ,1 });
+	playerObject.pushElement({ 1, 30 ,1 });
 
 	for(int i =0; i< 20; i++)
 	{
-		//sphereObject.pushElement({ 1, 100 + i * 3 ,1 });
+		//playerObject.pushElement({ 1, 100 + i * 3 ,1 });
 	
 	}
 
 	
-	//sphereObject.getIndtance(0)->setFriction(0.5);
+	//playerObject.getIndtance(0)->setFriction(0.5);
 
 	
 	
 
-	//sphereObject.getIndtance(0)->setCollisionFlags(sphereObject.getIndtance(0)->getCollisionFlags() |
+	//playerObject.getIndtance(0)->setCollisionFlags(playerObject.getIndtance(0)->getCollisionFlags() |
 	//btCollisionObject::CF_KINEMATIC_OBJECT);
-	//sphereObject.getIndtance(0)->setActivationState(DISABLE_DEACTIVATION);
+	//playerObject.getIndtance(0)->setActivationState(DISABLE_DEACTIVATION);
 
 
 	window.setTitle((char*)glGetString(GL_RENDERER));
@@ -396,35 +399,35 @@ int main()
 			//updatemouse = 0;
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		{
-			camera.moveFront(deltatime);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		{
-			camera.moveBack(deltatime);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		{
-			camera.moveLeft(deltatime);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		{
-			camera.moveRight(deltatime);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-		{
-			camera.moveUp(deltatime);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
-		{
-			camera.moveDown(deltatime);
-		}
+		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		//{
+		//	camera.moveFront(deltatime);
+		//}
+		//
+		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		//{
+		//	camera.moveBack(deltatime);
+		//}
+		//
+		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		//{
+		//	camera.moveLeft(deltatime);
+		//}
+		//
+		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		//{
+		//	camera.moveRight(deltatime);
+		//}
+		//
+		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		//{
+		//	camera.moveUp(deltatime);
+		//}
+		//
+		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+		//{
+		//	camera.moveDown(deltatime);
+		//}
 
 		//
 		float lightSpeed = 4.0f;
@@ -468,15 +471,7 @@ int main()
 			camera.cameraAngle -= glm::radians(25.f) * deltatime;
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6))
-		{
-			camera.topDownAngle += glm::radians(45.f) * deltatime;
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
-		{
-			camera.topDownAngle -= glm::radians(45.f) * deltatime;
-		}
+		
 
 		if (updatemouse)
 		{
@@ -497,13 +492,14 @@ int main()
 		 float maxSpeed = 30000 * deltatime;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 		{
-			//auto v = sphereObject.getIndtance(0)->getLinearVelocity();
+			//auto v = playerObject.getIndtance(0)->getLinearVelocity();
 			//v.setZ(6);
-			//sphereObject.getIndtance(0)->setLinearVelocity(v);
-			sphereObject.getIndtance(0)->applyCentralForce({ 0,0,maxSpeed });
-			sphereObject.getIndtance(0)->activate(1);
+			//playerObject.getIndtance(0)->setLinearVelocity(v);
+			playerObject.getIndtance(0)->applyCentralForce({ 0,0,-maxSpeed * cos(playerAngle) });
+			playerObject.getIndtance(0)->applyCentralForce({ -maxSpeed * sin(playerAngle), 0, 0 });
+			playerObject.getIndtance(0)->activate(1);
 
-			//auto s = sphereObject.getIndtance(0)->getMotionState();
+			//auto s = playerObject.getIndtance(0)->getMotionState();
 			//btTransform t; 
 			//btVector3 move = { 0,0,0.006 };
 			//s->getWorldTransform(t);
@@ -514,13 +510,14 @@ int main()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
 		{
-			//auto v = sphereObject.getIndtance(0)->getLinearVelocity();
+			//auto v = playerObject.getIndtance(0)->getLinearVelocity();
 			//v.setZ(-6);
-			//sphereObject.getIndtance(0)->setLinearVelocity(v);
-			sphereObject.getIndtance(0)->applyCentralForce({ 0,0,-maxSpeed });
-			sphereObject.getIndtance(0)->activate(1);
+			//playerObject.getIndtance(0)->setLinearVelocity(v);
+			playerObject.getIndtance(0)->applyCentralForce({ 0,0,maxSpeed * cos(playerAngle) });
+			playerObject.getIndtance(0)->applyCentralForce({ maxSpeed * sin(playerAngle), 0, 0 });
+			playerObject.getIndtance(0)->activate(1);
 
-			//auto s = sphereObject.getIndtance(0)->getMotionState();
+			//auto s = playerObject.getIndtance(0)->getMotionState();
 			//btTransform t;
 			//btVector3 move = { 0,0,-0.006 };
 			//s->getWorldTransform(t);
@@ -531,52 +528,67 @@ int main()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
 		{
-			//auto v = sphereObject.getIndtance(0)->getLinearVelocity();
+			//auto v = playerObject.getIndtance(0)->getLinearVelocity();
 			//v.setX(6);
-			//sphereObject.getIndtance(0)->setLinearVelocity(v);
-			sphereObject.getIndtance(0)->applyCentralForce({ maxSpeed,0,0 });
-			sphereObject.getIndtance(0)->activate(1);
+			//playerObject.getIndtance(0)->setLinearVelocity(v);
+			
+			playerObject.getIndtance(0)->applyCentralForce({ -maxSpeed * cos(playerAngle),0,0 });
+			playerObject.getIndtance(0)->applyCentralForce({ 0,0, maxSpeed * sin(playerAngle) });
+			playerObject.getIndtance(0)->activate(1);
 
-			//auto s = sphereObject.getIndtance(0)->getMotionState();
+			//auto s = playerObject.getIndtance(0)->getMotionState();
 			//btTransform t;
 			//btVector3 move = { 0.006,0,0 };
 			//s->getWorldTransform(t);
 			//t.setOrigin(t.getOrigin() + move * deltatime);
 			//s->setWorldTransform(t);
+			
+
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
 		{
-			//auto v = sphereObject.getIndtance(0)->getLinearVelocity();
+			//auto v = playerObject.getIndtance(0)->getLinearVelocity();
 			//v.setX(-6);
-			//sphereObject.getIndtance(0)->setLinearVelocity(v);
-			sphereObject.getIndtance(0)->applyCentralForce({ -maxSpeed,0,0 });
-			sphereObject.getIndtance(0)->activate(1);
+			//playerObject.getIndtance(0)->setLinearVelocity(v);
+			
+			playerObject.getIndtance(0)->applyCentralForce({ maxSpeed * cos(playerAngle),0,0 });
+			playerObject.getIndtance(0)->applyCentralForce({ 0,0,maxSpeed * -sin(playerAngle) });
+			playerObject.getIndtance(0)->activate(1);
 
 
-			//auto s = sphereObject.getIndtance(0)->getMotionState();
+			//auto s = playerObject.getIndtance(0)->getMotionState();
 			//btTransform t;
 			//btVector3 move = { -0.006,0,0 };
 			//s->getWorldTransform(t);
 			//t.setOrigin(t.getOrigin() + move * deltatime);
 			//s->setWorldTransform(t);
+
 		}
 
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::T))
+		{
+			playerAngle += playerRotationSpeed * deltatime;
+		}
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::U))
+		{
+			playerAngle -= playerRotationSpeed * deltatime;
+		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
-			sphereObject.getIndtance(0)->applyCentralForce({ 0,maxSpeed*2,0 });
-			sphereObject.getIndtance(0)->activate(1);
+			playerObject.getIndtance(0)->applyCentralForce({ 0,maxSpeed*2,0 });
+			playerObject.getIndtance(0)->activate(1);
 		}
 
-		auto v = sphereObject.getIndtance(0)->getLinearVelocity();
+		auto v = playerObject.getIndtance(0)->getLinearVelocity();
 		const int maxVelocity = 6;
 		if (v.getZ() > maxVelocity) { v.setZ(maxVelocity); }
 		if (v.getZ() < -maxVelocity) { v.setZ(-maxVelocity); }
 		if (v.getX() > maxVelocity) { v.setX(maxVelocity); }
 		if (v.getX() < -maxVelocity) { v.setX(-maxVelocity); }
-		sphereObject.getIndtance(0)->setLinearVelocity(v);
+		playerObject.getIndtance(0)->setLinearVelocity(v);
 #pragma endregion
 
 		
@@ -598,16 +610,16 @@ int main()
 
 		glm::vec3 playerPos;
 		//btTransform playerTransform;
-		//playerTransform = sphereObject.getIndtance(0)->getWorldTransform();
-		//sphereObject.getIndtance(0)->setWorldTransform(playerTransform);
+		//playerTransform = playerObject.getIndtance(0)->getWorldTransform();
+		//playerObject.getIndtance(0)->setWorldTransform(playerTransform);
 		//playerPos = { playerTransform.getOrigin().x(), playerTransform.getOrigin().y(), playerTransform.getOrigin().z() };
 		
-		auto pos = sphereObject.getIndtance(0)->getCenterOfMassPosition();
+		auto pos = playerObject.getIndtance(0)->getCenterOfMassPosition();
 		playerPos = { pos.getX(), pos.getY(), pos.getZ() };
 
 		camera.playerPosition = playerPos;
-		sphereObject.draw();
-
+		camera.topDownAngle = playerAngle;
+		playerObject.draw();
 		
 
 		monkey.draw();
@@ -689,7 +701,7 @@ int main()
 	}
 
 	/*
-	sphereObject.cleanup();
+	playerObject.cleanup();
 
 	world->removeCollisionObject(&body);
 	delete body.getMotionState();

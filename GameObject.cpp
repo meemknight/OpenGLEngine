@@ -669,12 +669,16 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 			}
 		}
 
+		if (loadedCollisionBoxes == 0)
+		{
+			elog("no collisions detected");
+		}
 
 		collisionShape = new btBvhTriangleMeshShape(triangle, 1);
 		
 	
 	}
-
+	
 	
 	
 }
