@@ -17,7 +17,7 @@ public:
 
 	std::map<const char*, T, CompareCStrings> loadedData;
 
-	///the load method can both be used as a way of getting loaded Textures and load textures
+	///the load method can both be used as a way of getting loaded data and load data
 	T getData(const char* name);
 
 	void cleanUp();

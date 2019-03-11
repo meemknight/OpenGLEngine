@@ -201,6 +201,7 @@ int main()
 	ShaderProgram debugShader(VertexShader("debugShader.vert"), FragmentShader("debugShader.frag"));
 	
 	custumBulletdebuggClass debugDrawer(&debugShader ,&camera);
+
 	world->setDebugDrawer(&debugDrawer);
 	world->getDebugDrawer()->setDebugMode(btIDebugDraw::DebugDrawModes::DBG_DrawWireframe);
 
@@ -252,36 +253,6 @@ int main()
 	//o2.loadPtn323("objects//fireMonkey.obj", textureProgram, &manager);
 	//o2.pushElement();
 	//o2.getInstance(0).setPosition(0, 10, 0);
-
-	ComplexObject monkey(&camera, &textureProgram, &light);
-
-	PhisicalObject tree(&camera, &textureProgram, &light, world, nullptr, 10.f);
-
-	tree.loadPtn323(modelManager.getData("objects//tree2.obj"), textureManager);
-	tree.loadCollisionBox(modelManager.getData("objects//tree2.obj"));
-	tree.pushElement({20, 0, 0});
-	
-
-	
-	monkey.loadPtn323(modelManager.getData("objects//sphere.obj"), textureManager);
-
-	monkey.camera = &camera;
-	//monkey.setMaterial(Material::defaultMaterial());
-
-	//monkey.objectData[0].material = Material::emerald();
-	//monkey.objectData[1].material = Material::bronze();
-	//monkey.objectData[0].material = Material::greenPlastic();
-	//monkey.objectData[0].material.ka = { 0.1, 0.1, 0.1 };
-	//monkey.objectData[0].material.ks = { 0, 0, 0 };
-	//monkey.objectData[0].texture = manager.getTexture("textures//porcelain.jpg");
-	
-
-
-	monkey.pushElement(glm::mat4(0));
-	monkey.getInstance(0).setPosition(-6, 2, -6);
-	//monkey.getInstance(0).setScale(12);
-	monkey.getInstance(0).setRotation(0, 0, 0);
-
 
 	GameObject lightObject;
 	lightObject.setData(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
@@ -592,8 +563,6 @@ int main()
 #pragma endregion
 
 		
-
-
 		light.getPosition(0) = glm::vec4(lightPosition, 1);
 		//light.getPosition(1) = glm::vec4(lightPosition.x, lightPosition.y - 4, lightPosition.z, 1);		
 
@@ -604,36 +573,19 @@ int main()
 		//sphere.applyForce({ 0.2f*deltatime, 0, 0}, {0,0,0}); 
 		//sphere.setWorldTransform(tr);
 		sphere.getMotionState()->getWorldTransform(tr);
-	
-		void* tempp = &(monkey.instances[0]._objectToWorldMatrix);
-		tr.getOpenGLMatrix((float*)tempp);
 
 		glm::vec3 playerPos;
-		//btTransform playerTransform;
-		//playerTransform = playerObject.getIndtance(0)->getWorldTransform();
-		//playerObject.getIndtance(0)->setWorldTransform(playerTransform);
-		//playerPos = { playerTransform.getOrigin().x(), playerTransform.getOrigin().y(), playerTransform.getOrigin().z() };
+		btTransform playerTransform;
+		playerObject.getIndtance(0)->getMotionState()->getWorldTransform(playerTransform);
+		playerObject.getIndtance(0)->setWorldTransform(playerTransform);
+		playerPos = { playerTransform.getOrigin().x(), playerTransform.getOrigin().y(), playerTransform.getOrigin().z() };
 		
-		auto pos = playerObject.getIndtance(0)->getCenterOfMassPosition();
-		playerPos = { pos.getX(), pos.getY(), pos.getZ() };
+		//auto pos = playerObject.getIndtance(0)->getCenterOfMassPosition();
+		//playerPos = { pos.getX(), pos.getY(), pos.getZ() };
 
 		camera.playerPosition = playerPos;
 		camera.topDownAngle = playerAngle;
 		playerObject.draw();
-		
-
-		monkey.draw();
-
-
-		tree.draw();
-
-		//tree.deleteCollisionShape();
-		//tree.gpuCleanup();
-		//tree.cleanup();
-		//tree.loadPtn323(modelManager.getData("objects//tree2.obj"), textureManager);
-		//tree.loadCollisionBox(modelManager.getData("objects//tree2.obj"));
-		//tree.pushElement({ 20, 0, 0 });
-
 		
 		//plan.sp->uniform("u_lightPosition", light.getPosition(0).x, light.getPosition(0).y, light.getPosition(0).z, light.getPosition(0).w);
 		plan.draw();
@@ -650,17 +602,12 @@ int main()
 
 		lightObject.draw();
 
-		world->stepSimulation(deltatime);
 		window.display();
-		
-
-		//lightObject.gpuCleanup();
-		//.cleanup();
-		//.setData(vertexBuffer(cube2, sizeof(cube2)), indexBuffer(cubeIndices, sizeof(cubeIndices)), vertexAttribute({ 3,3 }), &program, &camera);
-		//.pushElement(glm::mat4(0));
+		world->stepSimulation(deltatime);
 
 
 		//world->debugDrawWorld();
+
 		/*
 		window.pushGLStates();
 		//glDisable(GL_DEPTH_TEST);

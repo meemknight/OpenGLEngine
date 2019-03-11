@@ -4,6 +4,14 @@
 ///////////////////////////////////
 #include "GameObjectPool.h"
 
+void GameObjectPool::clearLightContextContent()
+{
+	if(lights != nullptr)
+	{
+		lights->clear();
+	}
+}
+
 //todo 
 void GameObjectPool::load(const char * file)
 {

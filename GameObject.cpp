@@ -685,7 +685,7 @@ void PhisicalObject::loadCollisionBox(const LoadedIndexModel & model, const char
 
 void PhisicalObject::draw()
 {
-	if (sp != 0)
+	if (sp != nullptr)
 	{
 		sp->bind();
 	}
@@ -694,7 +694,7 @@ void PhisicalObject::draw()
 		elog("missing shader program!");
 	}
 
-	if (camera != 0)
+	if (camera != nullptr)
 	{
 
 		sp->uniform("u_eyePosition", camera->position.x, camera->position.y, camera->position.z);
@@ -705,7 +705,7 @@ void PhisicalObject::draw()
 		elog("missing camera!");
 	}
 
-	if(lights!=0)
+	if (lights != nullptr)
 	{
 		lights->bind(*sp);
 	}

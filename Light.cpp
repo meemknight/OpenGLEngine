@@ -72,3 +72,12 @@ float &LightContext::getStrength(int index)
 {
 	return strengthes[index];
 }
+
+void LightContext::clear()
+{
+	positions.clear();
+	ambienteces.clear();
+	diffuses.clear();
+	speculares.clear();
+	strengthes.clear();
+}

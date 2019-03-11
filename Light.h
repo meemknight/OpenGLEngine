@@ -33,6 +33,8 @@ public:
 	static Light roomLight(float d = 0.1f) { {return Light(glm::vec4{ 0, 0, 0, 1 }, glm::vec3{ d, d, d }, glm::vec3{ 1, 1, 1 }, glm::vec3{ 1, 1, 1 }, 0.001f); } }
 };
 
+
+//todo: refactor this
 class LightContext
 {
 	std::vector<glm::vec4> positions;
@@ -51,6 +53,7 @@ public:
 	glm::vec3 &getSpecularity(int index);
 	float &getStrength(int index);
 
+	void clear();
 
 	void bind(ShaderProgram &sp);
 };

@@ -139,6 +139,7 @@ public:
 		this->textureManager = textureManager; this->modelManager = modelManager;
 	}
 
+	void clearLightContextContent();
 	void load(const char *file);
 	void drawAll();
 	void clearAll();
