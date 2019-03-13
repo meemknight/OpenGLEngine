@@ -6,9 +6,10 @@
 class Camera
 {
 public:
-	glm::vec3 position = { 0,0,0 };
+
 	glm::vec3 viewDirection = { 0.f, 0.f, -1.f };
 	glm::vec3 upPositipon = { 0, 1, 0 };
+	glm::vec3 position = { 0,0,0 };
 
 	glm::vec3 playerPosition = { 0,0,0 };
 	///this distance is only on the x and z axes
@@ -24,7 +25,12 @@ public:
 	bool flyCamera = 1;
 	bool firstPersonCamera = 0;
 
+	glm::vec3 getFirstPersonPosition();
 
+	///this function will get the right position taking into acount
+	///the type of the camera (first person or free camera)
+	glm::vec3 getCurrentViewingPosition();
+	
 	struct
 	{
 		float angle; ///angle of the view projecton in angles not radians

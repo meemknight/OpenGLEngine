@@ -29,7 +29,7 @@
 extern "C"
 {
 	//Enable dedicated graphics
-	//__declspec(dllexport) DWORD NvOptimusEnablement = true;
+	__declspec(dllexport) DWORD NvOptimusEnablement = true;
 	//__declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = true;
 }
 
@@ -184,9 +184,9 @@ int main()
 	LightContext light;
 
 	Camera camera(85.f, &width, &height, 0.01f, 1500.f);
-	//camera.mSpeed = 16.0f;
+	camera.mSpeed = 16.0f;
 
-	//camera.position = { 0, 3, -4 };
+	camera.position = { 0, 3, -4 };
 	//camera.viewDirection = { 0, 0, 1 };
 	///
 	camera.firstPersonCamera = 1;
@@ -209,7 +209,7 @@ int main()
 	gameObjectPool.initialize(&textureProgram, &camera, &light, world, &textureManager, &modelManager);
 	gameObjectPool.load("maps//map1.txt");
 
-	gameObjectPool.phisicalObjectVector.getElementById(250).objectData[0].material = Material::ruby();
+	//gameObjectPool.phisicalObjectVector.getElementById(250).objectData[0].material = Material::ruby();
 
 	//GameObject tempObject(&textureProgram, &camera, &light);
 	//tempObject.loadPtn323()
@@ -229,8 +229,6 @@ int main()
 	//generateMountains(&planVertexes2, &planIndices2, 2, plansize2, planIndicessize2);
 	shapeGenerator::generatePlane(&planVertexes, &planIndices, 512, plansize, planIndicessize);
 	std::cout << glGetString(GL_VERSION);
-
-	
 
 
 	indexBuffer ib(cubeIndices, sizeof(cubeIndices));
@@ -288,7 +286,7 @@ int main()
 	playerObject.rigidBodies.reserve(2);
 
 	
-	playerObject.pushElement({ 1, 30 ,1 });
+	playerObject.pushElement({ 0, 3 ,0 });
 
 	for(int i =0; i< 20; i++)
 	{
@@ -370,35 +368,35 @@ int main()
 			//updatemouse = 0;
 		}
 
-		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		//{
-		//	camera.moveFront(deltatime);
-		//}
-		//
-		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		//{
-		//	camera.moveBack(deltatime);
-		//}
-		//
-		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		//{
-		//	camera.moveLeft(deltatime);
-		//}
-		//
-		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		//{
-		//	camera.moveRight(deltatime);
-		//}
-		//
-		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-		//{
-		//	camera.moveUp(deltatime);
-		//}
-		//
-		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
-		//{
-		//	camera.moveDown(deltatime);
-		//}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		{
+			camera.moveFront(deltatime);
+		}
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		{
+			camera.moveBack(deltatime);
+		}
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		{
+			camera.moveLeft(deltatime);
+		}
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		{
+			camera.moveRight(deltatime);
+		}
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		{
+			camera.moveUp(deltatime);
+		}
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+		{
+			camera.moveDown(deltatime);
+		}
 
 		//
 		float lightSpeed = 4.0f;

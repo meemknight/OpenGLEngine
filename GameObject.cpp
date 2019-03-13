@@ -275,7 +275,7 @@ void GameObject::draw()
 			//i.worldToViexMatrix = camera->getProjectionViewMatrix();
 			
 		}
-		sp->uniform("u_eyePosition", camera->position.x, camera->position.y, camera->position.z);
+		sp->uniform("u_eyePosition", camera->getCurrentViewingPosition().x, camera->getCurrentViewingPosition().y, camera->getCurrentViewingPosition().z);
 	} //sets the world to view matrix;
 
 	
@@ -455,7 +455,7 @@ void ComplexObject::draw()
 			//i.worldToViexMatrix = camera->getProjectionViewMatrix();
 			
 		}
-		sp->uniform("u_eyePosition", camera->position.x, camera->position.y, camera->position.z);
+		sp->uniform("u_eyePosition", camera->getCurrentViewingPosition().x, camera->getCurrentViewingPosition().y, camera->getCurrentViewingPosition().z);
 	} //sets the world to view matrix;
 	
 	
@@ -697,7 +697,7 @@ void PhisicalObject::draw()
 	if (camera != nullptr)
 	{
 
-		sp->uniform("u_eyePosition", camera->position.x, camera->position.y, camera->position.z);
+		sp->uniform("u_eyePosition", camera->getCurrentViewingPosition().x, camera->getCurrentViewingPosition().y, camera->getCurrentViewingPosition().z);
 
 	} //sets the world to view matrix;
 	else

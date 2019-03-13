@@ -2,6 +2,28 @@
 
 #include<cstdio>
 
+
+glm::vec3 Camera::getFirstPersonPosition()
+{
+	glm::vec3 pos = playerPosition;
+	pos.y += distanceFromPlayer * sin(cameraAngle);
+	float distanceProjection = distanceFromPlayer * cos(cameraAngle);
+	pos.x += sin(topDownAngle) * distanceProjection;
+	pos.z += cos(topDownAngle) * distanceProjection;
+	return pos;
+}
+
+glm::vec3 Camera::getCurrentViewingPosition()
+{
+	if(firstPersonCamera)
+	{
+		return getFirstPersonPosition();
+	}else
+	{
+		return position;
+	}
+}
+
 Camera::Camera()
 {
 }
@@ -48,12 +70,8 @@ glm::mat4 Camera::getObjectToWorld()
 		return glm::lookAt(position, position + viewDirection, upPositipon);
 	}else
 	{
-		glm::vec3 pos = playerPosition;
-		pos.y += distanceFromPlayer * sin(cameraAngle);
-		float distanceProjection = distanceFromPlayer * cos(cameraAngle);
-		pos.x += sin(topDownAngle) * distanceProjection;
-		pos.z += cos(topDownAngle) * distanceProjection;
-		return glm::lookAt(pos, playerPosition, upPositipon);
+		
+		return glm::lookAt(getFirstPersonPosition(), playerPosition, upPositipon);
 	}
 }
 

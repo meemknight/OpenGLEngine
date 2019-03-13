@@ -21,11 +21,11 @@ char* parseName(char *line, char *& endPos)
 
 void parseFloats(char *line, char *& endPos, float& a, float &b, float &c)
 {
-	sscanf(strtok(line, ","), "%f", &a);
+	sscanf(strtok(line, ", "), "%f", &a);
 	endPos = line + strlen(line) + 1;
-	sscanf(strtok(0, ","), "%f", &b);
+	sscanf(strtok(0, ", "), "%f", &b);
 	endPos += strlen(endPos) + 1;
-	sscanf(strtok(0, " \n"), "%f", &c);
+	sscanf(strtok(0, ", \n"), "%f", &c);
 	endPos += strlen(endPos) + 1;
 }
 
@@ -136,10 +136,11 @@ std::vector<generalObjectData> loadMapData(const char *f)
 	char parsed[200];
 	while (file.getline(line, 256))
 	{
-		if (line[0] == '/')
+		if (line[0] == '/' || line[0] == '\n')
 		{
 			continue;
 		}
+		
 
 		generalObjectData object;
 		char *current = line;
@@ -150,6 +151,7 @@ std::vector<generalObjectData> loadMapData(const char *f)
 			{
 				break;
 			}
+			
 
 			float x = 0, y = 0, z = 0;
 			char *p;
