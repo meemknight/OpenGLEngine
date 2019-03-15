@@ -317,7 +317,7 @@ void GameObject::draw()
 		offset += sizeof(glm::mat4);
 		offset += sizeof(glm::mat4);
 	}
-#else // !ALLOCA_OPTIMISATIONS ^
+#else // !ALLOCA_OPTIMISATIONS \/
 
 	int offset = 0;
 	size_t tempSize = 2 * sizeof(glm::mat4) * instances.size();
@@ -339,10 +339,7 @@ void GameObject::draw()
 	
 	va.bindForInstances();
 
-	
-	
-
-	glDrawElementsInstanced(GL_TRIANGLES, ib.size / sizeof(int), GL_UNSIGNED_INT, 0, instances.size());
+	glDrawElementsInstanced(GL_TRIANGLES, ib.size / sizeof(unsigned int), GL_UNSIGNED_INT, 0, instances.size());
 
 }
 
@@ -501,7 +498,7 @@ void ComplexObject::draw()
 			glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &temp);
 		}
 
-		glDrawElementsInstanced(GL_TRIANGLES, objectData[m].ib.size / sizeof(int), GL_UNSIGNED_INT, 0, instances.size());
+		glDrawElementsInstanced(GL_TRIANGLES, objectData[m].ib.size / sizeof(unsigned int), GL_UNSIGNED_INT, 0, instances.size());
 		
 	}
 	
@@ -763,7 +760,7 @@ void PhisicalObject::draw()
 			glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &temp);
 		}
 
-		glDrawElementsInstanced(GL_TRIANGLES, objectData[m].ib.size / sizeof(int), GL_UNSIGNED_INT, 0, rigidBodies.size());
+		glDrawElementsInstanced(GL_TRIANGLES, objectData[m].ib.size / sizeof(unsigned int), GL_UNSIGNED_INT, 0, rigidBodies.size());
 
 	}
 

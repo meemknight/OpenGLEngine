@@ -29,7 +29,7 @@
 extern "C"
 {
 	//Enable dedicated graphics
-	__declspec(dllexport) DWORD NvOptimusEnablement = true;
+	//__declspec(dllexport) DWORD NvOptimusEnablement = true;
 	//__declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = true;
 }
 
@@ -100,7 +100,7 @@ int main()
 	//contextSettings.majorVersion = 3;
 	//contextSettings.minorVersion = 3;
 
-	sf::RenderWindow window(sf::VideoMode(width, height), "It Works!", sf::Style::Default, contextSettings);
+	sf::RenderWindow window(sf::VideoMode(width, height), "glEngine", sf::Style::Default, contextSettings);
 
 	auto windoHandle = window.getSystemHandle();
 
@@ -585,8 +585,6 @@ int main()
 		camera.topDownAngle = playerAngle;
 		playerObject.draw();
 		
-		//plan.sp->uniform("u_lightPosition", light.getPosition(0).x, light.getPosition(0).y, light.getPosition(0).z, light.getPosition(0).w);
-		plan.draw();
 
 		gameObjectPool.drawAll();
 
@@ -600,25 +598,37 @@ int main()
 
 		lightObject.draw();
 
-		window.display();
 		world->stepSimulation(deltatime);
 
 
 		//world->debugDrawWorld();
 
-		/*
+		plan.draw();
+
 		window.pushGLStates();
 		//glDisable(GL_DEPTH_TEST);
+		//glBindBuffer(GL_ARRAY_BUFFER, 0);
+		//glBindVertexArray(0);
+		//glBindTexture(GL_TEXTURE_2D, 0);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		for(int i=0; i<2; i++)
+		{
+			glDisableVertexAttribArray(i);
+		}
+		//glUseProgram(0);
 		//window.resetGLStates();
+
 		//glViewport(0, 0, width, height);
 		sf::RectangleShape s({ 100,100 });
-		
+		s.setPosition({ 100, 100 });
+
 		s.setFillColor(sf::Color::Green);
 		window.draw(s);
+		window.display();
 
 		window.popGLStates();
 		//glEnable(GL_DEPTH_TEST);
-		*/
+		
 		/*window.pushGLStates();
 		sf::Text text;
 		text.setString("lol");
@@ -634,7 +644,7 @@ int main()
 		//glBindVertexArray(0);
 		//glBindTexture(GL_TEXTURE_2D, 0);
 		//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-		//lUseProgram(0);
+		//glUseProgram(0);
 
 		
 		//glDisable(GL_DEPTH_TEST);
