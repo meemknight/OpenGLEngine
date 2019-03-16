@@ -23,6 +23,7 @@
 #include "custumBulletdebuggClass.h"
 #include "shapesGenerator.h"
 #include "GameObjectPool.h"
+#include "CharacterMouseController.h"
 
 #include "tools.h"
 
@@ -88,8 +89,8 @@ int main()
 
 	world->addRigidBody(&body);
 
-	auto sphere = addSphere(1, -6, 2, -6, 10);
-	world->addRigidBody(&sphere);
+	//auto sphere = addSphere(1, -6, 2, -6, 10);
+	//world->addRigidBody(&sphere);
 	//sphere.applyImpulse({ 10,0,0 }, { 0,0,0 });
 
 
@@ -194,6 +195,15 @@ int main()
 	camera.cameraAngle = glm::radians(25.f);
 	camera.topDownAngle = 3.141;
 
+	float playerAngle = 0;
+	float playerRotationSpeed = glm::radians(120.f);
+	float mouseScroll = 0;
+
+	CharacterMouseController characterController;
+	characterController.topDownRotation = &playerAngle;
+	characterController.cameraAngle = &camera.cameraAngle;
+	characterController.downMax = glm::radians(0.f);
+	characterController.mouseScroll = &camera.distanceFromPlayer;
 
 	ShaderProgram program(VertexShader("vertex.vert"), FragmentShader("fragment.frag"));
 	ShaderProgram normalProgram(VertexShader("vertn.vert"), FragmentShader("fragn.frag"));
@@ -233,7 +243,6 @@ int main()
 
 	indexBuffer ib(cubeIndices, sizeof(cubeIndices));
 
-	
 
 	light.pushElement(Light::roomLight());
 	light.pushElement(Light::roomLight(0.3));
@@ -277,15 +286,12 @@ int main()
 	playerObject.loadPtn323(modelManager.getData("objects//sphere.obj"), textureManager);
 	//playerObject.appendObject(lmodel, manager, {0, 0, 3});
 
-	float playerAngle = 0;
-	float playerRotationSpeed = glm::radians(120.f);
-
+	
 	//playerObject.objectData[0].material = Material::emerald();
 	//playerObject.objectData[0].texture = manager.getTexture("textures//cobble.jpg");
 
 	playerObject.rigidBodies.reserve(2);
 
-	
 	playerObject.pushElement({ 0, 3 ,0 });
 
 	for(int i =0; i< 20; i++)
@@ -296,8 +302,6 @@ int main()
 
 	
 	//playerObject.getIndtance(0)->setFriction(0.5);
-
-	
 	
 
 	//playerObject.getIndtance(0)->setCollisionFlags(playerObject.getIndtance(0)->getCollisionFlags() |
@@ -310,6 +314,11 @@ int main()
 	{
 
 		float deltatime = c.restart().asSeconds();
+		if(deltatime > (1.f/4.f))
+		{
+			deltatime = 1.f / 4.f;
+		}
+
 		frames++;
 		if (fpsClock.getElapsedTime().asSeconds() >= 1)
 		{
@@ -328,6 +337,7 @@ int main()
 
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
+		mouseScroll *= 0.4f;
 
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -339,23 +349,28 @@ int main()
 				exit(0);
 			}
 			else
-				if (event.type == sf::Event::Resized)
-				{
-					width = window.getSize().x;
-					height = window.getSize().y;
+			if (event.type == sf::Event::Resized)
+			{
+				width = window.getSize().x;
+				height = window.getSize().y;
 
-				}
-				else
-					if (event.type == sf::Event::MouseLeft)
-					{
-						updatemouse = 0;
-					}
-					else
-						if (event.type == sf::Event::MouseEntered)
-						{
-							updatemouse = 1;
-							camera.oldMousePosition = { sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y };
-						}
+			}
+			else
+			if (event.type == sf::Event::MouseLeft)
+			{
+				updatemouse = 0;
+			}
+			else
+			if (event.type == sf::Event::MouseEntered)
+			{
+				updatemouse = 1;
+				camera.oldMousePosition = { sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y };
+			}
+			else
+			if (event.type == sf::Event::MouseWheelScrolled)
+			{
+				mouseScroll = event.mouseWheelScroll.delta;
+			}
 
 		}
 
@@ -448,6 +463,8 @@ int main()
 			//sf::Mouse::setPosition(sf::Vector2i(width / 2, height / 2), window);
 			//camera.oldMousePosition = { (int)sf::Mouse::getPosition(window).x, (int)sf::Mouse::getPosition(window).y };
 			//todo: fix this >_<     this should make the mouse stay in the centre
+
+			characterController.update({ (float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y }, sf::Mouse::isButtonPressed(sf::Mouse::Left), mouseScroll);
 		}
 
 		if (window.hasFocus())
@@ -458,81 +475,34 @@ int main()
 		{
 			//window.setMouseCursorVisible(1);
 		}
-		 float maxSpeed = 30000 * deltatime;
+
+		 float maxSpeed = 35000 * deltatime;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 		{
-			//auto v = playerObject.getIndtance(0)->getLinearVelocity();
-			//v.setZ(6);
-			//playerObject.getIndtance(0)->setLinearVelocity(v);
 			playerObject.getIndtance(0)->applyCentralForce({ 0,0,-maxSpeed * cos(playerAngle) });
 			playerObject.getIndtance(0)->applyCentralForce({ -maxSpeed * sin(playerAngle), 0, 0 });
 			playerObject.getIndtance(0)->activate(1);
-
-			//auto s = playerObject.getIndtance(0)->getMotionState();
-			//btTransform t; 
-			//btVector3 move = { 0,0,0.006 };
-			//s->getWorldTransform(t);
-			//t.setOrigin( t.getOrigin() + move * deltatime);
-			//s->setWorldTransform(t);
-
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
 		{
-			//auto v = playerObject.getIndtance(0)->getLinearVelocity();
-			//v.setZ(-6);
-			//playerObject.getIndtance(0)->setLinearVelocity(v);
 			playerObject.getIndtance(0)->applyCentralForce({ 0,0,maxSpeed * cos(playerAngle) });
 			playerObject.getIndtance(0)->applyCentralForce({ maxSpeed * sin(playerAngle), 0, 0 });
 			playerObject.getIndtance(0)->activate(1);
-
-			//auto s = playerObject.getIndtance(0)->getMotionState();
-			//btTransform t;
-			//btVector3 move = { 0,0,-0.006 };
-			//s->getWorldTransform(t);
-			//t.setOrigin(t.getOrigin() + move * deltatime);
-			//s->setWorldTransform(t);
-
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
 		{
-			//auto v = playerObject.getIndtance(0)->getLinearVelocity();
-			//v.setX(6);
-			//playerObject.getIndtance(0)->setLinearVelocity(v);
-			
 			playerObject.getIndtance(0)->applyCentralForce({ -maxSpeed * cos(playerAngle),0,0 });
 			playerObject.getIndtance(0)->applyCentralForce({ 0,0, maxSpeed * sin(playerAngle) });
 			playerObject.getIndtance(0)->activate(1);
-
-			//auto s = playerObject.getIndtance(0)->getMotionState();
-			//btTransform t;
-			//btVector3 move = { 0.006,0,0 };
-			//s->getWorldTransform(t);
-			//t.setOrigin(t.getOrigin() + move * deltatime);
-			//s->setWorldTransform(t);
-			
-
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
 		{
-			//auto v = playerObject.getIndtance(0)->getLinearVelocity();
-			//v.setX(-6);
-			//playerObject.getIndtance(0)->setLinearVelocity(v);
-			
 			playerObject.getIndtance(0)->applyCentralForce({ maxSpeed * cos(playerAngle),0,0 });
 			playerObject.getIndtance(0)->applyCentralForce({ 0,0,maxSpeed * -sin(playerAngle) });
 			playerObject.getIndtance(0)->activate(1);
-
-
-			//auto s = playerObject.getIndtance(0)->getMotionState();
-			//btTransform t;
-			//btVector3 move = { -0.006,0,0 };
-			//s->getWorldTransform(t);
-			//t.setOrigin(t.getOrigin() + move * deltatime);
-			//s->setWorldTransform(t);
-
 		}
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::T))
@@ -564,13 +534,6 @@ int main()
 		light.getPosition(0) = glm::vec4(lightPosition, 1);
 		//light.getPosition(1) = glm::vec4(lightPosition.x, lightPosition.y - 4, lightPosition.z, 1);		
 
-		btTransform tr;
-		//tr.setIdentity();
-		//tr.setOrigin({0, 2, 0});
-		//sphere.setLinearVelocity({ 0.2f * deltatime, 0, 0 });
-		//sphere.applyForce({ 0.2f*deltatime, 0, 0}, {0,0,0}); 
-		//sphere.setWorldTransform(tr);
-		sphere.getMotionState()->getWorldTransform(tr);
 
 		glm::vec3 playerPos;
 		btTransform playerTransform;
@@ -578,14 +541,11 @@ int main()
 		playerObject.getIndtance(0)->setWorldTransform(playerTransform);
 		playerPos = { playerTransform.getOrigin().x(), playerTransform.getOrigin().y(), playerTransform.getOrigin().z() };
 		
-		//auto pos = playerObject.getIndtance(0)->getCenterOfMassPosition();
-		//playerPos = { pos.getX(), pos.getY(), pos.getZ() };
 
 		camera.playerPosition = playerPos;
 		camera.topDownAngle = playerAngle;
 		playerObject.draw();
 		
-
 		gameObjectPool.drawAll();
 
 		//gameObjectPool.clearAll();
@@ -623,7 +583,8 @@ int main()
 		s.setPosition({ 100, 100 });
 
 		s.setFillColor(sf::Color::Green);
-		window.draw(s);
+		//window.draw(s);
+		window.setView(sf::View({ 0, 0, width, height }));
 		window.display();
 
 		window.popGLStates();
@@ -637,21 +598,6 @@ int main()
 		window.draw(text);
 		window.popGLStates();
 		*/
-
-		//draw opengl here
-
-		//glBindBuffer(GL_ARRAY_BUFFER, 0);
-		//glBindVertexArray(0);
-		//glBindTexture(GL_TEXTURE_2D, 0);
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-		//glUseProgram(0);
-
-		
-		//glDisable(GL_DEPTH_TEST);
-		
-	
-		//window.display();
-		
 
 	}
 

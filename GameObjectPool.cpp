@@ -218,6 +218,7 @@ void GameObjectPool::drawAll()
 
 }
 
+///this doesn't clear the lightContext data since it is an external member
 void GameObjectPool::clearAll()
 {
 	

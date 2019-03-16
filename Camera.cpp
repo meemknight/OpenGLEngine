@@ -92,8 +92,6 @@ void Camera::mouseUpdate(const glm::vec2 & pos)
 
 	glm::vec3 toRotate = glm::cross(viewDirection, upPositipon);
 
-	
-
 	viewDirection = glm::mat3(glm::rotate(glm::radians(-delta.x * rSpeed), upPositipon)) * viewDirection;
 	
 	if(delta.y > 0 )

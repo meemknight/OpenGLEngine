@@ -2,6 +2,7 @@
 #include <map>
 #include <cstring>
 #include "Texture.h"
+#include "tools.h"
 
 struct CompareCStrings
 {
