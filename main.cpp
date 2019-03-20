@@ -464,7 +464,7 @@ int main()
 			//camera.oldMousePosition = { (int)sf::Mouse::getPosition(window).x, (int)sf::Mouse::getPosition(window).y };
 			//todo: fix this >_<     this should make the mouse stay in the centre
 
-			characterController.update({ (float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y }, sf::Mouse::isButtonPressed(sf::Mouse::Left), mouseScroll);
+			characterController.update({ (float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y }, true, mouseScroll);
 		}
 
 		if (window.hasFocus())

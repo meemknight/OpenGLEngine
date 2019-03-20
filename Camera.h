@@ -1,3 +1,6 @@
+//////////////////////////////
+//Copyright(c) 2019 Luta Vlad
+//////////////////////////////
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>

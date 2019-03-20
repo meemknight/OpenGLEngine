@@ -18,8 +18,8 @@ public:
 	float scrollMax = 10.f;
 	float scrollMin = 2.f;
 
-	float topDownRotationSpeed = 0.002;
-	float cameraAngleSpeed = 0.002;
+	float topDownRotationSpeed = 0.0035;
+	float cameraAngleSpeed = 0.0035;
 	float mouseScrollSpeed = 0.10;
 
 	///this is for the angle on the y axe
