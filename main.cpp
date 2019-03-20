@@ -68,7 +68,6 @@ btRigidBody addSphere(float rad, float x, float y, float z, float mass)
 
 int main()
 {
-
 	collisionConfiguration = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collisionConfiguration);
 	broadPhase = new btDbvtBroadphase();
@@ -190,7 +189,7 @@ int main()
 	camera.position = { 0, 3, -4 };
 	//camera.viewDirection = { 0, 0, 1 };
 	///
-	camera.firstPersonCamera = 1;
+	camera.firstPersonCamera = 0;
 	camera.distanceFromPlayer = 8;
 	camera.cameraAngle = glm::radians(25.f);
 	camera.topDownAngle = 3.141;
@@ -363,13 +362,18 @@ int main()
 			else
 			if (event.type == sf::Event::MouseEntered)
 			{
-				updatemouse = 1;
-				camera.oldMousePosition = { sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y };
+				//updatemouse = 1;
+				//camera.oldMousePosition = { sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y };
 			}
 			else
 			if (event.type == sf::Event::MouseWheelScrolled)
 			{
 				mouseScroll = event.mouseWheelScroll.delta;
+			}else
+			if(event.type == sf::Event::GainedFocus)
+			{
+				updatemouse = 1;
+				camera.oldMousePosition = { sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y };
 			}
 
 		}
@@ -378,7 +382,7 @@ int main()
 		if (sf::Keyboard::isKeyPressed((sf::Keyboard::Escape)))
 		{
 			exit(0);
-			//ShowWindow((HWND)(windoHandle), SW_MINIMIZE);
+			//ShowWindow((HWND)(windoHandle), SW_SHOWNOACTIVATE);
 			//SendMessage((HWND)windoHandle, WM_KILLFOCUS, 0, 0);
 			//updatemouse = 0;
 		}
@@ -459,21 +463,26 @@ int main()
 
 		if (updatemouse)
 		{
-			camera.mouseUpdate({ (float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y });
-			//sf::Mouse::setPosition(sf::Vector2i(width / 2, height / 2), window);
-			//camera.oldMousePosition = { (int)sf::Mouse::getPosition(window).x, (int)sf::Mouse::getPosition(window).y };
-			//todo: fix this >_<     this should make the mouse stay in the centre
+			if (!camera.firstPersonCamera)
+			{
+				camera.mouseUpdate({ (float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y }, window);
+			}
+			else
+			{
+				characterController.update({ (float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y }, true, mouseScroll, window);
+			}
 
-			characterController.update({ (float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y }, true, mouseScroll);
 		}
 
 		if (window.hasFocus())
 		{
-			//window.setMouseCursorVisible(0);
+			window.setMouseCursorVisible(0);
+			updatemouse = 1;
 		}
 		else
 		{
-			//window.setMouseCursorVisible(1);
+			window.setMouseCursorVisible(1);
+			updatemouse = 0;
 		}
 
 		 float maxSpeed = 35000 * deltatime;
@@ -590,15 +599,6 @@ int main()
 		window.popGLStates();
 		//glEnable(GL_DEPTH_TEST);
 		
-		/*window.pushGLStates();
-		sf::Text text;
-		text.setString("lol");
-		text.setFillColor(sf::Color(255, 255, 255, 170));
-		text.setPosition(250.f, 450.f);
-		window.draw(text);
-		window.popGLStates();
-		*/
-
 	}
 
 	/*

@@ -1,7 +1,5 @@
 #include "Camera.h"
 
-#include<cstdio>
-
 
 glm::vec3 Camera::getFirstPersonPosition()
 {
@@ -80,7 +78,7 @@ glm::mat4 Camera::getProjectionViewMatrix()
 	return glm::perspective(glm::radians(projectionData.angle), *projectionData.width / *projectionData.height, projectionData.closePlane, projectionData.farPlane) * getObjectToWorld();
 }
 
-void Camera::mouseUpdate(const glm::vec2 & pos)
+void Camera::mouseUpdate(const glm::vec2 & pos, sf::RenderWindow &window)
 {
 	glm::vec2 delta = pos - oldMousePosition;
 
@@ -112,6 +110,8 @@ void Camera::mouseUpdate(const glm::vec2 & pos)
 
 
 	oldMousePosition = pos;
+	sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
+	oldMousePosition = { sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y };
 	//printf("%+f6 %+f6 %+f6 ", position.x, position.y, position.z);
 }
 

@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <sfml/Graphics.hpp>
 
 class Camera
 {
@@ -53,7 +54,7 @@ public:
 	
 
 	///uded for mouse moving
-	void mouseUpdate(const glm::vec2 &pos);
+	void mouseUpdate(const glm::vec2 &pos, sf::RenderWindow &window);
 	//void move(const glm::vec3 &move);
 	void moveUp(float speed);
 	void moveDown(float speed);
