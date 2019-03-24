@@ -897,6 +897,28 @@ void PhisicalObject::setElementPosition(int index, glm::vec3 position)
 	rigidBodies[index]->setWorldTransform(t);
 }
 
+bool PhisicalObject::colidesWith(int thisIndex, PhisicalObject with, int secondIndex)
+{
+	return colidesWith(thisIndex, with.rigidBodies[secondIndex]);
+}
+
+bool PhisicalObject::colidesWith(int thisIndex, btRigidBody * with)
+{
+	int numManifolds = world->getDispatcher()->getNumManifolds();
+	for (int i = 0; i < numManifolds; i++)
+	{
+		btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+		const btCollisionObject* obA = contactManifold->getBody0();
+		const btCollisionObject* obB = contactManifold->getBody1();
+		auto thiss = rigidBodies[thisIndex];
+		if((obA == with || obB == with)&&(obA == thiss || obB == thiss))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void PhisicalObject::appendObject(const LoadedIndexModel & model, AssetManager<Texture> &manager, const glm::vec3 &padding, const char* collisionIdentifierName)
 {
 	appendObject_(dataTodraw, objectData, model, padding, manager, collisionIdentifierName);

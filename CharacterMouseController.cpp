@@ -45,7 +45,6 @@ void CharacterMouseController::update(glm::vec2 mousePos, bool isClicked, float 
 		if (*mouseScroll < scrollMin) { *mouseScroll = scrollMin; }
 	}
 
-
 	//todo optimise
 	sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
 	lastMousePos = { sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y };

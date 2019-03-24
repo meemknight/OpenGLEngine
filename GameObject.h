@@ -235,6 +235,9 @@ public:
 
 	btRigidBody* getIndtance(int index) { return rigidBodies[index]; }
 
+	bool colidesWith(int thisIndex, PhisicalObject with, int secondIndex);
+	bool colidesWith(int thisIndex, btRigidBody* with);
+
 	//todo make getters for positions
 
 	void appendObject(const LoadedIndexModel &model, AssetManager<Texture> &manager, const glm::vec3 &padding = { 0, 0, 0 }, const char* collisionIdentifierName = "COLLISION");

@@ -189,7 +189,7 @@ int main()
 	camera.position = { 0, 3, -4 };
 	//camera.viewDirection = { 0, 0, 1 };
 	///
-	camera.firstPersonCamera = 0;
+	camera.firstPersonCamera = true;
 	camera.distanceFromPlayer = 8;
 	camera.cameraAngle = glm::radians(25.f);
 	camera.topDownAngle = 3.141;
@@ -539,7 +539,17 @@ int main()
 		playerObject.getIndtance(0)->setLinearVelocity(v);
 #pragma endregion
 
-		
+		world->stepSimulation(deltatime);
+
+		if (gameObjectPool.phisicalObjectVector.getElementById(250).colidesWith(0, playerObject, 0))
+		{
+			gameObjectPool.phisicalObjectVector.getElementById(250).objectData[0].material = Material::cyanRubber();
+		}else
+		{
+			gameObjectPool.phisicalObjectVector.getElementById(250).objectData[0].material = Material::gold();
+		}
+
+
 		light.getPosition(0) = glm::vec4(lightPosition, 1);
 		//light.getPosition(1) = glm::vec4(lightPosition.x, lightPosition.y - 4, lightPosition.z, 1);		
 
@@ -567,7 +577,6 @@ int main()
 
 		lightObject.draw();
 
-		world->stepSimulation(deltatime);
 
 
 		//world->debugDrawWorld();
