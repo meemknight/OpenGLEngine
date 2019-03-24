@@ -1,5 +1,11 @@
 #version 330
 
+/////////////////////////////////////////////
+//fragn.frag
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+
 uniform float u_time;
 uniform vec4 u_lightPosition;
 uniform vec3 u_eyePosition;

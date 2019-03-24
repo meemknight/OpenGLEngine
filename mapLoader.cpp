@@ -1,7 +1,14 @@
+/////////////////////////////////////////////
+//mapLoader.cpp
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 #include <fstream>
 #include <vector>
 #include "tools.h"
 #include "GameObjectPool.h"
+
+//this functions are related to parsing and loading the map data.
 
 
 char* parseName(char *line, char *& endPos)

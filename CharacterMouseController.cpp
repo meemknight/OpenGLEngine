@@ -1,6 +1,9 @@
-//////////////////////////////
+/////////////////////////////////////////////
+//CharacterMouseController.cpp
 //Copyright(c) 2019 Luta Vlad
-//////////////////////////////
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+
 #include "CharacterMouseController.h"
 
 void CharacterMouseController::update(glm::vec2 mousePos, bool isClicked, float mouseScrol, sf::Window &window)

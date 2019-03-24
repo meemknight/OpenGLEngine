@@ -1,3 +1,8 @@
+/////////////////////////////////////////////
+//main.cpp
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 #include <iostream>
 #include <vector>
 #include <Windows.h>
@@ -20,7 +25,7 @@
 #include "Camera.h"
 #include "GameObject.h"
 #include "Light.h"
-#include "custumBulletdebuggClass.h"
+#include "customBulletdebuggClass.h"
 #include "shapesGenerator.h"
 #include "GameObjectPool.h"
 #include "CharacterMouseController.h"
@@ -192,7 +197,7 @@ int main()
 	camera.firstPersonCamera = true;
 	camera.distanceFromPlayer = 8;
 	camera.cameraAngle = glm::radians(25.f);
-	camera.topDownAngle = 3.141;
+	camera.topDownAngle = 3.141f;
 
 	float playerAngle = 0;
 	float playerRotationSpeed = glm::radians(120.f);
@@ -209,7 +214,7 @@ int main()
 	ShaderProgram textureProgram(VertexShader("vertt.vert"), FragmentShader("fragt.frag"));
 	ShaderProgram debugShader(VertexShader("debugShader.vert"), FragmentShader("debugShader.frag"));
 	
-	custumBulletdebuggClass debugDrawer(&debugShader ,&camera);
+	customBulletdebuggClass debugDrawer(&debugShader ,&camera);
 
 	world->setDebugDrawer(&debugDrawer);
 	world->getDebugDrawer()->setDebugMode(btIDebugDraw::DebugDrawModes::DBG_DrawWireframe);
@@ -244,14 +249,14 @@ int main()
 
 
 	light.pushElement(Light::roomLight());
-	light.pushElement(Light::roomLight(0.3));
+	light.pushElement(Light::roomLight(0.3f));
 	//light.pushElement(Light::SunLight());
 	//light.getAmbience(0)  = glm::vec3(0.5, 0.1, 0.1);
 	//light.getDiffuseness(0)  = glm::vec3(1.f, 0.4, 0.4);
 	//light.getSpecularity(0) = glm::vec3(1.0, 0.2, 0.2);
 	//light.getStrength(0) = 0.0003;
 	light.getPosition(1).y = 20;
-	light.getStrength(1) = 0.0003;
+	light.getStrength(1) = 0.0003f;
 
 
 	//ComplexObject o2;
@@ -289,18 +294,9 @@ int main()
 	//playerObject.objectData[0].material = Material::emerald();
 	//playerObject.objectData[0].texture = manager.getTexture("textures//cobble.jpg");
 
-	playerObject.rigidBodies.reserve(2);
-
 	playerObject.pushElement({ 0, 3 ,0 });
 
-	for(int i =0; i< 20; i++)
-	{
-		//playerObject.pushElement({ 1, 100 + i * 3 ,1 });
-	
-	}
-
-	
-	//playerObject.getIndtance(0)->setFriction(0.5);
+	//playerObject.getIndtance(0)->setFriction(0.5f);
 	
 
 	//playerObject.getIndtance(0)->setCollisionFlags(playerObject.getIndtance(0)->getCollisionFlags() |

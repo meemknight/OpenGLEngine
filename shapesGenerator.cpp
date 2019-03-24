@@ -1,3 +1,8 @@
+/////////////////////////////////////////////
+//shapesGenerator.cpp
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 #include <cstdlib>
 #include <Windows.h>
 #include <iostream>

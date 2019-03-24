@@ -1,3 +1,9 @@
+/////////////////////////////////////////////
+//AssetManager.h
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+
 #pragma once
 #include <map>
 #include <cstring>

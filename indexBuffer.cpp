@@ -1,3 +1,8 @@
+/////////////////////////////////////////////
+//indexBuffer.cpp
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 #include "indexBuffer.h"
 
 indexBuffer::indexBuffer()

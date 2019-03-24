@@ -1,5 +1,11 @@
 #version 330
 
+/////////////////////////////////////////////
+//vertn.vert
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+
 layout (location = 0) in vec4 position; //vec3 (var var var) 1.0
 layout (location = 1) in vec3 incolor;
 layout (location = 2) in vec3 normals;

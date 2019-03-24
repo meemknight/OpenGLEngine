@@ -1,12 +1,15 @@
-//////////////////////////////
+/////////////////////////////////////////////
+//vertexAttribute.h
 //Copyright(c) 2019 Luta Vlad
-//////////////////////////////
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+
 #pragma once
 #include <GL/glew.h>
 #include <vector>
 #include <initializer_list>
 
-struct Attribute	///vbo
+struct Attribute
 {
 	Attribute() = default;
 	Attribute(unsigned int length, size_t sizeOfElement, GLenum type) :length(length), sizeOfElement(sizeOfElement), type(type)
@@ -20,7 +23,8 @@ struct Attribute	///vbo
 	GLenum type;
 };
 
-
+///bref vbo or vertex buffer object is used to store how data is interpreted.
+///I'm using the simple aproach here using a single object
 class vertexAttribute
 {
 public:

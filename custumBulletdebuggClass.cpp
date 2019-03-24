@@ -1,7 +1,12 @@
-#include "custumBulletdebuggClass.h"
+/////////////////////////////////////////////
+//customBulletdebugClass.h
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+#include "customBulletdebuggClass.h"
 #include "tools.h"
 
-void custumBulletdebuggClass::init()
+void customBulletdebuggClass::init()
 {
 	
 	vb.createData(0, sizeof(float) * 18);
@@ -9,7 +14,7 @@ void custumBulletdebuggClass::init()
 	va.pushAttribute(Attribute(3, sizeof(float), GL_FLOAT));
 }
 
-void custumBulletdebuggClass::drawLine(const btVector3 & from, const btVector3 & to, const btVector3 & color)
+void customBulletdebuggClass::drawLine(const btVector3 & from, const btVector3 & to, const btVector3 & color)
 {
 	float data[12];
 	data[0] = from.getX();
@@ -35,7 +40,7 @@ void custumBulletdebuggClass::drawLine(const btVector3 & from, const btVector3 &
 	glDrawArrays(GL_LINES, 0, 2);
 }
 
-void custumBulletdebuggClass::drawTriangle(const btVector3 & v0, const btVector3 & v1, const btVector3 & v2, const btVector3 & color, btScalar)
+void customBulletdebuggClass::drawTriangle(const btVector3 & v0, const btVector3 & v1, const btVector3 & v2, const btVector3 & color, btScalar)
 {
 	float data[18];
 	data[0] = v0.getX();
@@ -69,25 +74,25 @@ void custumBulletdebuggClass::drawTriangle(const btVector3 & v0, const btVector3
 }
 
 
-void custumBulletdebuggClass::drawContactPoint(const btVector3 & PointOnB, const btVector3 & normalOnB, btScalar distance, int lifeTime, const btVector3 & color)
+void customBulletdebuggClass::drawContactPoint(const btVector3 & PointOnB, const btVector3 & normalOnB, btScalar distance, int lifeTime, const btVector3 & color)
 {
 }
 
-void custumBulletdebuggClass::reportErrorWarning(const char * warningString)
+void customBulletdebuggClass::reportErrorWarning(const char * warningString)
 {
 	elog(warningString);
 }
 
-void custumBulletdebuggClass::draw3dText(const btVector3 & location, const char * textString)
+void customBulletdebuggClass::draw3dText(const btVector3 & location, const char * textString)
 {
 }
 
-void custumBulletdebuggClass::setDebugMode(int debugMode)
+void customBulletdebuggClass::setDebugMode(int debugMode)
 {
 	this->debugMode = debugMode;
 }
 
-int custumBulletdebuggClass::getDebugMode() const
+int customBulletdebuggClass::getDebugMode() const
 {
 	return debugMode;
 }

@@ -1,3 +1,9 @@
+/////////////////////////////////////////////
+//vertexBuffer.h
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+
 #pragma once
 #include <vector>
 #include <GL/glew.h>
@@ -5,6 +11,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+///bref this class holds data on the gpu.
+///Use cleanup to clear it from the vram
 class vertexBuffer
 {
 	

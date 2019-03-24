@@ -1,6 +1,8 @@
-/////////////////////////
-// (c) Luta Vlad - 2019
-/////////////////////////
+/////////////////////////////////////////////
+//Shader.cpp
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 #include "Shader.h"
 #include "tools.h"
 #include <cstdio>
@@ -17,7 +19,7 @@ ShaderProgram::ShaderProgram(const VertexShader & vs,const FragmentShader & fs) 
 	compileProgram();
 }
 
-
+//todo delete parts of the program
 void ShaderProgram::compileProgram()
 {
 	id = glCreateProgram();
@@ -57,6 +59,9 @@ void ShaderProgram::unBind()
 void ShaderProgram::deleteProgram()
 {
 	glDeleteProgram(id);
+	locations.clear();
+	subRoutines.clear();
+	id = 0;
 }
 
 

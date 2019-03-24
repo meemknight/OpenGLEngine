@@ -1,3 +1,8 @@
+/////////////////////////////////////////////
+//Texture.cpp
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 #include "Texture.h"
 #include "tools.h"
 #include <iostream>

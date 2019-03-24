@@ -1,3 +1,9 @@
+/////////////////////////////////////////////
+//customBulletdebuggClass
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+
 #pragma once
 #include <btBulletCollisionCommon.h>
 #include <GL/glew.h>
@@ -7,20 +13,18 @@
 #include "indexBuffer.h"
 #include "Camera.h"
 
-class custumBulletdebuggClass: public btIDebugDraw
+class customBulletdebuggClass: public btIDebugDraw
 {
 	void init();
 	int debugMode = btIDebugDraw::DBG_DrawAabb;
 public:
-	custumBulletdebuggClass() { init(); }
-	custumBulletdebuggClass(ShaderProgram *sp, Camera *camera) :sp(sp), camera(camera) { init(); }
+	customBulletdebuggClass() { init(); }
+	customBulletdebuggClass(ShaderProgram *sp, Camera *camera) :sp(sp), camera(camera) { init(); }
 
 	ShaderProgram *sp;
 	vertexBuffer vb;
 	vertexAttribute va;
 	Camera *camera;
-
-	~custumBulletdebuggClass() {};
 
 	void	drawLine(const btVector3& from, const btVector3& to, const btVector3& color) override;
 

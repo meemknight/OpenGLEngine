@@ -1,5 +1,10 @@
-#include "Camera.h"
+/////////////////////////////////////////////
+//Camera.cpp
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 
+#include "Camera.h"
 
 glm::vec3 Camera::getFirstPersonPosition()
 {

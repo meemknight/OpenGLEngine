@@ -1,6 +1,8 @@
+///////////////////////////////////////////////////////////
 //I do not own this code
 //I have edited it to accomodate it with my logging system
 //https://github.com/Bly7/OBJ-Loader
+///////////////////////////////////////////////////////////
 #include "tools.h"
 
 // OBJ_Loader.h - A Single Header OBJ Model Loader

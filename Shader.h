@@ -1,14 +1,16 @@
-//////////////////////////////
+/////////////////////////////////////////////
+//Shader.h
 //Copyright(c) 2019 Luta Vlad
-//////////////////////////////
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 #pragma once
 #include<GL/glew.h>
 #include <cstdio>
 #include <iostream>
 #include <map>
+#include <cstring>
 
 class ShaderProgram;
-
 
 template <GLenum shaderType>
 class Shader
@@ -73,7 +75,7 @@ struct cmp_str //for compairing the strings literals
 	}
 };
 
-
+///bref this class is used for compiling shaders and also using their data
 class ShaderProgram
 {
 	void compileProgram();

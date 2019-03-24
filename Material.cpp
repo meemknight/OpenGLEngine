@@ -1,3 +1,8 @@
+/////////////////////////////////////////////
+//Material.cpp
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 #include "Material.h"
 
 Material::Material()

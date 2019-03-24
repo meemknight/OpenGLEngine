@@ -1,19 +1,21 @@
-//////////////////////////////
+/////////////////////////////////////////////
 //Light.h
 //Copyright(c) 2019 Luta Vlad
-//////////////////////////////
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 #pragma once
 #include <glm/glm.hpp>
 #include <vector>
 #include "Shader.h"
 
+
+///bref this class holds some light related data
 struct Light
 {
 public:
 	Light();
 	Light(glm::vec4 position, glm::vec3 ambient, glm::vec3 diffuse ,glm::vec3 specular, float strength):
 		position(position), ambient(ambient), diffuse(diffuse), specular(specular), strength(strength){}
-
 
 	void bind(ShaderProgram &sp);
 
@@ -35,6 +37,7 @@ public:
 
 
 //todo: refactor this
+///this class reprezents a vector of lights
 class LightContext
 {
 	std::vector<glm::vec4> positions;

@@ -1,6 +1,5 @@
-////////////////////////
-//i don't own this code
-////////////////////////
+//I do not own this code
+
 #include "objLoader.h"
 
 namespace objl

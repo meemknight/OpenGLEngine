@@ -1,7 +1,9 @@
-///////////////////////////////////
+/////////////////////////////////////////////
 //GameObjectPool.cpp
 //Copyright(c) 2019 Luta Vlad
-///////////////////////////////////
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+
 #include "GameObjectPool.h"
 
 void GameObjectPool::clearLightContextContent()
@@ -12,7 +14,8 @@ void GameObjectPool::clearLightContextContent()
 	}
 }
 
-//todo 
+///the syntax for the file type looks like this:
+///phisical "objects/bigWood.obj" @position 48, 7, -10 @rotation 90, 0, 0 @mass 15 @collision "" 
 void GameObjectPool::load(const char * file)
 {
 	auto data = loadMapData(file);

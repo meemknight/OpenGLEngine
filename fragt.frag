@@ -1,6 +1,11 @@
 #version 400
-
 #define LIGHT_COUNT 32
+
+/////////////////////////////////////////////
+//fragt.frag
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
 
 uniform float u_time;
 uniform vec3 u_eyePosition;

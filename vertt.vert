@@ -1,5 +1,11 @@
 #version 330
 
+/////////////////////////////////////////////
+//vertt.vert
+//Copyright(c) 2019 Luta Vlad
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+
 layout (location = 0) in vec4 position; //vec3 var var var 1.0
 layout (location = 1) in vec2 inTexture;
 layout (location = 2) in vec3 normals;
@@ -23,7 +29,7 @@ void main()
 	finalPosition = u_full * position;
 
 	v_texture = inTexture;
-	v_Normal = vec3(modelToWorld * vec4(normals,0)); //niormalise ?? 
+	v_Normal = vec3(modelToWorld * vec4(normals,0)); //todo niormalise ?? 
 	
 	gl_Position = finalPosition;
 	worldspace = (modelToWorld * position).xyz;

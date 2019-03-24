@@ -1,6 +1,9 @@
-//////////////////////////////
+/////////////////////////////////////////////
+//CharacterMouseController.h
 //Copyright(c) 2019 Luta Vlad
-//////////////////////////////
+//https://github.com/meemknight/OpenGLEngine
+/////////////////////////////////////////////
+
 #pragma once
 #include <glm/glm.hpp>
 #include <sfml/Graphics.hpp>
@@ -19,9 +22,9 @@ public:
 	float scrollMax = 10.f;
 	float scrollMin = 2.f;
 
-	float topDownRotationSpeed = 0.0035;
-	float cameraAngleSpeed = 0.0035;
-	float mouseScrollSpeed = 0.15;
+	float topDownRotationSpeed = 0.0035f;
+	float cameraAngleSpeed = 0.0035f;
+	float mouseScrollSpeed = 0.15f;
 
 	///this is for the angle on the y axe
 	float *topDownRotation = nullptr;
