@@ -15,7 +15,7 @@ char* parseName(char *line, char *& endPos)
 {
 	line += 1;
 
-	if(line[0] == '\"')
+	if (line[0] == '\"')
 	{
 		endPos = line + 1;
 		return 0;
@@ -115,15 +115,31 @@ int parseCommand(char *line, char *& endPos)
 	if (strcmp(line, "@collision") == 0)
 	{
 		return collision;
-	}else
+	}
+	else
 	if (strcmp(line, "@unique") == 0)
 	{
 		return unique;
 	}
 	else
+	if (strcmp(line, "@ambience") == 0)
 	{
-		//not log here
-		return none;
+		return ambience;
+	}
+	else
+	if (strcmp(line, "@diffuse") == 0)
+	{
+		return diffuse;
+	}
+	else
+	if (strcmp(line, "@specular") == 0)
+	{
+		return specular;
+	}
+	else
+	{
+	//not log here
+	return none;
 	}
 }
 
@@ -147,18 +163,18 @@ std::vector<generalObjectData> loadMapData(const char *f)
 		{
 			continue;
 		}
-		
+
 
 		generalObjectData object;
 		char *current = line;
 		bool nextLine = 0;
 		while (!nextLine)
 		{
-			if(current[0] == '\0')
+			if (current[0] == '\0')
 			{
 				break;
 			}
-			
+
 
 			float x = 0, y = 0, z = 0;
 			char *p;
@@ -187,8 +203,8 @@ std::vector<generalObjectData> loadMapData(const char *f)
 				break;
 			case light:
 				object.type = light;
-				object.name = parseName(current, p);
-				current = p;
+				//object.name = parseName(current, p);
+				//current ++;
 				break;
 			case position:
 				parseFloats(current, p, x, y, z);
@@ -236,23 +252,23 @@ std::vector<generalObjectData> loadMapData(const char *f)
 			case mass:
 				parseFloat(current, p, x);
 				current = p;
-				object.mass= x;
+				object.mass = x;
 				break;
 			case collision:
+			{
+				auto x = parseName(current, p);
+				if (x == 0)
 				{
-					auto x = parseName(current, p);
-					if (x == 0)
-					{
-						object.collisionName = "";
-					}
-					else
-					{
-						object.collisionName = x;
-					}
-					current = p;
-					break;
+					object.collisionName = "";
 				}
-			case unique:			
+				else
+				{
+					object.collisionName = x;
+				}
+				current = p;
+				break;
+			}
+			case unique:
 				object.unique = 1;
 				break;
 			default:

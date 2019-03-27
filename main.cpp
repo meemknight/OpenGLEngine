@@ -484,30 +484,30 @@ int main()
 		 float maxSpeed = 35000 * deltatime;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 		{
-			playerObject.getIndtance(0)->applyCentralForce({ 0,0,-maxSpeed * cos(playerAngle) });
-			playerObject.getIndtance(0)->applyCentralForce({ -maxSpeed * sin(playerAngle), 0, 0 });
-			playerObject.getIndtance(0)->activate(1);
+			playerObject.getInstance(0)->applyCentralForce({ 0,0,-maxSpeed * cos(playerAngle) });
+			playerObject.getInstance(0)->applyCentralForce({ -maxSpeed * sin(playerAngle), 0, 0 });
+			playerObject.getInstance(0)->activate(1);
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
 		{
-			playerObject.getIndtance(0)->applyCentralForce({ 0,0,maxSpeed * cos(playerAngle) });
-			playerObject.getIndtance(0)->applyCentralForce({ maxSpeed * sin(playerAngle), 0, 0 });
-			playerObject.getIndtance(0)->activate(1);
+			playerObject.getInstance(0)->applyCentralForce({ 0,0,maxSpeed * cos(playerAngle) });
+			playerObject.getInstance(0)->applyCentralForce({ maxSpeed * sin(playerAngle), 0, 0 });
+			playerObject.getInstance(0)->activate(1);
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
 		{
-			playerObject.getIndtance(0)->applyCentralForce({ -maxSpeed * cos(playerAngle),0,0 });
-			playerObject.getIndtance(0)->applyCentralForce({ 0,0, maxSpeed * sin(playerAngle) });
-			playerObject.getIndtance(0)->activate(1);
+			playerObject.getInstance(0)->applyCentralForce({ -maxSpeed * cos(playerAngle),0,0 });
+			playerObject.getInstance(0)->applyCentralForce({ 0,0, maxSpeed * sin(playerAngle) });
+			playerObject.getInstance(0)->activate(1);
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
 		{
-			playerObject.getIndtance(0)->applyCentralForce({ maxSpeed * cos(playerAngle),0,0 });
-			playerObject.getIndtance(0)->applyCentralForce({ 0,0,maxSpeed * -sin(playerAngle) });
-			playerObject.getIndtance(0)->activate(1);
+			playerObject.getInstance(0)->applyCentralForce({ maxSpeed * cos(playerAngle),0,0 });
+			playerObject.getInstance(0)->applyCentralForce({ 0,0,maxSpeed * -sin(playerAngle) });
+			playerObject.getInstance(0)->activate(1);
 		}
 
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::T))
@@ -522,17 +522,17 @@ int main()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
-			playerObject.getIndtance(0)->applyCentralForce({ 0,maxSpeed*2,0 });
-			playerObject.getIndtance(0)->activate(1);
+			playerObject.getInstance(0)->applyCentralForce({ 0,maxSpeed*2,0 });
+			playerObject.getInstance(0)->activate(1);
 		}
 
-		auto v = playerObject.getIndtance(0)->getLinearVelocity();
+		auto v = playerObject.getInstance(0)->getLinearVelocity();
 		const int maxVelocity = 6;
 		if (v.getZ() > maxVelocity) { v.setZ(maxVelocity); }
 		if (v.getZ() < -maxVelocity) { v.setZ(-maxVelocity); }
 		if (v.getX() > maxVelocity) { v.setX(maxVelocity); }
 		if (v.getX() < -maxVelocity) { v.setX(-maxVelocity); }
-		playerObject.getIndtance(0)->setLinearVelocity(v);
+		playerObject.getInstance(0)->setLinearVelocity(v);
 #pragma endregion
 
 		world->stepSimulation(deltatime);
@@ -552,8 +552,8 @@ int main()
 
 		glm::vec3 playerPos;
 		btTransform playerTransform;
-		playerObject.getIndtance(0)->getMotionState()->getWorldTransform(playerTransform);
-		playerObject.getIndtance(0)->setWorldTransform(playerTransform);
+		playerObject.getInstance(0)->getMotionState()->getWorldTransform(playerTransform);
+		playerObject.getInstance(0)->setWorldTransform(playerTransform);
 		playerPos = { playerTransform.getOrigin().x(), playerTransform.getOrigin().y(), playerTransform.getOrigin().z() };
 		
 
