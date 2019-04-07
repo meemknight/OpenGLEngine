@@ -35,7 +35,7 @@
 extern "C"
 {
 	//Enable dedicated graphics
-	//__declspec(dllexport) DWORD NvOptimusEnablement = true;
+	__declspec(dllexport) DWORD NvOptimusEnablement = true;
 	//__declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = true;
 }
 
@@ -242,7 +242,7 @@ int main()
 
 	//generateMountains(&planVertexes2, &planIndices2, 2, plansize2, planIndicessize2);
 	shapeGenerator::generatePlane(&planVertexes, &planIndices, 512, plansize, planIndicessize);
-	std::cout << glGetString(GL_VERSION);
+	ilog(glGetString(GL_VERSION));
 
 
 	indexBuffer ib(cubeIndices, sizeof(cubeIndices));
@@ -274,6 +274,7 @@ int main()
 	plan.pushElement(glm::mat4(0));
 	plan.getInstance(0).setPosition(0, -1, 0);
 	plan.getInstance(0).setRotation(0, 0, 0);
+	plan.getInstance(0).setScale(1);
 	plan.setMaterial(Material::greyMaterial(1, 0.5f, 0.01f, 1));
 
 
@@ -580,31 +581,38 @@ int main()
 		plan.draw();
 
 		window.pushGLStates();
-		//glDisable(GL_DEPTH_TEST);
-		//glBindBuffer(GL_ARRAY_BUFFER, 0);
-		//glBindVertexArray(0);
-		//glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_DEPTH_TEST);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 		//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-		for(int i=0; i<2; i++)
+		glUseProgram(0);
+		//window.resetGLStates();
+
+		for(int i=0; i<14; i++)
 		{
 			glDisableVertexAttribArray(i);
 		}
-		//glUseProgram(0);
-		//window.resetGLStates();
 
 		//glViewport(0, 0, width, height);
 		sf::RectangleShape s({ 100,100 });
 		s.setPosition({ 100, 100 });
 
 		s.setFillColor(sf::Color::Green);
-		//window.draw(s);
+		
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+		{
+			window.draw(s);
+		}
+		
 		window.setView(sf::View({ 0, 0, width, height }));
 		window.display();
 
 		window.popGLStates();
-		//glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 		
 	}
+
 
 	/*
 	playerObject.cleanup();

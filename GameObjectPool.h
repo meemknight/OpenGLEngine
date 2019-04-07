@@ -87,6 +87,7 @@ struct KeyPair
 		T temp = std::forward<T>(elements[index]);
 
 		elements.erase(elements.begin() + index);
+		key.erase(key.begin() + index);
 
 		return std::forward<T>(temp);
 	}
@@ -141,6 +142,8 @@ public:
 		this->textureManager = textureManager; this->modelManager = modelManager;
 	}
 
+	void setShaderProgramToAllComponents(ShaderProgram *sp);
+	
 	void clearLightContextContent();
 	void load(const char *file);
 	void drawAll();

@@ -35,8 +35,7 @@ void ShaderProgram::compileProgram()
 		char *p = new char[info];
 
 		glGetProgramInfoLog(id, info, 0, p);
-		std::cout << "Error compiling Shader: ";
-		std::cout << p << "\n";
+		elog("Error compiling Shader:", p);
 		delete[] p;
 	}
 
@@ -71,12 +70,10 @@ int ShaderProgram::getUniformLocation(const char* name)
 	{
 		int a = glGetUniformLocation(id, name);
 
-	#ifdef DEBUG
 		if(a==-1)
 		{
 			elog("Uniform error: ", name);
 		}
-	#endif // DEBUG
 				
 		//llog("Loaded Uniform: ", name);
 		locations[name] = a;
@@ -94,12 +91,10 @@ unsigned int ShaderProgram::getSoubRutineLocation(const char * name)
 	{
 		unsigned int a = glGetSubroutineIndex(id, GL_FRAGMENT_SHADER, name);
 
-#ifdef DEBUG
 		if (a == GL_INVALID_INDEX)
 		{
 			llog("Uniform subroutine error: ", name);
 		}
-#endif // DEBUG
 
 		subRoutines[name] = a;
 		return a;

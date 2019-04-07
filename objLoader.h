@@ -419,7 +419,7 @@ namespace objl
 
 			Mesh tempMesh;
 
-#ifdef OBJL_CONSOLE_OUTPUT
+#ifdef FORCE_LOG
 			const unsigned int outputEveryNth = 1000;
 			unsigned int outputIndicator = outputEveryNth;
 #endif
@@ -427,7 +427,7 @@ namespace objl
 			std::string curline;
 			while (std::getline(file, curline))
 			{
-#ifdef OBJL_CONSOLE_OUTPUT
+#ifdef FORCE_LOG
 				if ((outputIndicator = ((outputIndicator + 1) % outputEveryNth)) == 1)
 				{
 					if (!meshname.empty())
@@ -491,7 +491,7 @@ namespace objl
 							}
 						}
 					}
-#ifdef OBJL_CONSOLE_OUTPUT
+#ifdef FORCE_LOG
 					std::cout << std::endl;
 					outputIndicator = 0;
 #endif
@@ -593,7 +593,7 @@ namespace objl
 						Indices.clear();
 					}
 
-#ifdef OBJL_CONSOLE_OUTPUT
+#ifdef FORCE_LOG
 					outputIndicator = 0;
 #endif
 				}
@@ -619,7 +619,7 @@ namespace objl
 
 					pathtomat += algorithm::tail(curline);
 
-#ifdef OBJL_CONSOLE_OUTPUT
+#ifdef FORCE_LOG
 					std::cout << std::endl << "- find materials in: " << pathtomat << std::endl;
 #endif
 
@@ -628,7 +628,7 @@ namespace objl
 				}
 			}
 
-#ifdef OBJL_CONSOLE_OUTPUT
+#ifdef FORCE_LOG
 			std::cout << std::endl;
 #endif
 

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <map>
 #include <cstring>
+#include "tools.h"
 
 class ShaderProgram;
 
@@ -47,7 +48,7 @@ public:
 			glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 			message = new char[length];
 			glGetShaderInfoLog(id, length, &length, message);
-			std::cout << message << std::endl;
+			elog(message);
 			delete[] message;
 		}
 

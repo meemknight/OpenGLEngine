@@ -16,6 +16,8 @@ in vec2 v_texture;
 in vec3 v_Normal;
 in vec3 worldspace;
 
+out vec4 outColor;
+
 struct Material
 {
 float shiny;
@@ -158,7 +160,7 @@ void main()
 	//unblend(c.rgb, 5);
 	
 	
-	gl_FragColor = vec4(c.rgb * u_tProgram(v_texture), 0);	
+	outColor = vec4(c.rgb * u_tProgram(v_texture), 0);	
 	
 		
 }
