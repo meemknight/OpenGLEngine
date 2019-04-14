@@ -7,7 +7,7 @@
 #include<GL/glew.h>
 #include <cstdio>
 #include <iostream>
-#include <map>
+#include <unordered_map>
 #include <cstring>
 #include "tools.h"
 
@@ -80,8 +80,8 @@ struct cmp_str //for compairing the strings literals
 class ShaderProgram
 {
 	void compileProgram();
-	std::map<const char*, int, cmp_str> locations;
-	std::map<const char*, unsigned int, cmp_str> subRoutines;
+	std::unordered_map<const char*, int> locations;
+	std::unordered_map<const char*, unsigned int> subRoutines;
 public:
 
 	ShaderProgram();

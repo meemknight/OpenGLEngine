@@ -37,9 +37,9 @@ void GameObjectPool::load(const char * file)
 {
 	auto data = loadMapData(file);
 
-	std::map <std::string, int> objectsNames;
-	std::map <std::string, int> complexObjectsNames;
-	std::map <std::string, int> phsicalObjectsNames;
+	std::unordered_map <std::string, int> objectsNames;
+	std::unordered_map <std::string, int> complexObjectsNames;
+	std::unordered_map <std::string, int> phsicalObjectsNames;
 
 
 	for (auto i : data)

@@ -5,7 +5,7 @@
 /////////////////////////////////////////////
 
 #pragma once
-#include <map>
+#include <unordered_map>
 #include <cstring>
 #include "Texture.h"
 #include "tools.h"
@@ -22,7 +22,7 @@ class AssetManager
 {
 public:
 
-	std::map<const char*, T, CompareCStrings> loadedData;
+	std::unordered_map<const char*, T> loadedData;
 
 	///the load method can both be used as a way of getting loaded data and load data
 	T getData(const char* name);

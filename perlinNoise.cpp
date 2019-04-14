@@ -28,7 +28,8 @@ Background
 Noise is random - a bad thing when trying to procedurally generate content. Perlin
 noise adds coherence at varying spatial scales which create natural looking noise
 arrays. Perlin noise can be further processed into all sorts of assets, such as
-mountains, maps, rooms, textures, data sets.
+mountains, 
+s, rooms, textures, data sets.
 Author
 ~~~~~~
 Twitter: @javidx9

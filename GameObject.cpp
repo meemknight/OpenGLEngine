@@ -718,6 +718,7 @@ void PhisicalObject::draw()
 	else
 	{
 		elog("missing shader program!");
+		std::terminate();
 	}
 
 	if (camera != nullptr)
