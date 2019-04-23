@@ -261,20 +261,18 @@ void GameObjectPool::clearAll()
 		i.fullCleanup();
 	}
 	gameObjectVector.eraseVectors();
-	gameObjectVector.currentKeyCount = 0;
 
 	for (auto &i : complexObjectVector.elements)
 	{
 		i.fullCleanup();
 	}
 	complexObjectVector.eraseVectors();
-	complexObjectVector.currentKeyCount = 0;
 
 	for (auto &i : phisicalObjectVector.elements)
 	{
 		i.fullCleanup();
 	}
 	phisicalObjectVector.eraseVectors();
-	phisicalObjectVector.currentKeyCount = 0;
 
+	emptyObjectVector.eraseVectors();
 }
