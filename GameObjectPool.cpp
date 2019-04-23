@@ -208,8 +208,19 @@ void GameObjectPool::load(const char * file)
 		}
 		break;
 		case light:
+		{	
+			lights->pushElement(Light({ i.position.x, i.position.y, i.position.z, 1 }, i.ka, i.kd, i.ks, i.strength));	
+		}
+		break;
+		case empty:
 		{
-			lights->pushElement(Light({ i.position.x, i.position.y, i.position.z, 1 }, i.ka, i.kd, i.ks, i.strength));
+			if(i.id != 0)
+			{
+				emptyObjectVector.PushElementWithId(i.position, i.id);
+			}else
+			{
+				emptyObjectVector.PushElement(i.position);
+			}
 		}
 		break;
 		default:

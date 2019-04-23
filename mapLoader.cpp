@@ -135,6 +135,10 @@ int parseCommand(char *line, char *& endPos)
 	if (strcmp(line, "@specular") == 0)
 	{
 		return specular;
+	}else
+	if (strcmp(line, "@empty") == 0)
+	{
+		return empty;
 	}
 	else
 	{
@@ -270,6 +274,9 @@ std::vector<generalObjectData> loadMapData(const char *f)
 			}
 			case unique:
 				object.unique = 1;
+				break;
+			case empty:
+				object.type = empty;
 				break;
 			default:
 				nextLine = 1;

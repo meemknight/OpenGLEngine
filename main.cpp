@@ -222,6 +222,8 @@ int main()
 	GameObjectPool gameObjectPool;
 	gameObjectPool.initialize(&textureProgram, &camera, &light, world, &textureManager, &modelManager);
 	gameObjectPool.load("maps//map1.txt");
+	auto dataFromFile = gameObjectPool.emptyObjectVector.getElementById(422);
+	ilog(dataFromFile.x, dataFromFile.y, dataFromFile.z);
 
 	//gameObjectPool.phisicalObjectVector.getElementById(250).objectData[0].material = Material::ruby();
 
