@@ -7,22 +7,37 @@
 #include<GL/glew.h>
 #include <cstdio>
 #include <iostream>
-#include <unordered_map>
+#include <map>
 #include <cstring>
 #include "tools.h"
 
 class ShaderProgram;
 
 template <GLenum shaderType>
-class Shader
+struct Shader
 {
 	Shader() {};
-public:
-	Shader(const char* name)	//todo move in cpp
+	Shader(const char* name)
+	{
+		compile(name);
+	}
+	//	static using shaderType = shaderType;
+
+	unsigned int id = 0;
+	void deleteShader();
+
+	void compile(const char* name)
 	{
 		size_t size;
 		FILE *input;
 		input = fopen(name, "rb");
+
+		if (input == nullptr)
+		{
+			MessageBox(0, "Error openning shader", name, MB_ICONERROR);
+			elog("couldn't open the shader file:", name);
+			std::terminate();
+		}
 
 		fseek(input, 0, SEEK_END);
 		size = ftell(input);
@@ -48,6 +63,7 @@ public:
 			glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 			message = new char[length];
 			glGetShaderInfoLog(id, length, &length, message);
+			elog("Error compiling shader:", name);
 			elog(message);
 			delete[] message;
 		}
@@ -55,22 +71,18 @@ public:
 		delete[] data;
 
 	}
-	
-//	static using shaderType = shaderType;
 
-	void deleteShader();
 
-	unsigned int id;
 
 	friend ShaderProgram;
 };
 
-using VertexShader = Shader<GL_VERTEX_SHADER>; 
+using VertexShader = Shader<GL_VERTEX_SHADER>;
 using FragmentShader = Shader<GL_FRAGMENT_SHADER>;
 
 struct cmp_str //for compairing the strings literals
 {
-	bool operator()(const char *a,const char *b)const
+	bool operator()(const char *a, const char *b)const
 	{
 		return std::strcmp(a, b) < 0;
 	}
@@ -80,20 +92,20 @@ struct cmp_str //for compairing the strings literals
 class ShaderProgram
 {
 	void compileProgram();
-	std::unordered_map<const char*, int> locations;
-	std::unordered_map<const char*, unsigned int> subRoutines;
+	std::map<const char*, int, cmp_str> locations;
+	std::map<const char*, unsigned int, cmp_str> subRoutines;
 public:
 
 	ShaderProgram();
-	ShaderProgram(const VertexShader &vs,const FragmentShader &fs);
-	
+	ShaderProgram(const VertexShader &vs, const FragmentShader &fs);
+
 	unsigned int id = 0;
 
-	
+
 	void bind();
 	void unBind();
 	void deleteProgram();
-	
+
 	int getUniformLocation(const char* name);
 
 	unsigned int getSoubRutineLocation(const char* name);
