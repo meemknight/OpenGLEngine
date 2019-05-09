@@ -29,6 +29,7 @@
 #include "shapesGenerator.h"
 #include "GameObjectPool.h"
 #include "CharacterMouseController.h"
+#include "ParticleSystem.h"
 
 #include "tools.h"
 
@@ -213,7 +214,8 @@ int main()
 	ShaderProgram normalProgram(VertexShader("vertn.vert"), FragmentShader("fragn.frag"));
 	ShaderProgram textureProgram(VertexShader("vertt.vert"), FragmentShader("fragt.frag"));
 	ShaderProgram debugShader(VertexShader("debugShader.vert"), FragmentShader("debugShader.frag"));
-	
+	ShaderProgram particleShader({ "particleVert.vert" }, { "particleFrag.frag" });
+
 	customBulletdebuggClass debugDrawer(&debugShader ,&camera);
 
 	world->setDebugDrawer(&debugDrawer);
@@ -306,6 +308,8 @@ int main()
 	//btCollisionObject::CF_KINEMATIC_OBJECT);
 	//playerObject.getIndtance(0)->setActivationState(DISABLE_DEACTIVATION);
 
+	ParticleSystem particles(1, particleShader);
+	particles.camera = &camera;
 
 	window.setTitle((char*)glGetString(GL_RENDERER));
 	while (window.isOpen())
@@ -576,11 +580,12 @@ int main()
 
 		lightObject.draw();
 
+		particles.draw();
 
 
 		//world->debugDrawWorld();
 
-		plan.draw();
+		//plan.draw();
 
 		window.pushGLStates();
 		glDisable(GL_DEPTH_TEST);

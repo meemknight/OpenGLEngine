@@ -34,9 +34,8 @@ struct Shader
 
 		if (input == nullptr)
 		{
-			MessageBox(0, "Error openning shader", name, MB_ICONERROR);
 			elog("couldn't open the shader file:", name);
-			std::terminate();
+			
 		}
 
 		fseek(input, 0, SEEK_END);
