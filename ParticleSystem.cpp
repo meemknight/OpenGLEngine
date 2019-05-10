@@ -18,7 +18,7 @@ void ParticleSystem::draw()
 	for (int i = 0; i < count; i++)
 	{
 		ParticlePositions[i].x = 0;
-		ParticlePositions[i].y = 6;
+		ParticlePositions[i].y = 4;
 		ParticlePositions[i].z = 0;
 	}
 
@@ -43,7 +43,20 @@ void ParticleSystem::draw()
 	glVertexAttribDivisor(2, 1);
 
 	sp.bind();
-	glm::mat4 projection = camera->getProjectionViewMatrix();
+	glm::mat4 projection = camera->getObjectToWorld();
+	projection[0][0] = 1;
+	projection[1][1] = 1;
+	projection[2][2] = 1;
+	
+	projection[0][1] = 0;
+	projection[1][0] = 0;
+	projection[0][2] = 0;
+	projection[2][0] = 0;
+	projection[2][1] = 0;
+	projection[1][2] = 0;
+	
+	projection = camera->getProjectionMatrix() * projection;
+
 	glUniformMatrix4fv(sp.getUniformLocation("projectionMatrix"), 1, GL_FALSE, &projection[0][0]);
 
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, count);

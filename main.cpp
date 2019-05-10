@@ -314,6 +314,13 @@ int main()
 	window.setTitle((char*)glGetString(GL_RENDERER));
 	while (window.isOpen())
 	{
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), { 0 });
+
+		auto tempM = camera.getProjectionViewMatrix();
+		printf("%.4f %.4f %f.4 %f.4\n", tempM[0][0], tempM[1][0], tempM[2][0], tempM[3][0]);
+		printf("%.4f %.4f %f.4 %f.4\n", tempM[0][1], tempM[1][1], tempM[2][1], tempM[3][1]);
+		printf("%.4f %.4f %f.4 %f.4\n", tempM[0][2], tempM[1][2], tempM[2][2], tempM[3][2]);
+		printf("%.4f %.4f %f.4 %f.4\n", tempM[0][3], tempM[1][3], tempM[2][3], tempM[3][3]);
 
 		float deltatime = c.restart().asSeconds();
 		if(deltatime > (1.f/4.f))

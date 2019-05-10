@@ -53,7 +53,7 @@ public:
 
 	glm::mat4 getObjectToWorld(); ///gets the object to world for the camera
 	glm::mat4 getProjectionViewMatrix(); /// gets the full view transform
-
+	glm::mat4 getProjectionMatrix();
 	
 
 	///uded for mouse moving

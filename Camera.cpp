@@ -30,6 +30,7 @@ glm::vec3 Camera::getCurrentViewingPosition()
 Camera::Camera()
 {
 }
+
 Camera::Camera(float angle, float * width, float * height, float closePlane, float farPlane)
 {
 	projectionData.angle = angle;
@@ -81,6 +82,11 @@ glm::mat4 Camera::getObjectToWorld()
 glm::mat4 Camera::getProjectionViewMatrix()
 {
 	return glm::perspective(glm::radians(projectionData.angle), *projectionData.width / *projectionData.height, projectionData.closePlane, projectionData.farPlane) * getObjectToWorld();
+}
+
+glm::mat4 Camera::getProjectionMatrix()
+{
+	return glm::perspective(glm::radians(projectionData.angle), *projectionData.width / *projectionData.height, projectionData.closePlane, projectionData.farPlane);
 }
 
 void Camera::mouseUpdate(const glm::vec2 & pos, sf::RenderWindow &window)
