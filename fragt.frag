@@ -142,7 +142,6 @@ void main()
 
 	for(int i=0; i<u_lightCount; i++)
 	{
-	
 		l.position = u_lightPosition[i];
 		l.ambient = u_lightAmbient[i];
 		l.diffuse = u_lightDiffuse[i];

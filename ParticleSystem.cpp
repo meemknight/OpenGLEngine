@@ -15,12 +15,6 @@ ParticleSystem::ParticleSystem(unsigned int count, ShaderProgram &sp) :count(cou
 
 void ParticleSystem::draw()
 {
-	for (int i = 0; i < count; i++)
-	{
-		ParticlePositions[i].x = 0;
-		ParticlePositions[i].y = 4;
-		ParticlePositions[i].z = 0;
-	}
 
 	//shape
 	glEnableVertexAttribArray(0);
@@ -44,6 +38,7 @@ void ParticleSystem::draw()
 
 	sp.bind();
 	glm::mat4 projection = camera->getObjectToWorld();
+	//resetting the rotation
 	projection[0][0] = 1;
 	projection[1][1] = 1;
 	projection[2][2] = 1;
@@ -93,7 +88,12 @@ void ParticleSystem::buildParticleSystem()
 	ParticlePositions = new glm::vec3[count];
 	ParticleDrag = new glm::vec4[count];
 
-
+	for (int i = 0; i < count; i++)
+	{
+		ParticlePositions[i].x = 0;
+		ParticlePositions[i].y = 4;
+		ParticlePositions[i].z = 0;
+	}
 
 }
 

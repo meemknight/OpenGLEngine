@@ -27,7 +27,6 @@ void main()
 	//modelMatrix[2][2] = projectionMatrix[2][2];
 	//
 	vec4 newPos = vertex + position;
-
 	
 	gl_Position = projectionMatrix * newPos;
 }

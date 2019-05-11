@@ -25,13 +25,13 @@ public:
 	std::unordered_map<const char*, T> loadedData;
 
 	///the load method can both be used as a way of getting loaded data and load data
-	T getData(const char* name);
+	const T &getData(const char* name);
 
 	void cleanUp();
 };
 
 template <class T>
-T AssetManager<T>::getData(const char * name)
+const T &AssetManager<T>::getData(const char * name)
 {
 	auto temp = loadedData.find(name);
 	if (temp == loadedData.end())
