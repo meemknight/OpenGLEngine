@@ -1,5 +1,11 @@
 #include "ParticleSystem.h"
+#include <random>
+#include <functional>
+#include <utility>
 
+std::random_device rng;
+std::uniform_real_distribution<float> negDist(-5.0, 5.0);
+std::uniform_real_distribution<float> upDist(4.0, 10.0);
 
 static const GLfloat vertexBufferData[] = {
  -0.5f, -0.5f, 0.0f,
@@ -8,13 +14,57 @@ static const GLfloat vertexBufferData[] = {
  0.5f, 0.5f, 0.0f,
 };
 
-ParticleSystem::ParticleSystem(unsigned int count, ShaderProgram &sp) :count(count), sp(sp)
+ParticleSystem::ParticleSystem(unsigned int count, float cicleDuration, ShaderProgram &sp) :count(count), sp(sp), cicleDuration(cicleDuration)
 {
 	buildParticleSystem();
 }
 
-void ParticleSystem::draw()
+void ParticleSystem::draw(float deltaTime)
 {
+	float particleDuration = cicleDuration / count;
+	int particleAdvance = deltaTime / particleDuration;
+	
+	accumulatedTime = (deltaTime / particleDuration) - particleAdvance;
+
+	int overflow = currentParticle + particleAdvance - count;
+	int newPosition;
+
+	if(overflow > 0)
+	{
+		particleAdvance = count - currentParticle;
+		newPosition = overflow;
+	}else
+	{
+		newPosition = currentParticle + particleAdvance;
+	}
+
+	for(int i = currentParticle; i < currentParticle+particleAdvance; i++)
+	{
+		ParticlePositions[i] = position;
+		ParticleDrag[i].x = negDist(rng);
+		ParticleDrag[i].z = negDist(rng);
+		ParticleDrag[i].y = upDist(rng);
+
+	}
+
+	for(int i=0; i<overflow; i++)
+	{
+		ParticlePositions[i] = position;
+		ParticleDrag[i].x = negDist(rng);
+		ParticleDrag[i].z = negDist(rng);
+		ParticleDrag[i].y = upDist(rng);
+
+	}
+
+	currentParticle = newPosition;
+
+	
+	for(int i=0; i<count; i++)
+	{
+		ParticlePositions[i] += glm::vec3(ParticleDrag[i]) * deltaTime;
+		ParticleDrag[i].y += gravity * deltaTime;
+	}
+
 
 	//shape
 	glEnableVertexAttribArray(0);
@@ -37,29 +87,29 @@ void ParticleSystem::draw()
 	glVertexAttribDivisor(2, 1);
 
 	sp.bind();
-	glm::mat4 projection = camera->getObjectToWorld();
+	glm::mat4 position = camera->getObjectToWorld();
 	//resetting the rotation
-	projection[0][0] = 1;
-	projection[1][1] = 1;
-	projection[2][2] = 1;
+	//projection[0][0] = 1;
+	//projection[1][1] = 1;
+	//projection[2][2] = 1;
 	
-	projection[0][1] = 0;
-	projection[1][0] = 0;
-	projection[0][2] = 0;
-	projection[2][0] = 0;
-	projection[2][1] = 0;
-	projection[1][2] = 0;
+	//projection[0][1] = 0;
+	//projection[1][0] = 0;
+	//projection[0][2] = 0;
+	//projection[2][0] = 0;
+	//projection[2][1] = 0;
+	//projection[1][2] = 0;
 	
-	projection = camera->getProjectionMatrix() * projection;
+	glm::mat4 projection = camera->getProjectionMatrix();
 
 	glUniformMatrix4fv(sp.getUniformLocation("projectionMatrix"), 1, GL_FALSE, &projection[0][0]);
+	glUniformMatrix4fv(sp.getUniformLocation("positionMatrix"), 1, GL_FALSE, &position[0][0]);
 
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, count);
 }
 
 void ParticleSystem::buildParticleSystem()
 {
-
 	glGenBuffers(1, &vertexShapeId);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexShapeId);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBufferData), vertexBufferData, GL_STATIC_DRAW);
@@ -86,13 +136,20 @@ void ParticleSystem::buildParticleSystem()
 	delete[] colors;
 
 	ParticlePositions = new glm::vec3[count];
-	ParticleDrag = new glm::vec4[count];
-
+	ParticleDrag = new glm::vec3[count];
+	
 	for (int i = 0; i < count; i++)
 	{
 		ParticlePositions[i].x = 0;
-		ParticlePositions[i].y = 4;
+		ParticlePositions[i].y = 0;
 		ParticlePositions[i].z = 0;
+	}
+
+	for(int i=0; i<count; i++)
+	{
+		ParticleDrag[i].x = negDist(rng);
+		ParticleDrag[i].z = negDist(rng);
+		ParticleDrag[i].y = upDist(rng);
 	}
 
 }

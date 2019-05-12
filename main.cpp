@@ -307,7 +307,7 @@ int main()
 	//btCollisionObject::CF_KINEMATIC_OBJECT);
 	//playerObject.getIndtance(0)->setActivationState(DISABLE_DEACTIVATION);
 
-	ParticleSystem particles(1, particleShader);
+	ParticleSystem particles(100, 0.3, particleShader);
 	particles.camera = &camera;
 
 	window.setTitle((char*)glGetString(GL_RENDERER));
@@ -578,13 +578,13 @@ int main()
 
 		lightObject.draw();
 
-		particles.draw();
+		particles.draw(deltatime);
 
 
 		//world->debugDrawWorld();
 
 		//plan.draw();
-
+		
 		window.pushGLStates();
 		glDisable(GL_DEPTH_TEST);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
