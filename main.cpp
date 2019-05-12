@@ -307,7 +307,7 @@ int main()
 	//btCollisionObject::CF_KINEMATIC_OBJECT);
 	//playerObject.getIndtance(0)->setActivationState(DISABLE_DEACTIVATION);
 
-	ParticleSystem particles(100, 0.3, particleShader);
+	ParticleSystem particles(50, 1, particleShader);
 	particles.camera = &camera;
 
 	window.setTitle((char*)glGetString(GL_RENDERER));

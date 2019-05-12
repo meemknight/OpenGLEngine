@@ -22,10 +22,10 @@ ParticleSystem::ParticleSystem(unsigned int count, float cicleDuration, ShaderPr
 void ParticleSystem::draw(float deltaTime)
 {
 	float particleDuration = cicleDuration / count;
-	int particleAdvance = deltaTime / particleDuration;
+	float fadvance = deltaTime / particleDuration + accumulatedAdvance;
+	int particleAdvance = fadvance;
+	accumulatedAdvance = fadvance - particleAdvance;
 	
-	accumulatedTime = (deltaTime / particleDuration) - particleAdvance;
-
 	int overflow = currentParticle + particleAdvance - count;
 	int newPosition;
 

@@ -21,17 +21,7 @@ void main()
 							translationMatrix = transpose(translationMatrix);
 
 	mat4 modelView = positionMatrix * translationMatrix;
-	//modelView[0][1] = projectionMatrix[1][0];
-	//modelView[0][2] = projectionMatrix[2][0];
-	//modelView[2][1] = projectionMatrix[1][2];
-	//modelView[1][0] = projectionMatrix[0][1];
-	//modelView[2][0] = projectionMatrix[0][2];
-	//modelView[1][2] = projectionMatrix[2][1];
-	//modelView[0][0] = projectionMatrix[0][0];
-	//modelView[1][1] = projectionMatrix[1][1];
-	//modelView[2][2] = projectionMatrix[2][2];
-	//
-	
+
 	modelView[0][0] = 1;
 	modelView[1][1] = 1;
 	modelView[2][2] = 1;

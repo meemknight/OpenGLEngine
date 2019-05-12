@@ -34,5 +34,5 @@ private:
 	GLuint vertexColorsId = 0;
 	
 	int currentParticle = 0;
-	float accumulatedTime = 0.f;
+	float accumulatedAdvance = 0.f;
 };
