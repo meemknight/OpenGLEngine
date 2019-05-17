@@ -8,15 +8,29 @@
 ///to controll the behavour of the log or just 
 ///change from debug to releasee
 
+///define ERRORS_ONLY
+///to only display error messages
+
+
 #pragma once
 #include <iostream>
 #include <Windows.h>
+#include <sstream>
 
-#define FORCE_LOG
+#define ERRORS_ONLY
 
 #ifdef _DEBUG
 #define FORCE_LOG
 #endif
+
+#ifdef ERRORS_ONLY
+#undef FORCE_LOG
+
+	
+
+#endif // ERRORS_ONLY
+
+
 
 #ifdef FORCE_LOG
 inline void llog()
@@ -123,11 +137,50 @@ inline void elog(F f, T ...args)
 	elog(args...);
 }
 #else
+
+#ifdef ERRORS_ONLY
+
+inline void elog(std::stringstream &&stream)
+{
+	OutputDebugString(stream.str().c_str());
+
+	int rezult = MessageBox(0, stream.str().c_str(), "error, abort game ?", MB_YESNO | MB_ICONERROR);
+
+	if (rezult == IDYES) 
+	{
+		exit(0);
+	}
+
+}
+
+template<class F, class ...T>
+inline void elog(std::stringstream &&stream, F &&f, T &&...args)
+{
+	stream << std::forward<F>(f) << " ";
+
+	elog(std::move(stream), args...);
+}
+
+template<class F, class ...T>
+inline void elog(F &&f, T &&...args)
+{
+	std::stringstream stream;
+
+	stream << std::forward<F>(f) << " ";
+
+	elog(std::move(stream), args...);
+}
+
+
+
+#else
 template<class F, class ...T>
 inline void elog(F f, T ...args)
 {
 
 }
+#endif
+
 #endif
 
 

@@ -6,6 +6,7 @@
 std::random_device rng;
 std::uniform_real_distribution<float> negDist(-5.0, 5.0);
 std::uniform_real_distribution<float> upDist(4.0, 10.0);
+std::uniform_real_distribution<float> zeroOneDist(0, 1);
 
 static const GLfloat vertexBufferData[] = {
  -0.5f, -0.5f, 0.0f,
@@ -44,7 +45,7 @@ void ParticleSystem::draw(float deltaTime)
 		ParticleDrag[i].x = negDist(rng);
 		ParticleDrag[i].z = negDist(rng);
 		ParticleDrag[i].y = upDist(rng);
-
+	
 	}
 
 	for(int i=0; i<overflow; i++)
@@ -126,9 +127,9 @@ void ParticleSystem::buildParticleSystem()
 
 	for(int i=0; i<count; i++)
 	{
-		colors[i].r = 0.8f;
-		colors[i].g = 0.8f;
-		colors[i].b = 1.0f;
+		colors[i].r = zeroOneDist(rng);
+		colors[i].g = zeroOneDist(rng);
+		colors[i].b = zeroOneDist(rng);
 	}
 
 	glBufferData(GL_ARRAY_BUFFER, count * sizeof(glm::vec3), colors, GL_STREAM_DRAW);

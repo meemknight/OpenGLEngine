@@ -36,7 +36,7 @@
 extern "C"
 {
 	//Enable dedicated graphics
-	__declspec(dllexport) DWORD NvOptimusEnablement = true;
+	//__declspec(dllexport) DWORD NvOptimusEnablement = true;
 	//__declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = true;
 }
 
@@ -307,7 +307,7 @@ int main()
 	//btCollisionObject::CF_KINEMATIC_OBJECT);
 	//playerObject.getIndtance(0)->setActivationState(DISABLE_DEACTIVATION);
 
-	ParticleSystem particles(50, 1, particleShader);
+	ParticleSystem particles(20, 4, particleShader);
 	particles.camera = &camera;
 
 	window.setTitle((char*)glGetString(GL_RENDERER));
@@ -584,7 +584,7 @@ int main()
 		//world->debugDrawWorld();
 
 		//plan.draw();
-		
+		/*
 		window.pushGLStates();
 		glDisable(GL_DEPTH_TEST);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -615,7 +615,10 @@ int main()
 
 		window.popGLStates();
 		glEnable(GL_DEPTH_TEST);
-		
+		*/
+
+		//window.setView(sf::View({ 0, 0, width, height }));
+		window.display();
 	}
 
 
