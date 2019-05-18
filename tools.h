@@ -25,12 +25,13 @@
 
 #ifdef ERRORS_ONLY
 #undef FORCE_LOG
-
-	
-
 #endif // ERRORS_ONLY
 
-
+#ifdef FORCE_LOG
+#define MAIN main()
+#else
+#define MAIN WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nCmdShow)
+#endif
 
 #ifdef FORCE_LOG
 inline void llog()
