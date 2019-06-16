@@ -63,7 +63,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 			dataForModel.push_back(model.m.LoadedMeshes[m].Vertices[i].Normal.Y);
 			dataForModel.push_back(model.m.LoadedMeshes[m].Vertices[i].Normal.Z);
 		}
-		temp.vb = vertexBuffer(dataForModel.data(), dataForModel.size() * sizeof(float));
+		temp.vb = vertexBuffer(dataForModel.data(), dataForModel.size() * sizeof(float), GL_STATIC_DRAW);
 
 		indicesForModel.clear();
 
@@ -145,8 +145,7 @@ void appendObject_(vertexBuffer &dataTodraw, std::vector<ObjectData> &objectData
 void GameObject::initialize()
 {
 	//warning, adding code here might break some code at the gpucleanup and cleanup
-	dataTodraw.createData(0, 0);
-	//timeUniformLocation = glGetUniformLocation(sp.id, "u_time");
+	dataTodraw.createData(0, 0, GL_DYNAMIC_DRAW);
 }
 
 
@@ -177,7 +176,7 @@ void GameObject::loadPtn323(const LoadedIndexModel &model, AssetManager<Texture>
 	{
 		indicesForModel.push_back(model.m.LoadedIndices[i]);
 	}
-	vb = vertexBuffer(dataForModel.data(), dataForModel.size() * sizeof(float));
+	vb = vertexBuffer(dataForModel.data(), dataForModel.size() * sizeof(float), GL_STATIC_DRAW);
 	ib = indexBuffer(indicesForModel.data(), indicesForModel.size() * sizeof(unsigned int));
 	va = std::move(vertexAttribute{ 3, 2, 3 });
 
@@ -228,7 +227,7 @@ void GameObject::loadPcn333(const LoadedIndexModel &model, ShaderProgram *sp)
 	{
 		indicesForModel.push_back(model.m.LoadedIndices[i]);
 	}
-	vb = vertexBuffer(dataForModel.data(), dataForModel.size() * sizeof(float));
+	vb = vertexBuffer(dataForModel.data(), dataForModel.size() * sizeof(float), GL_STATIC_DRAW);
 	ib = indexBuffer(indicesForModel.data(), indicesForModel.size() * sizeof(unsigned int));
 	vertexAttribute v;
 	v.pushAttribute(Attribute(3, sizeof(float), GL_FLAT));

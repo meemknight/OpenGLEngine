@@ -17,8 +17,6 @@
 #include <Windows.h>
 #include <sstream>
 
-#define ERRORS_ONLY
-
 #ifdef _DEBUG
 #define FORCE_LOG
 #endif
