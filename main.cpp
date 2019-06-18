@@ -110,7 +110,7 @@ int main()
 
 	auto windoHandle = window.getSystemHandle();
 
-	//window.setVerticalSyncEnabled(1);
+	window.setVerticalSyncEnabled(1);
 
 	glewInit();
 	glewExperimental = GL_TRUE;

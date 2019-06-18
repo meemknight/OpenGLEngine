@@ -8,10 +8,15 @@ out vec4 color;
 uniform mat4 projectionMatrix;
 uniform mat4 positionMatrix;
 
+uniform int count;
+uniform int firstPos;
+
 void main()
 {
 
-	color = inColor;
+	float c = (float(gl_InstanceID) - firstPos) / float(count);
+	 c += int(c < 0);
+	color = vec4(c,c,c,1) * inColor;
 
 	mat4 translationMatrix = mat4(1.0, 0.0, 0.0, position.x, 
 							0.0, 1.0, 0.0, position.y, 
@@ -32,7 +37,6 @@ void main()
 	modelView[2][1] = 0;
 	modelView[1][2] = 0;
 	
-
 
 	gl_Position = projectionMatrix * modelView * vertex;
 }

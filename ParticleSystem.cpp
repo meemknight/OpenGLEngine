@@ -88,6 +88,8 @@ void ParticleSystem::draw(float deltaTime)
 	glVertexAttribDivisor(2, 1);
 
 	sp.bind();
+	sp.uniformi("count", count);
+	sp.uniformi("firstPos", currentParticle);
 	glm::mat4 position = camera->getObjectToWorld();
 	//resetting the rotation
 	//projection[0][0] = 1;
