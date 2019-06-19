@@ -24,8 +24,9 @@ public:
 	float cameraAngle = 0;
 	float topDownAngle = 0;
 
-public:
 	glm::vec2 oldMousePosition;
+
+public:
 	float rSpeed = 0.5f;
 	float mSpeed = 0.05f;
 	

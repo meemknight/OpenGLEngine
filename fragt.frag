@@ -126,7 +126,6 @@ vec3 p_withoutT(vec2 coordonates)
 	return vec3(1, 1, 1).rgb;
 }
 
-
 void main()
 {
 	vec3 inNormal = normalize(v_Normal);

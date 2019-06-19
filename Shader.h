@@ -105,7 +105,7 @@ public:
 
 	int getUniformLocation(const char* name);
 
-	unsigned int getSoubRutineLocation(const char* name);
+	unsigned int getSoubRutineLocation(const char* name, GLenum type = GL_FRAGMENT_SHADER);
 
 	void uniform(const char* name, float a);
 	void uniform(const char* name, float a, float b, float c);

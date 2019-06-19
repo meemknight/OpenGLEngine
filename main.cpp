@@ -206,7 +206,7 @@ int main()
 	CharacterMouseController characterController;
 	characterController.topDownRotation = &playerAngle;
 	characterController.cameraAngle = &camera.cameraAngle;
-	characterController.downMax = glm::radians(0.f);
+	characterController.downMax = glm::radians(-45.f);
 	characterController.mouseScroll = &camera.distanceFromPlayer;
 
 	ShaderProgram program(VertexShader("vertex.vert"), FragmentShader("fragment.frag"));
@@ -247,19 +247,17 @@ int main()
 	shapeGenerator::generatePlane(&planVertexes, &planIndices, 512, plansize, planIndicessize);
 	ilog(glGetString(GL_VERSION));
 
-
 	indexBuffer ib(cubeIndices, sizeof(cubeIndices));
 
-
 	light.pushElement(Light::roomLight());
-	light.pushElement(Light::roomLight(0.3f));
+	//light.pushElement(Light::roomLight(0.3f));
 	//light.pushElement(Light::SunLight());
 	//light.getAmbience(0)  = glm::vec3(0.5, 0.1, 0.1);
 	//light.getDiffuseness(0)  = glm::vec3(1.f, 0.4, 0.4);
 	//light.getSpecularity(0) = glm::vec3(1.0, 0.2, 0.2);
 	//light.getStrength(0) = 0.0003;
-	light.getPosition(1).y = 20;
-	light.getStrength(1) = 0.0003f;
+	//light.getPosition(1).y = 20;
+	//light.getStrength(1) = 0.0003f;
 
 
 	//ComplexObject o2;
@@ -307,9 +305,11 @@ int main()
 	//btCollisionObject::CF_KINEMATIC_OBJECT);
 	//playerObject.getIndtance(0)->setActivationState(DISABLE_DEACTIVATION);
 
-	ParticleSystem particles(20, 4, particleShader);
+	ParticleSystem particles(150, 2.5, particleShader, { 1,0,0 }, {0.6,0.4,0.2});
 	particles.camera = &camera;
-
+	particles.light = &light;
+	particles.affectedByLight = true;
+	
 	window.setTitle((char*)glGetString(GL_RENDERER));
 	while (window.isOpen())
 	{
@@ -331,6 +331,8 @@ int main()
 			frames = 0;
 		}
 
+		auto pos = playerObject.getInstance(0)->getCenterOfMassPosition();
+		particles.position = glm::vec3{ pos.x(),pos.y(),pos.z() } + glm::vec3{0, 1, 0};
 
 		//glClearColor(0.1, 0.5, 1.0, 1.0);
 		glViewport(0, 0, width, height);
@@ -450,15 +452,6 @@ int main()
 			lightPosition.x -= lightSpeed * deltatime;
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
-		{
-			camera.cameraAngle += glm::radians(25.f) * deltatime;
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
-		{
-			camera.cameraAngle -= glm::radians(25.f) * deltatime;
-		}
 
 		
 

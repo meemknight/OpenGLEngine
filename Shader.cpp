@@ -85,11 +85,11 @@ int ShaderProgram::getUniformLocation(const char* name)
 
 }
 
-unsigned int ShaderProgram::getSoubRutineLocation(const char * name)
+unsigned int ShaderProgram::getSoubRutineLocation(const char * name, GLenum type)
 {
 	if (subRoutines.find(name) == subRoutines.end())
 	{
-		unsigned int a = glGetSubroutineIndex(id, GL_FRAGMENT_SHADER, name);
+		unsigned int a = glGetSubroutineIndex(id, type, name);
 
 		if (a == GL_INVALID_INDEX)
 		{

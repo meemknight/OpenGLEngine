@@ -4,9 +4,15 @@
 #include <utility>
 
 std::random_device rng;
-std::uniform_real_distribution<float> negDist(-5.0, 5.0);
+std::uniform_real_distribution<float> negDist(-2.0, 2.0);
 std::uniform_real_distribution<float> upDist(4.0, 10.0);
 std::uniform_real_distribution<float> zeroOneDist(0, 1);
+
+float mix(float a, float b, float r)
+{
+	return a * r + b * (1 - r);
+}
+
 
 static const GLfloat vertexBufferData[] = {
  -0.5f, -0.5f, 0.0f,
@@ -15,7 +21,7 @@ static const GLfloat vertexBufferData[] = {
  0.5f, 0.5f, 0.0f,
 };
 
-ParticleSystem::ParticleSystem(unsigned int count, float cicleDuration, ShaderProgram &sp) :count(count), sp(sp), cicleDuration(cicleDuration)
+ParticleSystem::ParticleSystem(unsigned int count, float cicleDuration, ShaderProgram &sp, glm::vec3 color1, glm::vec3 color2) :color1(color1), color2(color2),count(count), sp(sp), cicleDuration(cicleDuration)
 {
 	buildParticleSystem();
 }
@@ -88,6 +94,20 @@ void ParticleSystem::draw(float deltaTime)
 	glVertexAttribDivisor(2, 1);
 
 	sp.bind();
+	if(light && affectedByLight)
+	{
+		light->bind(sp);
+		unsigned int u = sp.getSoubRutineLocation("p_withL", GL_VERTEX_SHADER);
+		glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &u);
+		
+
+	}else
+	{
+		unsigned int u = sp.getSoubRutineLocation("p_outL", GL_VERTEX_SHADER);
+		glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &u);
+
+	}
+
 	sp.uniformi("count", count);
 	sp.uniformi("firstPos", currentParticle);
 	glm::mat4 position = camera->getObjectToWorld();
@@ -129,9 +149,9 @@ void ParticleSystem::buildParticleSystem()
 
 	for(int i=0; i<count; i++)
 	{
-		colors[i].r = zeroOneDist(rng);
-		colors[i].g = zeroOneDist(rng);
-		colors[i].b = zeroOneDist(rng);
+		colors[i].r = mix(color1.r, color2.r, zeroOneDist(rng));
+		colors[i].g = mix(color1.g, color2.g, zeroOneDist(rng));
+		colors[i].b = mix(color1.b, color2.b, zeroOneDist(rng));
 	}
 
 	glBufferData(GL_ARRAY_BUFFER, count * sizeof(glm::vec3), colors, GL_STREAM_DRAW);

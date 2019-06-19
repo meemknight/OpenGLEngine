@@ -1,4 +1,5 @@
 #version 400
+#define LIGHT_COUNT 32
 
 in layout(location = 0)vec4 vertex;
 in layout(location = 1)vec4 position;
@@ -11,12 +12,55 @@ uniform mat4 positionMatrix;
 uniform int count;
 uniform int firstPos;
 
+uniform vec4 u_lightPosition[LIGHT_COUNT]; // last component determins if it is a directional light or not, 1 means positional // ???
+uniform vec3 u_lightAmbient[LIGHT_COUNT];
+uniform vec3 u_lightDiffuse[LIGHT_COUNT];
+uniform vec3 u_lightSpecular[LIGHT_COUNT];
+uniform float u_lightStrength[LIGHT_COUNT]; //used to determine the distance to shine,   0 means infinite distance
+uniform int u_lightCount;
+
+float distanceDim(float dist, float strength)
+{
+	float brightness;
+	brightness = 1/(dist*dist * strength + 1);
+	return brightness;
+}
+
+subroutine vec3 applyLight();
+subroutine uniform applyLight u_lProgram;
+
+subroutine (applyLight)
+vec3 p_withL()
+{
+	vec3 light;
+	for(int i=0; i<u_lightCount; i++)
+	{
+		light += u_lightAmbient[i];
+		light += u_lightDiffuse[i];
+		light *= distanceDim(distance(position, u_lightPosition[i]), u_lightStrength[i]);	
+	}
+	light.rgb = min(vec3(1,1,1).rgb, light.rgb);
+	return light;
+}
+
+
+subroutine (applyLight)
+vec3 p_outL()
+{
+	return vec3(1,1,1);
+}
+
+
 void main()
 {
+	
 
 	float c = (float(gl_InstanceID) - firstPos) / float(count);
 	 c += int(c < 0);
+	 c = 1-c;
+	 c *= 3;
 	color = vec4(c,c,c,1) * inColor;
+	color.rgb *= u_lProgram();
 
 	mat4 translationMatrix = mat4(1.0, 0.0, 0.0, position.x, 
 							0.0, 1.0, 0.0, position.y, 
