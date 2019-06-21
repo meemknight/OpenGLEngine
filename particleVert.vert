@@ -11,6 +11,7 @@ uniform mat4 positionMatrix;
 
 uniform int count;
 uniform int firstPos;
+uniform vec3 u_fadeColor;
 
 uniform vec4 u_lightPosition[LIGHT_COUNT]; // last component determins if it is a directional light or not, 1 means positional // ???
 uniform vec3 u_lightAmbient[LIGHT_COUNT];
@@ -18,6 +19,8 @@ uniform vec3 u_lightDiffuse[LIGHT_COUNT];
 uniform vec3 u_lightSpecular[LIGHT_COUNT];
 uniform float u_lightStrength[LIGHT_COUNT]; //used to determine the distance to shine,   0 means infinite distance
 uniform int u_lightCount;
+
+uniform float u_fadeWeight;
 
 float distanceDim(float dist, float strength)
 {
@@ -50,7 +53,6 @@ vec3 p_outL()
 	return vec3(1,1,1);
 }
 
-
 void main()
 {
 	
@@ -58,8 +60,18 @@ void main()
 	float c = (float(gl_InstanceID) - firstPos) / float(count);
 	 c += int(c < 0);
 	 c = 1-c;
-	 c *= 3;
-	color = vec4(c,c,c,1) * inColor;
+
+	 if(u_fadeWeight >= 0)
+	 {
+		c*=u_fadeWeight;
+		color.rgb = mix(inColor.rgb, u_fadeColor.rgb, c);	 
+	 }else
+	 {
+		c*= -u_fadeWeight;
+		color.rgb = mix(u_fadeColor.rgb, inColor.rgb, c);	 
+	 }
+	
+
 	color.rgb *= u_lProgram();
 
 	mat4 translationMatrix = mat4(1.0, 0.0, 0.0, position.x, 

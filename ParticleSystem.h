@@ -12,16 +12,15 @@ struct ParticleSystem
 	ParticleSystem(unsigned int count, float cicleDuration, ShaderProgram &program, glm::vec3 color1, glm::vec3 color2);
 	glm::vec3 position = { 0, 0, 0 };
 	
-	//there are 2 colorus because the object will randomly interpolate between them
+	//there are 2 colors because the object will randomly interpolate between them
 	glm::vec3 color1 = { 0, 0, 0};
 	glm::vec3 color2 = { 0, 0, 0};
-	glm::vec3 decayColor = { 0,0,0 };
+	glm::vec3 fadeColor = { 0,0,0 };
 
-
+	float fadeWeight = 1;
 
 	void draw(float deltaTime);
 	void cleanup();
-
 
 	float gravity = -1.5;
 

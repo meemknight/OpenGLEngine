@@ -305,11 +305,13 @@ int main()
 	//btCollisionObject::CF_KINEMATIC_OBJECT);
 	//playerObject.getIndtance(0)->setActivationState(DISABLE_DEACTIVATION);
 
-	ParticleSystem particles(150, 2.5, particleShader, { 1,0,0 }, {0.6,0.4,0.2});
+	ParticleSystem particles(150, 2.5, particleShader, { 1,0,0 }, {1,0,0});
 	particles.camera = &camera;
 	particles.light = &light;
 	particles.affectedByLight = true;
-	
+	particles.fadeColor = { 0,0,1 };
+	particles.fadeWeight = 1;
+
 	window.setTitle((char*)glGetString(GL_RENDERER));
 	while (window.isOpen())
 	{

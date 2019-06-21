@@ -108,8 +108,11 @@ void ParticleSystem::draw(float deltaTime)
 
 	}
 
+
 	sp.uniformi("count", count);
 	sp.uniformi("firstPos", currentParticle);
+	sp.uniform("u_fadeColor", fadeColor.x, fadeColor.y, fadeColor.z);
+	sp.uniform("u_fadeWeight", fadeWeight);
 	glm::mat4 position = camera->getObjectToWorld();
 	//resetting the rotation
 	//projection[0][0] = 1;

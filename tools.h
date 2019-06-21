@@ -11,6 +11,8 @@
 ///define ERRORS_ONLY
 ///to only display error messages
 
+#define FORCE_LOG
+
 
 #pragma once
 #include <iostream>
