@@ -21,6 +21,9 @@ uniform float u_lightStrength[LIGHT_COUNT]; //used to determine the distance to 
 uniform int u_lightCount;
 
 uniform float u_fadeWeight;
+uniform float u_scale = 1.f;
+uniform float u_kd = 1.f;
+
 
 float distanceDim(float dist, float strength)
 {
@@ -39,7 +42,7 @@ vec3 p_withL()
 	for(int i=0; i<u_lightCount; i++)
 	{
 		light += u_lightAmbient[i];
-		light += u_lightDiffuse[i];
+		light += u_lightDiffuse[i]  * u_kd;
 		light *= distanceDim(distance(position, u_lightPosition[i]), u_lightStrength[i]);	
 	}
 	light.rgb = min(vec3(1,1,1).rgb, light.rgb);
@@ -61,7 +64,7 @@ void main()
 	 c += int(c < 0);
 	 c = 1-c;
 
-	 if(u_fadeWeight >= 0)
+	 if(u_fadeWeight > 0)
 	 {
 		c*=u_fadeWeight;
 		color.rgb = mix(inColor.rgb, u_fadeColor.rgb, c);	 
@@ -93,8 +96,10 @@ void main()
 	modelView[2][1] = 0;
 	modelView[1][2] = 0;
 	
+	vec4 vert = vertex;	
+	vert.rgb *= u_scale;
 
-	gl_Position = projectionMatrix * modelView * vertex;
+	gl_Position = projectionMatrix * modelView * vert;
 }
 
 /*	projection[0][1] = 0.f;

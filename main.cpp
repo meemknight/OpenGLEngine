@@ -110,7 +110,7 @@ int main()
 
 	auto windoHandle = window.getSystemHandle();
 
-	window.setVerticalSyncEnabled(1);
+	window.setVerticalSyncEnabled(false);
 
 	glewInit();
 	glewExperimental = GL_TRUE;
@@ -305,12 +305,15 @@ int main()
 	//btCollisionObject::CF_KINEMATIC_OBJECT);
 	//playerObject.getIndtance(0)->setActivationState(DISABLE_DEACTIVATION);
 
-	ParticleSystem particles(150, 2.5, particleShader, { 1,0,0 }, {1,0,0});
+	ParticleSystem particles(400, 8, particleShader, { 1,0,0 }, { 1,1,0 }, { -1,-1,-1 }, {1,1,1}, 0.5, 0.5);
 	particles.camera = &camera;
 	particles.light = &light;
 	particles.affectedByLight = true;
 	particles.fadeColor = { 0,0,1 };
-	particles.fadeWeight = 1;
+	particles.fadeWeight = -4;
+	particles.scale = 0.2f;
+	particles.gravity = { 0,0,0 };
+	particles.kd = 0.2f;
 
 	window.setTitle((char*)glGetString(GL_RENDERER));
 	while (window.isOpen())
@@ -334,7 +337,7 @@ int main()
 		}
 
 		auto pos = playerObject.getInstance(0)->getCenterOfMassPosition();
-		particles.position = glm::vec3{ pos.x(),pos.y(),pos.z() } + glm::vec3{0, 1, 0};
+		//particles.position = glm::vec3{ pos.x(),pos.y(),pos.z() } + glm::vec3{0, 1, 0};
 
 		//glClearColor(0.1, 0.5, 1.0, 1.0);
 		glViewport(0, 0, width, height);
