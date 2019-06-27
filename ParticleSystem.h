@@ -12,7 +12,7 @@ struct ParticleSystem
 	ParticleSystem() = default;
 
 	ParticleSystem(unsigned int count, float cicleDuration,
-		ShaderProgram &program, glm::vec3 color1, glm::vec3 color2,
+		ShaderProgram *program, glm::vec3 color1, glm::vec3 color2,
 		glm::vec3 direction1, glm::vec3 direction2,
 		float speed1, float speed2
 	);
@@ -42,7 +42,7 @@ struct ParticleSystem
 	glm::vec3 gravity = { 0, -1.5, 0 };
 	float scale = 1;
 
-	ShaderProgram sp;
+	ShaderProgram *sp;
 	Camera *camera;
 	LightContext *light = nullptr;
 

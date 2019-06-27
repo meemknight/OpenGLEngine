@@ -8,6 +8,7 @@
 #include <algorithm>
 #include "GameObject.h"
 #include "AssetManager.h"
+#include "ParticleSystem.h"
 
 enum Commands
 {
@@ -29,6 +30,7 @@ enum Commands
 	collision,
 	unique,
 	empty,
+	particle,
 };
 
 struct generalObjectData
@@ -132,23 +134,26 @@ public:
 	KeyPair<ComplexObject> complexObjectVector;
 	KeyPair<PhisicalObject> phisicalObjectVector;
 	KeyPair<glm::vec3> emptyObjectVector;
+	KeyPair<ParticleSystem> particleObjectVector;
 
 	ShaderProgram *sp = nullptr;
 	Camera *camera = nullptr;
 	LightContext *lights = nullptr;
 	btDynamicsWorld *world = nullptr;
+	ShaderProgram *particleShaderProgram = nullptr;
 
-	void initialize(ShaderProgram *sp, Camera *camera, LightContext * lights, btDynamicsWorld *world, AssetManager<Texture> *textureManager, AssetManager<LoadedIndexModel> *modelManager)
+	void initialize(ShaderProgram *sp, Camera *camera, LightContext * lights, btDynamicsWorld *world, AssetManager<Texture> *textureManager, AssetManager<LoadedIndexModel> *modelManager, ShaderProgram *particleShaderProgram)
 	{
 		this->sp = sp; this->camera = camera;	this->lights = lights; this->world = world;
 		this->textureManager = textureManager; this->modelManager = modelManager;
+		this->particleShaderProgram = particleShaderProgram;
 	}
 
 	void setShaderProgramToAllComponents(ShaderProgram *sp);
 	
 	void clearLightContextContent();
 	void load(const char *file);
-	void drawAll();
+	void drawAll(float deltaTime);
 	void clearAll();
 
 };

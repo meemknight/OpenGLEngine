@@ -221,7 +221,7 @@ int main()
 	world->getDebugDrawer()->setDebugMode(btIDebugDraw::DebugDrawModes::DBG_DrawWireframe);
 
 	GameObjectPool gameObjectPool;
-	gameObjectPool.initialize(&textureProgram, &camera, &light, world, &textureManager, &modelManager);
+	gameObjectPool.initialize(&textureProgram, &camera, &light, world, &textureManager, &modelManager, &particleShader);
 	gameObjectPool.load("maps//map1.txt");
 	auto dataFromFile = gameObjectPool.emptyObjectVector.getElementById(422);
 	ilog(dataFromFile.x, dataFromFile.y, dataFromFile.z);
@@ -305,7 +305,7 @@ int main()
 	//btCollisionObject::CF_KINEMATIC_OBJECT);
 	//playerObject.getIndtance(0)->setActivationState(DISABLE_DEACTIVATION);
 
-	ParticleSystem particles(400, 8, particleShader, { 1,0,0 }, { 1,1,0 }, { -1,-1,-1 }, {1,1,1}, 0.5, 0.5);
+	ParticleSystem particles(400, 8, &particleShader, { 1,0,0 }, { 1,1,0 }, { -1,-1,-1 }, {1,1,1}, 0.5, 0.5);
 	particles.camera = &camera;
 	particles.light = &light;
 	particles.affectedByLight = true;
@@ -564,7 +564,7 @@ int main()
 		camera.topDownAngle = playerAngle;
 		playerObject.draw();
 		
-		gameObjectPool.drawAll();
+		gameObjectPool.drawAll(deltatime);
 
 		//gameObjectPool.clearAll();
 		//gameObjectPool.load("maps//map1.txt");
@@ -576,7 +576,7 @@ int main()
 
 		lightObject.draw();
 
-		particles.draw(deltatime);
+		//particles.draw(deltatime);
 
 
 		//world->debugDrawWorld();

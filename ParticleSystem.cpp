@@ -25,7 +25,7 @@ static const GLfloat vertexBufferData[] = {
  0.5f, 0.5f, 0.0f,
 };
 
-ParticleSystem::ParticleSystem(unsigned int count, float cicleDuration, ShaderProgram &sp, glm::vec3 color1, glm::vec3 color2,
+ParticleSystem::ParticleSystem(unsigned int count, float cicleDuration, ShaderProgram *sp, glm::vec3 color1, glm::vec3 color2,
 	glm::vec3 direction1, glm::vec3 direction2,
 	float speed1, float speed2) :
 	color1(color1), color2(color2), count(count), sp(sp),
@@ -111,28 +111,28 @@ void ParticleSystem::draw(float deltaTime)
 		glVertexAttribDivisor(1, 1);
 		glVertexAttribDivisor(2, 1);
 
-		sp.bind();
+		sp->bind();
 		if (light && affectedByLight)
 		{
-			light->bind(sp);
-			unsigned int u = sp.getSoubRutineLocation("p_withL", GL_VERTEX_SHADER);
+			light->bind(*sp);
+			unsigned int u = sp->getSoubRutineLocation("p_withL", GL_VERTEX_SHADER);
 			glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &u);
 
 
 		}
 		else
 		{
-			unsigned int u = sp.getSoubRutineLocation("p_outL", GL_VERTEX_SHADER);
+			unsigned int u = sp->getSoubRutineLocation("p_outL", GL_VERTEX_SHADER);
 			glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &u);
 
 		}
 
-		sp.uniformi("count", count);
-		sp.uniformi("firstPos", currentParticle);
-		sp.uniform("u_fadeColor", fadeColor.x, fadeColor.y, fadeColor.z);
-		sp.uniform("u_fadeWeight", fadeWeight);
-		sp.uniform("u_scale", scale);
-		sp.uniform("u_kd", kd);
+		sp->uniformi("count", count);
+		sp->uniformi("firstPos", currentParticle);
+		sp->uniform("u_fadeColor", fadeColor.x, fadeColor.y, fadeColor.z);
+		sp->uniform("u_fadeWeight", fadeWeight);
+		sp->uniform("u_scale", scale);
+		sp->uniform("u_kd", kd);
 		glm::mat4 position = camera->getObjectToWorld();
 		//resetting the rotation
 		//projection[0][0] = 1;
@@ -148,8 +148,8 @@ void ParticleSystem::draw(float deltaTime)
 
 		glm::mat4 projection = camera->getProjectionMatrix();
 
-		glUniformMatrix4fv(sp.getUniformLocation("projectionMatrix"), 1, GL_FALSE, &projection[0][0]);
-		glUniformMatrix4fv(sp.getUniformLocation("positionMatrix"), 1, GL_FALSE, &position[0][0]);
+		glUniformMatrix4fv(sp->getUniformLocation("projectionMatrix"), 1, GL_FALSE, &projection[0][0]);
+		glUniformMatrix4fv(sp->getUniformLocation("positionMatrix"), 1, GL_FALSE, &position[0][0]);
 
 		glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, count);
 	}
@@ -233,7 +233,7 @@ void ParticleSystem::loadParticleSystem(const char * name)
 
 	if (!f.is_open())
 	{
-		elog("couldn't open file");
+		elog("couldn't open file:", name);
 		return;
 	}
 
@@ -255,8 +255,7 @@ void ParticleSystem::loadParticleSystem(const char * name)
 	this->buildParticleSystem();
 
 	f.close();
-
-
+	glog("loaded the particle system: ", name);
 }
 
 #undef R
