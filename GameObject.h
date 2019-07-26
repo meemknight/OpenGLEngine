@@ -115,7 +115,7 @@ public:
 
 
 	GameObject() { initialize(); }
-	GameObject(vertexBuffer vb, indexBuffer ib, vertexAttribute va, ShaderProgram *sp, Camera *camera = nullptr) : vb(vb), va(va), ib(ib), sp(sp), camera(camera) { initialize(); };
+	GameObject(vertexBuffer vb, indexBuffer ib, vertexAttribute &&va, ShaderProgram *sp, Camera *camera = nullptr) : vb(vb), va(va), ib(ib), sp(sp), camera(camera) { initialize(); };
 	GameObject(ShaderProgram *sp, Camera *camera, LightContext *lights):sp(sp), camera(camera), lights(lights) { initialize(); }
 	
 

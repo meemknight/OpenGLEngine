@@ -22,6 +22,13 @@ struct ParticleSystem
 		loadParticleSystem(file);
 	}
 
+	void setup(ShaderProgram *program, LightContext *light, Camera *camera)
+	{
+		this->sp = program;
+		this->light = light;
+		this->camera = camera;
+	}
+
 	glm::vec3 position = { 0, 0, 0 };
 
 	//there are 2 colors because the object will randomly interpolate between them
@@ -42,11 +49,11 @@ struct ParticleSystem
 	glm::vec3 gravity = { 0, -1.5, 0 };
 	float scale = 1;
 
-	ShaderProgram *sp;
-	Camera *camera;
+	ShaderProgram *sp = nullptr;
+	Camera *camera = nullptr;
 	LightContext *light = nullptr;
 
-	float cicleDuration;
+	float cicleDuration = 0;
 	bool affectedByLight = true;
 
 	float kd = 0.5;

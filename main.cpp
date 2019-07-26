@@ -187,6 +187,7 @@ int main()
 	AssetManager<Texture> textureManager;
 	AssetManager<LoadedIndexModel> modelManager;
 	LightContext light;
+	light.pushElement(Light::roomLight());
 
 	Camera camera(85.f, &width, &height, 0.01f, 1500.f);
 	camera.mSpeed = 16.0f;
@@ -249,7 +250,6 @@ int main()
 
 	indexBuffer ib(cubeIndices, sizeof(cubeIndices));
 
-	light.pushElement(Light::roomLight());
 	//light.pushElement(Light::roomLight(0.3f));
 	//light.pushElement(Light::SunLight());
 	//light.getAmbience(0)  = glm::vec3(0.5, 0.1, 0.1);
@@ -314,6 +314,10 @@ int main()
 	particles.scale = 0.2f;
 	particles.gravity = { 0,0,0 };
 	particles.kd = 0.2f;
+
+	ParticleSystem particles2("particles/test1.part");
+	particles2.setup(&particleShader, &light, &camera);
+	particles2.position = { 0,10,0 };
 
 	window.setTitle((char*)glGetString(GL_RENDERER));
 	while (window.isOpen())
@@ -577,7 +581,9 @@ int main()
 		lightObject.draw();
 
 		//particles.draw(deltatime);
-
+		//particles2.draw(deltatime);
+		
+		llog(gameObjectPool.lights->getPosition(0).x, gameObjectPool.lights->getPosition(0).y, gameObjectPool.lights->getPosition(0).z);
 
 		//world->debugDrawWorld();
 

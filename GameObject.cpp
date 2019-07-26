@@ -745,6 +745,20 @@ void PhisicalObject::draw()
 
 	for (unsigned int m = 0; m < objectData.size(); m++)
 	{
+
+		if (objectData[m].texture.id != 0)
+		{
+			objectData[m].texture.bind(0);
+			GLuint temp = sp->getSoubRutineLocation("p_withT");
+			glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &temp);
+		}
+		else
+		{
+			GLuint temp = sp->getSoubRutineLocation("p_withoutT");
+			glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &temp);
+		}
+
+
 		objectData[m].material.bind(*sp);
 
 		objectData[m].vb.bind();
@@ -775,20 +789,7 @@ void PhisicalObject::draw()
 			offset += sizeof(glm::mat4);
 		}
 
-
 		objectData[m].va.bindForInstances();
-
-		if (objectData[m].texture.id != 0)
-		{
-			objectData[m].texture.bind(0);
-			GLuint temp = sp->getSoubRutineLocation("p_withT");
-			glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &temp);
-		}
-		else
-		{
-			GLuint temp = sp->getSoubRutineLocation("p_withoutT");
-			glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &temp);
-		}
 
 		glDrawElementsInstanced(GL_TRIANGLES, objectData[m].ib.size / sizeof(unsigned int), GL_UNSIGNED_INT, 0, rigidBodies.size());
 
