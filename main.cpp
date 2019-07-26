@@ -583,7 +583,6 @@ int main()
 		//particles.draw(deltatime);
 		//particles2.draw(deltatime);
 		
-		llog(gameObjectPool.lights->getPosition(0).x, gameObjectPool.lights->getPosition(0).y, gameObjectPool.lights->getPosition(0).z);
 
 		//world->debugDrawWorld();
 
