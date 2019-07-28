@@ -30,6 +30,17 @@ void LightContext::bind(ShaderProgram & sp)
 	glUniform1i(sp.getUniformLocation("u_lightCount"), size);
 }
 
+void LightContext::bindForParticles(ShaderProgram & sp)
+{
+	int size = positions.size();
+
+	glUniform4fv(sp.getUniformLocation("u_lightPosition[0]"), size, (float*)&positions[0]);
+	glUniform3fv(sp.getUniformLocation("u_lightAmbient[0]"), size, (float*)&ambienteces[0]);
+	glUniform3fv(sp.getUniformLocation("u_lightDiffuse[0]"), size, (float*)&diffuses[0]);
+	glUniform1fv(sp.getUniformLocation("u_lightStrength[0]"), size, (float*)&strengthes[0]);
+	glUniform1i(sp.getUniformLocation("u_lightCount"), size);
+}
+
 void LightContext::pushElement(const Light & light)
 {
 	positions.push_back(light.position);

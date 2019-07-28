@@ -59,5 +59,6 @@ public:
 	void clear();
 
 	void bind(ShaderProgram &sp);
+	void bindForParticles(ShaderProgram & sp);
 };
 

@@ -38,12 +38,14 @@ subroutine uniform applyLight u_lProgram;
 subroutine (applyLight)
 vec3 p_withL()
 {
-	vec3 light;
+	vec3 light = vec3(0,0,0);
 	for(int i=0; i<u_lightCount; i++)
 	{
-		light += u_lightAmbient[i];
-		light += u_lightDiffuse[i]  * u_kd;
-		light *= distanceDim(distance(position, u_lightPosition[i]), u_lightStrength[i]);	
+		vec3 l = vec3(0,0,0);
+		l += u_lightAmbient[i];
+		l += u_lightDiffuse[i]  * u_kd;
+		l *= distanceDim(distance(position, u_lightPosition[i]), u_lightStrength[i]);	
+		light += l;
 	}
 	light.rgb = min(vec3(1,1,1).rgb, light.rgb);
 	return light;
@@ -58,7 +60,6 @@ vec3 p_outL()
 
 void main()
 {
-	
 
 	float c = (float(gl_InstanceID) - firstPos) / float(count);
 	 c += int(c < 0);

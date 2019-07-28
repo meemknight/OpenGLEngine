@@ -114,7 +114,7 @@ void ParticleSystem::draw(float deltaTime)
 		sp->bind();
 		if (light && affectedByLight)
 		{
-			light->bind(*sp);
+			light->bindForParticles(*sp);
 			unsigned int u = sp->getSoubRutineLocation("p_withL", GL_VERTEX_SHADER);
 			glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &u);
 
@@ -204,9 +204,9 @@ void ParticleSystem::buildParticleSystem()
 
 	for (int i = 0; i < count; i++)
 	{
-		ParticlePositions[i].x = 0;
-		ParticlePositions[i].y = 0;
-		ParticlePositions[i].z = 0;
+		ParticlePositions[i].x = position.x;
+		ParticlePositions[i].y = position.y;
+		ParticlePositions[i].z = position.z;
 	}
 
 	std::uniform_real_distribution<float> xDist(direction1.x, direction2.x);
