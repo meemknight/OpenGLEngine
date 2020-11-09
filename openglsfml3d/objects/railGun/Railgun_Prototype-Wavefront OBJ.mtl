@@ -1,0 +1,58 @@
+# Blender MTL File: 'rail-gun prototype.blend'
+# Material Count: 4
+
+newmtl T1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd objects\\railGun\\rail-gun prototype_nmap.jpg
+map_Bump objects\\railGun\\rail-gun prototype_nmap.jpg
+map_Ks objects\\railGun\\rail-gun prototype_rough.jpg
+refl objects\\railGun\\ref.jpg
+
+newmtl T1_NONE
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Bump objects\\railGun\\rail-gun prototype_nmap.jpg
+map_Kd objects\\railGun\\rail-gun prototype_color.jpg
+map_Ks objects\\railGun\\rail-gun prototype_rough.jpg
+refl objects\\railGun\\ref.jpg
+
+newmtl T2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Bump objects\\railGun\\rail-gun prototype_T2_nmap.jpg
+map_Kd objects\\railGun\\rail-gun prototype_T2_color.jpg
+map_Ks objects\\railGun\\rail-gun prototype_T2_rough.jpg
+refl objects\\railGun\\ref.jpg
+
+newmtl T3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Bump objects\\railGun\\rail-gun prototype_T3_nmap.jpg
+map_Kd objects\\railGun\\rail-gun prototype_T3_color.jpg
+map_Ks objects\\railGun\\ref.jpg
+refl objects\\railGun\\ref.jpg

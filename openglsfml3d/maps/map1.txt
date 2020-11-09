@@ -1,0 +1,19 @@
+@phisical "objects/soldier.obj" @position 10, 9, 10 @mass 10
+@phisical "objects/soldier.obj" @position 12, 9, 10 
+@phisical "objects/soldier.obj" @position 14, 9, 10
+@phisical "objects/soldier.obj" @position 10, 9, 12
+@phisical "objects/soldier.obj" @position 10, 9, 14
+@phisical "objects/soldier.obj" @position 14, 9, 14 @mass 10 @unique @id 250
+@phisical "objects/level.obj" @position 0, 0, 0 @mass 0 @collision "" @id 440
+@phisical "objects/bigWood.obj" @position 48, 7, -10 @rotation 0, 90, 0 @mass 15 @collision "" 
+@phisical "objects/fireMonkey.obj" @position 0, 5, 10 @mass 10 
+@phisical "objects/bloc.obj" @position 35, 4, 45 @mass 10 
+@empty @position 12, 12, 14 @id 422
+@particle "particles/fireFlake.part" @position 0, 2, 0 
+@particle "particles/fireFlake.part" @position 0, 2, 10 
+@particle "particles/fireFlake.part" @position 5, 2, 10 
+@particle "particles/fireFlake.part" @position 10, 2, 5 
+@particle "particles/fireFlake.part" @position 0, 2, 5 
+@particle "particles/fireFlake.part" @position 5, 2, 5 
+@particle "particles/fireFlake.part" @position 10, 2, 10  
+@light @position 0, 50, 0 @diffuse 1, 1, 1 @specular 0.9, 0.8, 0.8 @ambience 0.3, 0.3, 0.3 @strength 0.0003 
